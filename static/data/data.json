@@ -1,0 +1,14 @@
+{
+  "MESSAGE": {
+    "OBJECT1": {
+      "LOCATOR": 1,
+      "DES": 0.3,
+      "TEXT": 123
+    },
+    "OBJECT1": {
+      "LOCATOR": 1,
+      "DES": 0.3,
+      "TEXT": 123
+    },
+  }
+}
