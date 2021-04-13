@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import ImageGallery from 'react-image-gallery';
 import SelectOverlay from 'Components/SelectOverlay';
@@ -18,7 +18,8 @@ import {
     StyledButton,
     StyledSwitch,
     StyledAccordion,
-    StyledAccordionSummary } from 'Style/components';
+    StyledAccordionSummary,
+    StyledSkeleton } from 'Style/components';
 import Spinner from 'Components/Spinner';
 
 const CamLogger = () => {
@@ -42,18 +43,11 @@ const CamLogger = () => {
     };
 
     useEffect(() => {
-        let newCommands = {}
-        Object.keys(logImagesTypes).forEach(comm => {
-            newCommands[comm] = {
-                tosterId: null,
-            }
-        })
-        //setTosterId(newCommands)
-        //updateLogImages(imgConfig)
-        loadLogImages(imgConfig)
-        return () => {
-            updateLogImages(imgConfig)
-        };
+        updateLogImages(imgConfig)
+        //loadLogImages(imgConfig)
+        // return () => {
+        //     updateLogImages(imgConfig)
+        // };
     }, [])
 
     // const _handleImageError = (event) => {
@@ -89,18 +83,17 @@ const CamLogger = () => {
     //     )
     //   }
 
-
     return (
         <div className={classes.container}>
             <div className={classes.viewer}>
             {
-                (commands[logImagesTypes.LOAD_IMAGE].loading || commands[logImagesTypes.LOAD_IMAGE].error || !commands[logImagesTypes.LOAD_IMAGE].data[imgConfig.type])?
-                <Spinner/>
+                (commands[logImagesTypes.LOAD_IMAGE].loading || commands[logImagesTypes.LOAD_IMAGE].error || commands[logImagesTypes.LOAD_IMAGE].data[imgConfig.type].length <= 1)?
+                <StyledSkeleton variant="rect" width={640} height={480} animation='wave' component='div'/>
                 :
                 <ImageGallery 
                     //renderItem={(item) => _myImageGalleryRenderer(item)}
                     renderPlayPauseButton={() => <button onClick={() => {updateLogImages(imgConfig)}} type="button" className="image-gallery-icon image-gallery-play-button" aria-label="Play or Pause Slideshow"><svg className="image-gallery-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></button>}
-                    items={changeLogImages? commands[logImagesTypes.LOAD_IMAGE].data.liveImageLog : commands[logImagesTypes.LOAD_IMAGE].data.camLog}
+                    items={commands[logImagesTypes.LOAD_IMAGE].data[imgConfig.type]}
                     lazyLoad 
                     thumbnailPosition='left'
                     showFullscreenButton={true} 
@@ -152,13 +145,13 @@ const CamLogger = () => {
                         >
                             <h6>Загрузить</h6>
                         </StyledButton>
-                    <div className={changeLogImages? classes.hideContainer : classes.flexContainer}>
+                    {/* <div className={changeLogImages? classes.hideContainer : classes.flexContainer}>
                         <SelectOverlay
                             value={imgConfig.cmd}
                             onChange={handleOverlay}
                             disabled={commands[logImagesTypes.LOAD_IMAGE].loading}
                         />
-                        </div>
+                    </div> */}
                     </div>
                 </div>
                 </div>

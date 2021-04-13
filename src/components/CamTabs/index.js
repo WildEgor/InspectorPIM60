@@ -114,7 +114,7 @@ export default function CamTabs(props) {
               variant="scrollable"
               aria-label="action tabs example"
             >
-                {links.map((link, i) => <Tab key={`tab${i}`} label={link.name} {...a11yProps(0)} />)}
+                {links.map((link, i) => <Tab disabled={link.isDisabled ?? false} key={`tab${i}`} label={link.name} {...a11yProps(0)} />)}
             </Tabs>
         </AppBar>
         <SwipeableViews

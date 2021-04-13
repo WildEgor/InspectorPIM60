@@ -1,5 +1,5 @@
 import { thunk, action } from 'easy-peasy';
-import {Promise as BBPromise} from 'bluebird';
+//import {Promise as BBPromise} from 'bluebird';
 import commandService from 'Services/api/commandService';
 import actionTypes from '../actionTypes';
 const {logImagesTypes, liveImagesTypes} = actionTypes
@@ -108,17 +108,17 @@ const logImagesModel = {
                 }
             )
 
-            return new BBPromise(resolve => resolve(response))
+            return new Promise(resolve => resolve(response))
         })
         .then(response => {
             const logImagesArr = []
             for (let id = 0; id < count; id++){
-                logImagesArr.push(new BBPromise(resolve => resolve(commandService.loadLogImage({id, cmd}))));
+                logImagesArr.push(commandService.loadLogImage({id, cmd}));
             }
-            return new BBPromise(resolve => resolve(logImagesArr))
+            return new Promise(resolve => resolve(logImagesArr))
         })
         .then(images => {
-            BBPromise.each(images, image => image)
+            Promise.all(images)
             .then(function(result) {
                 getStoreActions().liveImages.startStopLive(false)
                 // This will run after the last step is done

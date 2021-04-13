@@ -13,6 +13,7 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import { rgba } from 'Utils/css-utils';
 import theme from 'Style/theme';
@@ -613,6 +614,19 @@ const StyledAccordionSummary = withStyles((theme) => ({
     }
 }))(AccordionSummary)
 
+const StyledSkeleton = withStyles((theme) => ({
+    root: {},
+    wave: {
+        '&::after': {
+            background: `linear-gradient(0.25turn, ${rgba(theme.palette.primary.main, 0.3)}, ${rgba(theme.palette.secondary.main, 0.8)}, ${rgba(theme.palette.primary.main, 0.3)})`
+        }
+    },
+    withChildren: {},
+    rect: {
+        backgroundColor: theme.palette.primary.main
+    },
+}))(Skeleton)
+
 export {
     useStyles, 
     BorderLinearProgress, 
@@ -626,5 +640,6 @@ export {
     StyledSpinner,
     StyledAccordion,
     StyledAccordionSummary,
-    StyledIconButton
+    StyledIconButton,
+    StyledSkeleton
 }

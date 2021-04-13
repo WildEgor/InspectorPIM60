@@ -27,6 +27,29 @@ const hardRetry = {
   }
 }
 
+function getInt (...args){
+  const normalArray = args;
+
+  if (!normalArray.length)
+    return `/CmdChannel?gINT_${arguments[0]}`
+  
+  const params = normalArray.join('_')
+  console.log('PARAMS', params)
+  return `/CmdChannel?gINT_${params}`
+}
+
+function setInt (...args){
+  const normalArray = args;
+  console.log('normalArray', normalArray)
+  console.log('normalArray', normalArray.join('_'))
+  if (!normalArray.length)
+    return `/CmdChannel?sINT_${arguments[0]}`
+
+  const params = normalArray.join('_')
+  console.log('PARAMS', params)
+  return `/CmdChannel?sINT_${params}`
+}
+
 // **************** LogLogs ****************
 const lockLogImages = () => {
   return fetchCsv({ 
@@ -69,7 +92,7 @@ const getLiveImage = ({cmd, id, s}) => {
     url: `/LiveImage.jpg${cmd? `?${cmd}` : ''}`, 
     parse: true, 
     delay: 150, 
-    timeout: 1000, 
+    timeout: 30000, 
     params: { id, s },
     cancelToken: source.token,
     raxConfig: {
@@ -122,9 +145,9 @@ const saveToFlash = () => {
   });
 }
 
-const setCamMode = (payload) => {
+const setCamMode = (mode) => {
   return fetchCsv({ 
-    url: `/CmdChannel?sMOD_${payload.mode}`, 
+    url: `/CmdChannel?sMOD_${mode}`, 
     parse: true, 
     delay: 3000, 
     timeout: 65000,
@@ -171,7 +194,7 @@ const getAvailableTools = (id) => {
 
 const getROISize = (id) => {
   return fetchCsv({ 
-    url: `/CmdChannel?gINT_87_${id}`, 
+    url: getInt(87, id), 
     parse: true, 
     delay: 3000,  
     timeout: 30000,
@@ -182,7 +205,7 @@ const getROISize = (id) => {
 
 const setObjLocMatchThreshold = (id) => {
   return fetchCsv({ 
-    url: `/CmdChannel?sINT_32_${id}`, 
+    url: setInt(32, id), 
     parse: true, 
     delay: 3000, 
     timeout: 65000,
@@ -193,7 +216,7 @@ const setObjLocMatchThreshold = (id) => {
 
 const getObjLocMatchThreshold = () => {
   return fetchCsv({ 
-    url: `/CmdChannel?gINT_32`, 
+    url: getInt(32), 
     parse: true, 
     delay: 3000, 
     timeout: 30000,
@@ -204,7 +227,7 @@ const getObjLocMatchThreshold = () => {
 
 const setPixelCounterIntensityRange = ({id, min, max}) => {
   return fetchCsv({ 
-    url: `/CmdChannel?sINT_80_${id}_${min}_${max}`, 
+    url: setInt(80, id, min, max), 
     parse: true, 
     delay: 3000, 
     timeout: 65000,
@@ -215,7 +238,7 @@ const setPixelCounterIntensityRange = ({id, min, max}) => {
 
 const getPixelCounterIntensityRange = (id) => {
   return fetchCsv({ 
-    url: `/CmdChannel?gINT_80_${id}`, 
+    url: getInt(80, id), 
     parse: true, 
     delay: 3000, 
     timeout: 30000,
@@ -226,7 +249,7 @@ const getPixelCounterIntensityRange = (id) => {
 
 const setPixelCounterNoPixelsInRange = ({id, max, min}) => {
   return fetchCsv({ 
-    url: `/CmdChannel?sINT_81_${id}_${min}_${max}`, 
+    url: setInt(81, id, min, max), 
     parse: true, 
     delay: 3000, 
     timeout: 65000,
@@ -237,7 +260,7 @@ const setPixelCounterNoPixelsInRange = ({id, max, min}) => {
 
 const getPixelCounterNoPixelsInRange = (id) => {
   return fetchCsv({ 
-    url: `/CmdChannel?gINT_81_${id}`, 
+    url: getInt(81, id), 
     parse: true, 
     delay: 3000, 
     timeout: 30000,
@@ -248,7 +271,7 @@ const getPixelCounterNoPixelsInRange = (id) => {
 
 const setEdgePixelCounterStrength = ({id, value}) => {
   return fetchCsv({ 
-    url: `/CmdChannel?sINT_82_${id}_${value}`, 
+    url: setInt(82, id, value), 
     parse: true, 
     delay: 3000,
     timeout: 65000,
@@ -259,7 +282,7 @@ const setEdgePixelCounterStrength = ({id, value}) => {
 
 const getEdgePixelCounterStrength = (id) => {
   return fetchCsv({ 
-    url:  `/CmdChannel?gINT_82_${id}`, 
+    url:  getInt(82, id), 
     parse: true, 
     delay: 3000, 
     timeout: 30000,
@@ -270,7 +293,7 @@ const getEdgePixelCounterStrength = (id) => {
 
 const setEdgePixelCounterNoPixelsInRange = ({id, min, max}) => {
   return fetchCsv({ 
-    url:  `/CmdChannel?sINT_83_${id}_${min}_${max}`, 
+    url:  setInt(83, id, min, max), 
     parse: true, 
     delay: 3000,
     timeout: 65000, 
@@ -281,7 +304,7 @@ const setEdgePixelCounterNoPixelsInRange = ({id, min, max}) => {
 
 const getEdgePixelCounterNoPixelsInRange = (id) => {
   return fetchCsv({ 
-    url:   `/CmdChannel?gINT_83_${id}`, 
+    url: getInt(83, id), 
     parse: true, 
     delay: 3000, 
     timeout: 30000,
@@ -292,7 +315,7 @@ const getEdgePixelCounterNoPixelsInRange = (id) => {
 
 const setPatternScoreThreshold = ({id, value}) => {
   return fetchCsv({ 
-    url:   `/CmdChannel?sINT_85_${id}_${value}`, 
+    url: setInt(85, id, value), 
     parse: true, 
     delay: 3000, 
     timeout: 65000,
@@ -303,7 +326,7 @@ const setPatternScoreThreshold = ({id, value}) => {
 
 const getPatternScoreThreshold = (id) => {
   return fetchCsv({ 
-    url:   `/CmdChannel?gINT_85_${id}`, 
+    url: getInt(85, id), 
     parse: true, 
     delay: 3000, 
     timeout: 30000,
@@ -324,9 +347,9 @@ const getActiveReferenceObject = () => {
   });
 }
 
-const getReferenceObject = (payload) => {
+const getReferenceObject = (id) => {
   return fetchBlob({ 
-    url: `/getRefObject?${payload.id}`, // 0 - start 
+    url: `/getRefObject?${id}`, // 0 - start 
     parse: true, 
     delay: 1000, 
     timeout: 3000,
@@ -335,9 +358,9 @@ const getReferenceObject = (payload) => {
   });
 }
 
-const setReferenceObject = (payload) => {
+const setReferenceObject = (id) => {
   return fetchCsv({ 
-    url: `/CmdChannel?sINT_1_${payload.id}`, // 0 - start 
+    url: setInt(1, id), // 0 - start 
     parse: true, 
     delay: 3000, 
     timeout: 65000,
@@ -348,7 +371,7 @@ const setReferenceObject = (payload) => {
 
 const getNumberActiveReferenceObject = () => {
   return fetchCsv({ 
-    url: `/CmdChannel?gINT_1`, 
+    url: getInt(1), 
     parse: true, 
     delay: 3000, 
     timeout: 30000,
@@ -359,7 +382,7 @@ const getNumberActiveReferenceObject = () => {
 
 const getCountActiveReferenceObject = () => {
   return fetchCsv({ 
-    url: `/CmdChannel?gINT_2`, 
+    url: getInt(2), 
     parse: true, 
     delay: 3000, 
     timeout: 65000,
@@ -399,11 +422,3 @@ const CommandService = {
 }
 
 export default CommandService;
-
-/**
- * CommandService
-      .getCamMode()
-      .then((response) => {
-        console.log('Parsed response', response)
-      });
- */

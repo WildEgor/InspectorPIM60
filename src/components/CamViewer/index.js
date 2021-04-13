@@ -27,26 +27,13 @@ import {
     StyledAccordionSummary } from 'Style/components';
 
 const CamViewer = () => {
-
-    //const enqueueSnackbar = useStoreActions(actions => actions.notifyController.enqueueSnackbar)
-    //const closeSnackbar = useStoreActions(actions => actions.notifyController.closeSnackbar)
-    // const [displayNotify, setDosplayNotify] = useState([])
-
-    // const storeDisplayed = (id) => {
-    //     setDosplayNotify([...displayNotify, id])
-    // };
-
-    // const removeDisplayed = (id) => {
-    //     setDosplayNotify([...displayNotify.filter(key => id !== key)])
-    // };
-
     // 'Easy-peasy'
     const loadImage = useStoreActions(actions => actions.liveImages.loadImage); // Request real image
 
     const startStopLive = useStoreActions(actions => actions.liveImages.startStopLive); // Request real image
 
     const commands = useStoreState(state => state.liveImages.commands);
-    const logCommands = useStoreState(state => state.liveImages.commands);
+    //const logCommands = useStoreState(state => state.liveImages.commands);
 
     const [imgProgressValue, setImgProgressValue] = useState(0); // Image detect percent (0-100%)
     const [imgProgressColor, setImgProgressColor] = useState({ progressColor: '#FF0000' }); // Image detect progressBar color may change depends on detect percent value

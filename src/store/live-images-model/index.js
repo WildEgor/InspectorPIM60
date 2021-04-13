@@ -1,6 +1,7 @@
 import { thunk, action } from 'easy-peasy';
 import nestedObjectsUtil from 'nested-objects-util';
 import commandService from 'Services/api/commandService';
+import { handlePromise } from 'Utils/data-utils';
 import actionTypes from '../actionTypes';
 const {liveImagesTypes} = actionTypes
 
@@ -38,62 +39,102 @@ const liveImagesModel = {
         });
     }),
     loadImage: thunk(async (actions, payload, {getState}) => { 
-        // if (getState().commands[liveImagesTypes.GET_LIVE_IMAGE].loading || getState().commands[liveImagesTypes.GET_LIVE_STATISTIC].loading)
-        //     return
+        if (getState().commands[liveImagesTypes.GET_LIVE_IMAGE].loading || getState().commands[liveImagesTypes.GET_LIVE_STATISTIC].loading)
+            return
 
         const liveImageObject = { img: null, stat: null }
-        payload = { id: `ID_${new Date().getTime()}`, ...payload }; 
+        const payloadData = {...payload, id: `ID_${new Date().getTime()}`}
+        //payload = { id: `ID_${new Date().getTime()}`, ...payload }; 
 
         actions.loadImageStart({
             actionType: liveImagesTypes.GET_LIVE_IMAGE
         }); 
 
-        commandService.getLiveImage(payload)
-        .then(response => {
-            liveImageObject.img = response
+        const [liveImage, liveImageErr] = await handlePromise(commandService.getLiveImage(payloadData));      
+        if (liveImageErr){
+            actions.loadImageFail({
+                actionType: liveImagesTypes.GET_LIVE_IMAGE,
+                error: liveImageErr
+            });
+            return
+        } else {
+            liveImageObject.img = liveImage
+            console.log('LiveImage Data', liveImage)
             actions.loadImageSuccess({
                 actionType: liveImagesTypes.GET_LIVE_IMAGE, 
                 data: { img: liveImageObject.img }
             });
-            actions.loadImageStart({
-                actionType: liveImagesTypes.GET_LIVE_STATISTIC
-            });
-            return commandService.getLiveStatistic(payload)
-        })
-        .then(response => {
-            if (response){
-                console.log(response)
-                const statObj = nestedObjectsUtil.flatten(response.MESSAGE);
-                liveImageObject.stat = statObj
-                actions.loadImageSuccess({
-                    actionType: liveImagesTypes.GET_LIVE_STATISTIC, 
-                    data: { stat: statObj }
-                });
-                if (parseInt(statObj['IMAGE_DECISION'], 10) < 2)
-                    actions.processImages({
-                        actionType: liveImagesTypes.LIVE_IMAGE_FAIL,
-                        data: liveImageObject
-                    })
-            } else {
-                actions.loadImageSuccess({
-                    actionType: liveImagesTypes.GET_LIVE_STATISTIC, 
-                    data: { stat: {'СТАТИСТИКА ОТСУТСТВУЕТ!': ''} }
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error', error)
-            actions.loadImageFail({
-                actionType: liveImagesTypes.GET_LIVE_IMAGE,
-                error: error.message || error
-            });
-            actions.loadImageFail({
-                actionType: liveImagesTypes.GET_LIVE_STATISTIC,
-                error: error.message || error
-            });
+        }
 
-            //actions.loadImage(payload)
-        })
+        actions.loadImageStart({
+            actionType: liveImagesTypes.GET_LIVE_STATISTIC
+        });
+
+        const [liveImageStat, liveImageStatErr] = await handlePromise(commandService.getLiveStatistic(payloadData));
+        if (liveImageStatErr) { 
+            actions.loadImageSuccess({
+                actionType: liveImagesTypes.GET_LIVE_STATISTIC, 
+                data: { stat: {'СТАТИСТИКА ОТСУТСТВУЕТ!': ''} }
+            });
+            return
+        } else if (liveImageStat && liveImageStat['MESSAGE']){
+            liveImageObject.stat = nestedObjectsUtil.flatten(liveImageStat.MESSAGE)
+            console.log('LiveImage Stat', liveImageObject.stat)
+            actions.loadImageSuccess({
+                actionType: liveImagesTypes.GET_LIVE_STATISTIC, 
+                data: { stat: liveImageObject.stat }
+            });
+            if (liveImageObject.stat['IMAGE_DECISION'] && parseInt(liveImageObject.stat['IMAGE_DECISION'], 10) < 2)
+                actions.processImages({
+                    actionType: liveImagesTypes.LIVE_IMAGE_FAIL,
+                    data: liveImageObject
+                })
+        }
+
+        // commandService.getLiveImage(payload)
+        // .then(response => {
+        //     liveImageObject.img = response
+        //     actions.loadImageSuccess({
+        //         actionType: liveImagesTypes.GET_LIVE_IMAGE, 
+        //         data: { img: liveImageObject.img }
+        //     });
+        //     actions.loadImageStart({
+        //         actionType: liveImagesTypes.GET_LIVE_STATISTIC
+        //     });
+        //     return commandService.getLiveStatistic(payload)
+        // })
+        // .then(response => {
+        //     if (response){
+        //         console.log(response)
+        //         const statObj = nestedObjectsUtil.flatten(response.MESSAGE);
+        //         liveImageObject.stat = statObj
+        //         actions.loadImageSuccess({
+        //             actionType: liveImagesTypes.GET_LIVE_STATISTIC, 
+        //             data: { stat: statObj }
+        //         });
+        //         if (parseInt(statObj['IMAGE_DECISION'], 10) < 2)
+        //             actions.processImages({
+        //                 actionType: liveImagesTypes.LIVE_IMAGE_FAIL,
+        //                 data: liveImageObject
+        //             })
+        //     } else {
+        //         actions.loadImageSuccess({
+        //             actionType: liveImagesTypes.GET_LIVE_STATISTIC, 
+        //             data: { stat: {'СТАТИСТИКА ОТСУТСТВУЕТ!': ''} }
+        //         });
+        //     }
+        // })
+        // .catch(error => {
+        //     console.error('Error', error)
+        //     actions.loadImageFail({
+        //         actionType: liveImagesTypes.GET_LIVE_IMAGE,
+        //         error: error.message || error
+        //     });
+        //     actions.loadImageFail({
+        //         actionType: liveImagesTypes.GET_LIVE_STATISTIC,
+        //         error: error.message || error
+        //     });
+        // })
     }),
     processImages: thunk(async (actions, payload, {getState}) => {
         let statis = ''

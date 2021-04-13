@@ -1,5 +1,5 @@
 import { thunk, action } from 'easy-peasy';
-import {Promise as BBPromise} from 'bluebird';
+//import {Promise as BBPromise} from 'bluebird';
 import commandService from 'Services/api/commandService';
 import actionTypes from '../actionTypes';
 const {referenceImagesTypes} = actionTypes
@@ -74,14 +74,14 @@ const referenceImagesModel = {
 
         console.log('CUR, ALL', payload.values[0], payload.values[1]);
 
-        for (let i = 0; i < payload.values[1]; i++) {
-            const request = (i == payload.values[0])? commandService.getActiveReferenceObject() : commandService.getReferenceObject({id: i})
+        for (let id = 0; id < payload.values[1]; id++) {
+            const request = (id == payload.values[0])? commandService.getActiveReferenceObject() : commandService.getReferenceObject(id)
             //const request = commandService.getReferenceObject({id: i})
             //const getName = `/CmdChannel?gSTR_2_${i}`
             responses.images.push(request)
         }
 
-        BBPromise.all(responses.images)
+        Promise.all(responses.images)
         .then(function(responses) {
             actions.commandIsLoadingSuccess({
                 actionType: referenceImagesTypes.ACTIVE_REFERENCE_OBJECT,
@@ -108,7 +108,7 @@ const referenceImagesModel = {
             actionType: referenceImagesTypes.SET_ACTIVE_REFERENCE_OBJECT
         })
 
-        commandService.setReferenceObject({id: (payload.id)})
+        commandService.setReferenceObject(payload.id)
         .then(response => {
             actions.commandIsLoadingSuccess({
                 actionType: referenceImagesTypes.SET_ACTIVE_REFERENCE_OBJECT,

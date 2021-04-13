@@ -44,11 +44,13 @@ const CamReferenceSettings = (props) => {
         let arrayLinks = []
             for (let prop in commands[commonCommandsTypes.AVAILABLE_TOOLS].data){
                 let propName = 'Empty'
+                let isDisabled = true
                 let components = [];
                 commands[commonCommandsTypes.AVAILABLE_TOOLS].data[prop].forEach((item, i) => {
                     switch (true) {
                         case item.name.startsWith('object_locator'):
                             propName = 'Object Locator'
+                            isDisabled = false
                             components.push(
                                 <ObjectLocatorForm
                                     key={uuidv4()}
@@ -60,6 +62,7 @@ const CamReferenceSettings = (props) => {
                         break;
                         case item.name.startsWith('pixel_counter'):
                             propName = 'Pixel Counter'
+                            isDisabled = false
                             components.push(
                                 <PixelCounterForm
                                     key={uuidv4()}
@@ -71,6 +74,7 @@ const CamReferenceSettings = (props) => {
                         break;
                         case item.name.startsWith('edge_pixel_counter'):
                             propName = 'Edge Pixel Counter'
+                            isDisabled = false
                             components.push(
                                 <EdgeCounterForm
                                     key={uuidv4()}
@@ -82,6 +86,7 @@ const CamReferenceSettings = (props) => {
                         break;
                         case item.name.startsWith('pattern'):
                             propName = 'Pattern'
+                            isDisabled = false
                             components.push(
                                 <PatternForm
                                     key={uuidv4()}
@@ -91,7 +96,8 @@ const CamReferenceSettings = (props) => {
                                 />
                             )
                         break;
-                        default: 
+                        default:
+                            isDisabled = false 
                             components.push(
                                 <div><h3>Данный инструмент не найден.</h3></div>
                             )
@@ -101,7 +107,8 @@ const CamReferenceSettings = (props) => {
                 arrayLinks.push({
                     url: `camreference.html/${prop}`,
                     name: propName,
-                    component: components
+                    component: components,
+                    isDisabled
                 })
             }
         setLinks(arrayLinks)

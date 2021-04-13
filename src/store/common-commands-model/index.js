@@ -95,7 +95,7 @@ const commonCommandsModel = {
             }
         )
 
-        commandService.setCamMode({mode: payload.mode})
+        commandService.setCamMode(payload.mode)
         .then((response) => {
             actions.commandIsLoadingSuccess(
                 {

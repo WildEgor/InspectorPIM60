@@ -21,8 +21,8 @@ const PixelCounterForm = (props) => {
 
     const resetDefaultData = () => {
         reset({
-            [`PixelCounter_${uid}_IntensityRange`]: commands[commonCommandsTypes.PIXEL_COUNTER_INTENSITY_RANGE].data,
-            [`PixelCounter_${uid}_NORange`]: commands[commonCommandsTypes.PIXEL_COUNTER_NO_PIXELS_IN_RANGE].data,
+            [`${formName}_${uid}_IntensityRange`]: commands[commonCommandsTypes.PIXEL_COUNTER_INTENSITY_RANGE].data,
+            [`${formName}_${uid}_NORange`]: commands[commonCommandsTypes.PIXEL_COUNTER_NO_PIXELS_IN_RANGE].data,
         })
     }
 
@@ -32,14 +32,14 @@ const PixelCounterForm = (props) => {
 
     return (
         <div className={classes.flexContainer}> 
-            <form className={classes.flexColumnContainer} onSubmit={handleSubmit(async (data) => {
-                console.log(data)
+            <form className={classes.flexColumnContainer} onSubmit={handleSubmit((data) => {
+                console.log('setPixelCounterForm', data)
                 setPixelCounterForm({id: uid, values: [data[`${formName}_${uid}_IntensityRange`], data[`${formName}_${uid}_NORange`]].flat()})
             })}>
                 <Controller
                     name={`${formName}_${uid}_IntensityRange`}
                     control={control}
-                    defaultValue={commands[commonCommandsTypes.PIXEL_COUNTER_INTENSITY_RANGE].data ?? ""}
+                    defaultValue={commands[commonCommandsTypes.PIXEL_COUNTER_INTENSITY_RANGE].data}
                     render={(props) => (
                 <div className={classes.flexColumnContainer}>
                     <Typography id="continuous-slider" gutterBottom>
@@ -66,7 +66,7 @@ const PixelCounterForm = (props) => {
                 <Controller
                 name={`${formName}_${uid}_NORange`}
                 control={control}
-                defaultValue={commands[commonCommandsTypes.PIXEL_COUNTER_NO_PIXELS_IN_RANGE].data ?? ""}
+                defaultValue={commands[commonCommandsTypes.PIXEL_COUNTER_NO_PIXELS_IN_RANGE].data}
                 render={(props) => (
                 <div className={classes.flexColumnContainer}>
                     <Typography id="continuous-slider" gutterBottom>
