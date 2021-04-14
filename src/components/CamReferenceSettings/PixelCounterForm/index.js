@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
 import { useForm, Controller } from "react-hook-form";
 import Typography from '@material-ui/core/Typography';
-import Skeleton from '@material-ui/lab/Skeleton';
-import { useStyles, StyledSlider, StyledButton } from 'Style/components';
+import { useStyles, StyledSlider, StyledButton, StyledSkeleton } from 'Style/components';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import actionTypes from 'Store/actionTypes';
 const {commonCommandsTypes} = actionTypes
@@ -47,9 +46,7 @@ const PixelCounterForm = (props) => {
                     </Typography>
                     {
                             commands[commonCommandsTypes.PIXEL_COUNTER_INTENSITY_RANGE].loading?
-                            <Skeleton animation="wave" variant="rect">
-                                <StyledSlider/>
-                            </Skeleton>
+                            <StyledSkeleton width={620} height={50} animation="wave" variant="rect"/>
                             :
                             <StyledSlider
                                 {...props}
@@ -74,9 +71,7 @@ const PixelCounterForm = (props) => {
                     </Typography>
                         {
                             commands[commonCommandsTypes.PIXEL_COUNTER_NO_PIXELS_IN_RANGE].loading?
-                            <Skeleton animation="wave" variant="rect">
-                                <StyledSlider/>
-                            </Skeleton>
+                            <StyledSkeleton width={620} height={50} animation="wave" variant="rect"/>
                             :
                             <StyledSlider
                                 {...props}

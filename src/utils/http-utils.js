@@ -20,15 +20,16 @@ const client = axios.create({
 });
 
 client.defaults.raxConfig = { instance: client };
+rax.attach(client);
 
-const customAxios = (dynamicBaseURL) => {
-    // axios instance for making requests
-    const axiosInstance = axios.create({
-      baseURL: dynamicBaseURL
-    });
+// const customAxios = (dynamicBaseURL) => {
+//     // axios instance for making requests
+//     const axiosInstance = axios.create({
+//       baseURL: dynamicBaseURL
+//     });
   
-    return axiosInstance;
-};
+//     return axiosInstance;
+// };
 
 // const mock = new MockAdapter(client);
 
@@ -50,13 +51,11 @@ const customAxios = (dynamicBaseURL) => {
 // mock.onGet('/CmdChannel?gINT_2').reply(200, 'rgINT 2 0 3 0')
 // mock.onGet(/getRefObject\/?.*/).reply(200, 'https://www.ffonseca.com/imgs/produtos/043010_1_7115_Video_Inspector-sensor_Sick_443x281px.jpg')
 // mock.onGet(/ActiveReferenceImage.jpg\/?.*/).reply(200, 'https://www.ffonseca.com/imgs/produtos/043010_1_7115_Video_Inspector-sensor_Sick_443x281px.jpg')
-
-const interceptorId = rax.attach(client);
   
 /*
 * Request Wrapper with default success/error actions
 */
-const request = function(options) {
+const requestApi = function(options) {
     const onSuccess = function(response) {
         console.debug('Request Successful!', response);
         if (response.config.parse === true) {
@@ -65,12 +64,13 @@ const request = function(options) {
             case 'text': 
                 const parsedResponse = parseResponseCommand(response.data)
                 console.log('PARSED DATA ->>>>', parsedResponse)
-                if (parsedResponse.errorCode == 0) {
-                    response.data = parsedResponse
-                    return Promise.resolve(response.data.values || response.data.mode)
-                }
+                if (parsedResponse.errorCode == 0) 
+                //{
+                    //response.data = parsedResponse
+                    return Promise.resolve(parsedResponse.values || parsedResponse.mode)
+                //}
                 console.log('ERROR HTTP-UTILS', parsedResponse.errorCode)
-                return Promise.reject(new Error(parsedResponse.errorCode));
+                return Promise.reject(parsedResponse.errorCode);
             case 'blob':
                 try {
                     console.log('RESPONSE.DATA', response)
@@ -110,50 +110,46 @@ return client({
     .catch(onError);
 }
 
-const fetchCsv = (options) => {
-    return request({
-        method: 'GET',
-        responseType: 'text',
-        timeout: options.timeout || 3000,
-        ...options,
-        // raxConfig: {
-        //     ...options.raxConfig,
-        //     instance: client,
-        // }
-    })
-}
+// const fetchCsv = (options) => {
+//     return requestApi({
+//         method: 'GET',
+//         responseType: 'text',
+//         timeout: options.timeout || 3000,
+//         ...options,
+//         // raxConfig: {
+//         //     ...options.raxConfig,
+//         //     instance: client,
+//         // }
+//     })
+// }
 
-const fetchJson = (options) => {
-    return request({
-        method: 'GET',
-        responseType: 'json',
-        timeout: options.timeout || 3000,
-        ...options,
-        // raxConfig: {
-        //     ...options.raxConfig,
-        //     instance: client,
-        // }
-    })
-}
+// const fetchJson = (options) => {
+//     return requestApi({
+//         method: 'GET',
+//         responseType: 'json',
+//         timeout: options.timeout || 3000,
+//         ...options,
+//         // raxConfig: {
+//         //     ...options.raxConfig,
+//         //     instance: client,
+//         // }
+//     })
+// }
 
-const fetchBlob = (options) => {
-    return request({
-        method: 'GET',
-        responseType: 'blob',
-        timeout: options.timeout || 150,
-        ...options,
-        // raxConfig: {
-        //     ...options.raxConfig,
-        //     instance: client,
-        // }
-    })
-}
+// const fetchBlob = (options) => {
+//     return requestApi({
+//         method: 'GET',
+//         responseType: 'blob',
+//         timeout: options.timeout || 150,
+//         ...options,
+//         // raxConfig: {
+//         //     ...options.raxConfig,
+//         //     instance: client,
+//         // }
+//     })
+// }
 
 /*
     options => {url, delay, timeout, params}
 */
-export {
-    fetchCsv,
-    fetchJson,
-    fetchBlob
-};
+export { requestApi };

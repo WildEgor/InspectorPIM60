@@ -128,27 +128,10 @@ const useStyles = makeStyles(theme => ({
         width: props => props.viewerWidth || '640px',
         height: props => props.viewerHeight || '480px',
         backgroundColor: theme.palette.type === 'light' ? theme.palette.common.black : theme.palette.common.white,
-        // '& .image-gallery-content': {
-        //     top: '-10px'
-        // },
-        // '& .image-gallery-play-button': {
-        //     padding: '0px'
-        // },
-        '& .image-gallery-image': {
-            //maxWidth: '350px'
-        },
         '& .image-gallery': {
             background: `linear-gradient(45deg, ${theme.palette.primary.light} 30%, ${theme.palette.primary.main} 90%)`,
             width: '100%'
         },
-        '& .image-gallery-description': {
-            backgroundColor: rgba(theme.palette.primary.main, 0.8),
-            fontSize: '8px',
-            whiteSpace: 'normal',
-            maxWidth: '600px',
-            wordWrap:'break-word',
-            padding: '0'
-        }
     },
     camImage: {
         position: 'absolute',

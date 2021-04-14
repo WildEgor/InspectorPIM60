@@ -52,6 +52,7 @@ const referenceImagesModel = {
             actions.getReferenceImages({values: [currentNumberReferenceImage, countReferenceImages]})
         })
         .catch(error => {
+            console.log('ERROR update ref', error)
             actions.commandIsLoadingFail({
                 actionType: referenceImagesTypes.COUNT_ACTIVE_REFERENCE_OBJECTS,
                 error: error || error.message

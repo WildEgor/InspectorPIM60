@@ -166,30 +166,29 @@ const CamReferenceViewer = () => {
                 <Fade in={ showSaveToFlashModal }>
                     <Alert variant="filled" severity="warning" className={classes.blackText}>
                         <Typography align="center" color="primary" variant="h4">ВНИМАНИЕ!</Typography>
-                        <Typography align="center" color="primary" variant="h5">Камера будет переведена в <b>RUN MODE</b>. Сохранить настройки? </Typography>
+                        <Typography align="center" color="primary" variant="h5">Выберите действие</Typography>
                         <div className={classes.flexContainer}>
                             <StyledButton 
                                 onClick={ () => { 
-                                    setShowNestedSettings(false); 
+                                    //setShowNestedSettings(false); 
+                                    changeCamMode({mode: 1, save: true}) 
                                     setShowSaveToFlashModal(false)
-                                    changeCamMode({mode: 0, save: true}) 
                                 }
                             }>
-                                <Typography variant="h5">Сохранить и закрыть</Typography>
+                                <Typography variant="h5">Сохранить настройки</Typography>
                             </StyledButton>
-                            <StyledButton onClick={() => { 
-                                setShowSaveToFlashModal(false)
-                                setShowNestedSettings(false);  
+                            <StyledButton onClick={() => {  
                                 changeCamMode({mode: 0, save: false}) 
+                                setShowSaveToFlashModal(false)
+                                setShowNestedSettings(false)
                             }}>
-                                <Typography variant="h5">Не сохранять и закрыть</Typography>
+                                <Typography variant="h5">Выйти из настроек</Typography>
                             </StyledButton>
-                            <StyledIconButton
-                                color='secondary'
+                            <StyledButton
                                 onClick={() => setShowSaveToFlashModal(false)}
                             >
-                                <CloseSharpIcon />
-                            </StyledIconButton>
+                                <Typography variant="h5">Свернуть окно</Typography>
+                            </StyledButton>
                         </div>
                     </Alert>
                 </Fade>

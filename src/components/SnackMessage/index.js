@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useCallback } from 'react';
+import React, { useState, useEffect, forwardRef, useCallback } from 'react';
 import classnames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSnackbar, SnackbarContent } from 'notistack';
@@ -67,6 +67,14 @@ const SnackMessage = forwardRef((props, ref) => {
     const classes = useStyles({type: props.type});
     const { closeSnackbar } = useSnackbar();
     const [expanded, setExpanded] = useState(false);
+    const [currentDate, setCurrentDate] = useState()
+
+    useEffect(() => {
+        const timeElapsed = Date.now();
+        const today = new Date(timeElapsed);
+        const editedAt = today.toISOString()
+        setCurrentDate(editedAt)
+    }, [])
 
     const handleExpandClick = useCallback(() => {
         setExpanded((oldExpanded) => !oldExpanded);
@@ -97,7 +105,9 @@ const SnackMessage = forwardRef((props, ref) => {
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <Paper className={classes.collapse}>
                         <Typography gutterBottom> Код ошибки: </Typography>
-                            {props.error}
+                            {/* {props.error} */}
+                        <Typography gutterBottom> Время ошибки: </Typography>
+                            {currentDate}
                     </Paper>
                 </Collapse>
             </Card>

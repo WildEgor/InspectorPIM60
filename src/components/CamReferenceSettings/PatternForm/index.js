@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
 import { useForm, Controller } from "react-hook-form";
 import { useStoreActions, useStoreState } from 'easy-peasy';
-import Skeleton from '@material-ui/lab/Skeleton';
-import { useStyles, StyledTextField, StyledButton, StyledSlider } from 'Style/components';
+import { useStyles, StyledSkeleton, StyledButton, StyledSlider } from 'Style/components';
 import Typography from '@material-ui/core/Typography';
 import actionTypes from 'Store/actionTypes';
 const {commonCommandsTypes} = actionTypes
@@ -43,9 +42,7 @@ const PatternForm = React.memo((props) => {
                             <Typography id="continuous-slider" gutterBottom> Pattern score threshold [0, 100%]:</Typography>
                             {
                                 commands[commonCommandsTypes.PATTERN_SCORE_THRESHOLD].loading?
-                                    <Skeleton animation="wave" variant="rect">
-                                        <StyledSlider/>
-                                    </Skeleton>
+                                    <StyledSkeleton width={620} height={50} animation="wave" variant="rect"/>
                                     :
                                     <StyledSlider
                                         {...props}

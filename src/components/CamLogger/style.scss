@@ -1,5 +1,5 @@
-$ig-small-screen: 639px !default;
-$ig-xsmall-screen: 400px !default;
+$ig-small-screen: 640px !default;
+$ig-xsmall-screen: 480px !default;
 $ig-white: #fff !default;
 $ig-black: #000 !default;
 $ig-blue: #337ab7 !default;
@@ -223,7 +223,7 @@ $ig-transparent: rgba(0, 0, 0, 0) !default;
 
     @media (max-width: $ig-small-screen) {
       bottom: 45px;
-      font-size: .8em;
+      font-size: 0.7em;
       padding: 8px 15px;
     }
 
@@ -416,7 +416,7 @@ $ig-transparent: rgba(0, 0, 0, 0) !default;
   z-index: 4;
 
   @media(max-width: $ig-small-screen) {
-    font-size: .8em;
+    font-size: 1em;
     padding: 5px 10px;
   }
 }

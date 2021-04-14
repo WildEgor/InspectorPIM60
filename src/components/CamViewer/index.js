@@ -15,7 +15,7 @@ import Notifier from 'Components/Notifier';
 import SelectOverlay from 'Components/SelectOverlay';
 
 import actionTypes from 'Store/actionTypes';
-const {liveImagesTypes, logImagesTypes} = actionTypes
+const {liveImagesTypes, logImagesTypes, commonCommandsTypes} = actionTypes
 
 import {
     useStyles, 
@@ -30,10 +30,13 @@ const CamViewer = () => {
     // 'Easy-peasy'
     const loadImage = useStoreActions(actions => actions.liveImages.loadImage); // Request real image
 
-    const startStopLive = useStoreActions(actions => actions.liveImages.startStopLive); // Request real image
+    const startStopLive = useStoreActions(actions => actions.liveImages.startStopLive);
+    const getCamMode = useStoreActions(actions => actions.commonCommands.getCamMode);
+    const setRefreshRate = useStoreActions(actions => actions.liveImages.setRefreshRate);
 
     const commands = useStoreState(state => state.liveImages.commands);
     //const logCommands = useStoreState(state => state.liveImages.commands);
+    const commonCommands = useStoreState(state => state.commonCommands.commands);
 
     const [imgProgressValue, setImgProgressValue] = useState(0); // Image detect percent (0-100%)
     const [imgProgressColor, setImgProgressColor] = useState({ progressColor: '#FF0000' }); // Image detect progressBar color may change depends on detect percent value
@@ -46,8 +49,6 @@ const CamViewer = () => {
     const [imgStat, setImgStat] = useState(''); // Statistic from image
 
     const classes = useStyles({ viewerWidth: '640px', viewerHeight: '430px', progressColor: imgProgressColor.progressColor }); // Global style object
-
-    const [refreshTime, setRefreshTime] = useState(150); // Default request rate (150 ms)
      
     const [errorRefreshTime, setErrorRefreshTime] = useState(false); // Entered wrong refresh time
 
@@ -55,7 +56,8 @@ const CamViewer = () => {
     const [timerOn, setTimerOn] = useState(commands[liveImagesTypes.START_STOP_LIVE] && commands[liveImagesTypes.START_STOP_LIVE].data); // Timer used for make repeat request
     //const {reset} = useTimeout(() => {loadImage(imgConfig)}, refreshTime, timerOn); // Reset timer
 
-    useInterval(() => { loadImage(imgConfig) }, timerOn ? refreshTime : null)
+    useInterval(() => { loadImage(imgConfig) }, timerOn ? commands[liveImagesTypes.REFRESH_INTERVAL].data : null)
+    const int = useInterval(() => { getCamMode() }, timerOn ? 3000 : null)
 
     // Parse flat object
     const parseStatistic = stat => {
@@ -71,29 +73,35 @@ const CamViewer = () => {
 
         return (
             <div>
-                <h6>Статистика рецепта:</h6>
+                <Typography variant='h5'>Статистика рецепта:</Typography>
                 <hr/>
                 <table>
                     <tbody>
                         {tr}
                     </tbody>
                 </table>
+                {
+                    commonCommands[commonCommandsTypes.CAM_MODE].data? 
+                    <>
+                        <Typography className={classes[commonCommands[commonCommandsTypes.CAM_MODE].data.mode == 1? 'warningColorText' : 'successColorText']} variant="h4">
+                            Текущий режим - {commonCommands[commonCommandsTypes.CAM_MODE].data.mode == 1? 'EDIT MODE' : 'RUN MODE'}
+                        </Typography>
+                        {
+                            commonCommands[commonCommandsTypes.SAVE_TO_FLASH].loading && <Typography className={classes['warningColorText']} variant="h4">Сохранение...</Typography>
+                        }
+                    </>
+                    : null
+                }
             </div>
         )
     }
 
-    // Start/Stop(Reset) timer
     useEffect(() => {
-        setTimerOn(commands[liveImagesTypes.START_STOP_LIVE].data)
-        return () => {
-            setTimerOn(false)
-        };
-    }, []);
+        setRefreshRate(150)
+    }, [])
 
     useEffect(() => {
-        if (commands[liveImagesTypes.START_STOP_LIVE])
-            setTimerOn(!commands[liveImagesTypes.START_STOP_LIVE].data)
-        
+        setTimerOn(!commands[liveImagesTypes.START_STOP_LIVE].data)
     }, [commands[liveImagesTypes.START_STOP_LIVE].data])
 
     useEffect(() => {
@@ -152,7 +160,7 @@ const CamViewer = () => {
                         <Typography className={classes.heading}>Дополнительные настройки</Typography>
                 </StyledAccordionSummary>
                 <AccordionDetails>
-                    <form className={classes.flexContainer} onSubmit={handleSubmit((e) => setRefreshTime(e.refreshtime))}>
+                    <form className={classes.flexContainer} onSubmit={handleSubmit((e) => setRefreshRate(e.refreshtime))}>
                         <FormControl fullWidth className={classes.margin} variant="outlined" color="secondary" size="small">
                             <Controller
                                 name="refreshtime"

@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react'
 import { useForm, Controller } from "react-hook-form";
-import Skeleton from '@material-ui/lab/Skeleton';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import Typography from '@material-ui/core/Typography';
 import actionTypes from 'Store/actionTypes';
 const {commonCommandsTypes} = actionTypes
 
-import { useStyles, StyledSlider, StyledButton } from 'Style/components';
+import { useStyles, StyledSlider, StyledButton, StyledSkeleton } from 'Style/components';
 
 const EdgeCounterForm = (props) => {
     const commands = useStoreState(state => state.commonCommands.commands)
@@ -49,9 +48,7 @@ const EdgeCounterForm = (props) => {
                             <Typography id="continuous-slider" gutterBottom> Edge counter strength [0, 100%]:</Typography>
                             {
                                 commands[commonCommandsTypes.EDGE_PIXEL_COUNTER_STRENGTH].loading?
-                                    <Skeleton animation="wave" variant="rect">
-                                        <StyledSlider/>
-                                    </Skeleton>
+                                    <StyledSkeleton width={620} height={50} animation="wave" variant="rect"/>
                                     :
                                     <StyledSlider
                                         {...props}
@@ -77,9 +74,7 @@ const EdgeCounterForm = (props) => {
                     {
                         commands[commonCommandsTypes.EDGE_PIXEL_COUNTER_NO_PIXELS_IN_RANGE].loading 
                         ?
-                        <Skeleton animation="wave" variant="rect">
-                            <StyledSlider/>
-                        </Skeleton>
+                        <StyledSkeleton width={620} height={50} animation="wave" variant="rect"/>
                         :
                         <StyledSlider
                             {...props}

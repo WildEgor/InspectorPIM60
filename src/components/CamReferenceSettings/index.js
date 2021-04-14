@@ -38,8 +38,6 @@ const CamReferenceSettings = (props) => {
         ]
     )
 
-    const [disabledTabs, setDisabledTabs] = useState(false)
-
     const checkCommands = () => {
         let arrayLinks = []
             for (let prop in commands[commonCommandsTypes.AVAILABLE_TOOLS].data){
@@ -117,7 +115,7 @@ const CamReferenceSettings = (props) => {
     useEffect(() => {
         getAvailableTools(uid)
         .then(() => {
-            changeCamMode({mode: 1})
+            changeCamMode({mode: 1, save: false})
         })
         return () => {
             //changeCamMode({mode: 0})

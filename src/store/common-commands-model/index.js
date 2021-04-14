@@ -1,5 +1,6 @@
 import { thunk, action } from 'easy-peasy';
 import commandService from 'Services/api/commandService';
+import { handlePromise } from 'Utils/data-utils';
 import actionTypes from '../actionTypes';
 const {commonCommandsTypes} = actionTypes
 
@@ -19,10 +20,12 @@ const commonCommandsModel = {
     initCommands: action((state, payload) => {
         state.commands = {...state.commands, ...payload}
     }),
+    commandDecision: action((state, payload) => {
+        state.commands = {...state.commands, [payload.actionType]: { data: payload.data, error: payload.error, loading: payload.loading } }
+    }),
     commandIsLoadingStart: action((state, payload) => {
         console.log('START COMMAND', payload.actionType)
-        state.isLoading = true
-        state.isError = false
+
         state.commands = {...state.commands, [payload.actionType]: { ...state.commands[payload.actionType], error: false, loading: true } }
     }),
     commandIsLoadingSuccess: action((state, payload) => {
@@ -39,122 +42,85 @@ const commonCommandsModel = {
         state.isError = true
         state.commands = {...state.commands, [payload.actionType]: { data: payload.data, error: payload.error, loading: false } }
     }),
-    saveToFlash: thunk(async actions => {
-        try {
-            actions.commandIsLoadingStart({
-                actionType: commonCommandsTypes.SAVE_TO_FLASH
-            })
-            const response = await commandService.saveToFlash()
-            actions.commandIsLoadingSuccess({
-                actionType: commonCommandsTypes.SAVE_TO_FLASH,
-                data: true
-            })
-        } catch (error) {
-            console.error(error);
-            actions.commandIsLoadingFail({
-                actionType: commonCommandsTypes.SAVE_TO_FLASH,
-                error: error || error.message
-            })
-        } finally {
-            console.log('We do cleanup here');
-        }
+    saveToFlash: thunk(async (actions, payload, {getState} )=> {
+        actions.commandDecision({
+            actionType: commonCommandsTypes.SAVE_TO_FLASH,
+            ...getState().commands[commonCommandsTypes.SAVE_TO_FLASH],
+            loading: !getState().commands[commonCommandsTypes.SAVE_TO_FLASH].loading
+        })
 
-        //actions.commandIsLoadingSuccess()
+        const [saveToFlashData, saveToFlashError] = await handlePromise(commandService.saveToFlash());   
+
+        actions.commandDecision({
+            actionType: commonCommandsTypes.SAVE_TO_FLASH,
+            loading: false,
+            data: true,
+            error: saveToFlashError
+        })
     }),
     getCamStatus: thunk(async (actions, payload, {getState}) => {
-        actions.commandIsLoadingStart()
-        commandService.getCamStatus()
-        .then((response) => {
-            console.log('GetCamStatus done', response)
-            actions.commandIsLoadingSuccess(
-                {
-                    ...payload,
-                    actionType: commonCommandsTypes.GET_CAM_STATUS, 
-                    data: true
-                }
-            )
-        })
-        .catch(error => {
-            console.debug(error);
-            actions.commandIsLoadingFail(
-                {
-                    ...payload,
-                    actionType: commonCommandsTypes.GET_CAM_STATUS, 
-                    error: error || error.message
-                }
-            )
-        }); 
+
     }),
     changeCamMode: thunk(async (actions, payload, {getState}) => {
-        if (payload.mode == 0 && payload.save)
-            actions.saveToFlash()
-
-        actions.commandIsLoadingStart(
-            {
+        if (!payload.save){
+            
+            actions.commandDecision({
                 actionType: commonCommandsTypes.CAM_MODE, 
-            }
-        )
+                ...getState().commands[commonCommandsTypes.CAM_MODE],
+                loading: true,
+            }) 
 
-        commandService.setCamMode(payload.mode)
-        .then((response) => {
-            actions.commandIsLoadingSuccess(
-                {
-                    actionType: commonCommandsTypes.CAM_MODE, 
-                    data: {mode: payload.mode}
-                }
-            )
+            const [camModeData, camModeDataError] = await handlePromise(commandService.setCamMode(payload.mode));
 
-        })
-        .catch(error => {
-            console.debug(error);
-            actions.commandIsLoadingFail(
-                {
-                    actionType: commonCommandsTypes.CAM_MODE, 
-                    error: error || error.message
-                }
-            )
-        });
+            actions.commandDecision({
+                actionType: commonCommandsTypes.CAM_MODE, 
+                loading: false,
+                error: camModeDataError || null,
+                data: camModeData
+            })
+        } else if (payload.mode == 1 && payload.save) {
+            actions.saveToFlash()
+        }   
     }),
-    getCamMode: thunk(async actions => {
-        actions.commandIsLoadingStart(
-            actions.commandIsLoadingStart(
-                {
-                    actionType: commonCommandsTypes.CAM_MODE, 
-                }
-            )
-        )
-        commandService.getCamMode()
-        .then((response) => {
-            console.log('CAM MODE', response)
-            actions.commandIsLoadingSuccess(
-                {
-                    actionType: commonCommandsTypes.CAM_MODE, 
-                    data: {mode: response}
-                }
-            )
+    getCamMode: thunk(async (actions, payload, { getState, getStoreActions }) => {
+        actions.commandDecision({
+            actionType: commonCommandsTypes.CAM_MODE, 
+            ...getState().commands[commonCommandsTypes.CAM_MODE],
+            loading: true,
+        }) 
+
+        const [camModeData, camModeDataError] = await handlePromise(commandService.getCamMode());
+        console.log('GET CAM MODE', camModeData, camModeDataError)
+
+        actions.commandDecision({
+            actionType: commonCommandsTypes.CAM_MODE, 
+            loading: false,
+            error: camModeDataError || null,
+            data: { mode: camModeData }
         })
-        .catch(error => {
-            console.debug(error);
-            actions.commandIsLoadingFail(
-                {
-                    actionType: commonCommandsTypes.CAM_MODE, 
-                    error: error || error.message
-                }
-            )
-        });
     }),
     setCamMode: action((state, payload) => {
         state.camMode = payload
     }),
     getAvailableTools: thunk(async (actions, payload, {getState}) => {
-        actions.commandIsLoadingStart(
-            {
-                actionType: commonCommandsTypes.AVAILABLE_TOOLS, 
-            }
-        )
-        commandService.getAvailableTools(payload)
-        .then(response => {
-            const tools = ["Object Locator", ...response].map((tool, i) => {
+        actions.commandDecision({
+            actionType: commonCommandsTypes.AVAILABLE_TOOLS, 
+            ...getState().commands[commonCommandsTypes.AVAILABLE_TOOLS],
+            loading: true,
+        }) 
+
+        const [availableToolsData, availableToolsDataError] = await handlePromise(commandService.getAvailableTools(payload));
+
+        let tools = ["Object Locator"]
+        let toolsState = {
+            object_locator: [],
+            pixel_counter: [],
+            edge_pixel_counter: [],
+            pattern: []
+        }
+
+        if (availableToolsData) {
+            tools = [...tools, ...availableToolsData].map((tool, i) => {
                 const name = tool.toLowerCase().replace(/ /g, "_")
                 let id = i
                 if (!name.startsWith('object_locator'))
@@ -162,7 +128,7 @@ const commonCommandsModel = {
                 return {id: id, name: name};
             }) // "Object Locator" -> "object_locator"
 
-            const toolsState = {
+            toolsState = {
                 object_locator: [],
                 pixel_counter: [],
                 edge_pixel_counter: [],
@@ -185,22 +151,70 @@ const commonCommandsModel = {
                     break;
                 } 
             })
+        }
 
-            actions.commandIsLoadingSuccess(
-                {
-                    actionType: commonCommandsTypes.AVAILABLE_TOOLS, 
-                    data: toolsState
-                }
-            )
+        actions.commandDecision({
+            actionType: commonCommandsTypes.AVAILABLE_TOOLS, 
+            loading: false,
+            error: availableToolsDataError || null,
+            data: toolsState
         })
-        .catch(error => {
-            actions.commandIsLoadingFail(
-                {
-                    actionType: commonCommandsTypes.AVAILABLE_TOOLS, 
-                    error: error || error.message
-                }
-            )
-        })
+
+
+        // actions.commandIsLoadingStart(
+        //     {
+        //         actionType: commonCommandsTypes.AVAILABLE_TOOLS, 
+        //     }
+        // )
+        // commandService.getAvailableTools(payload)
+        // .then(response => {
+        //     const tools = ["Object Locator", ...response].map((tool, i) => {
+        //         const name = tool.toLowerCase().replace(/ /g, "_")
+        //         let id = i
+        //         if (!name.startsWith('object_locator'))
+        //             id = id - 1
+        //         return {id: id, name: name};
+        //     }) // "Object Locator" -> "object_locator"
+
+        //     const toolsState = {
+        //         object_locator: [],
+        //         pixel_counter: [],
+        //         edge_pixel_counter: [],
+        //         pattern: []
+        //     }
+
+        //     tools.forEach(item => {
+        //         switch (true) {
+        //             case item.name.startsWith('object_locator'):
+        //                 toolsState['object_locator'].push(item)
+        //             break;
+        //             case item.name.startsWith('pixel_counter'):
+        //                 toolsState['pixel_counter'].push(item)
+        //             break;
+        //             case item.name.startsWith('edge_pixel_counter'):
+        //                 toolsState['edge_pixel_counter'].push(item)
+        //             break;
+        //             case item.name.startsWith('pattern'):
+        //                 toolsState['pattern'].push(item)
+        //             break;
+        //         } 
+        //     })
+
+        //     actions.commandIsLoadingSuccess(
+        //         {
+        //             actionType: commonCommandsTypes.AVAILABLE_TOOLS, 
+        //             data: toolsState
+        //         }
+        //     )
+        // })
+        // .catch(error => {
+        //     actions.commandIsLoadingFail(
+        //         {
+        //             actionType: commonCommandsTypes.AVAILABLE_TOOLS, 
+        //             error: error || error.message
+        //         }
+        //     )
+        // })
     }),
     setObjLocMatchThreshold:  thunk(async (actions, payload) => {
         actions.commandIsLoadingStart(
