@@ -10,9 +10,9 @@ Todo list:
  - [x] Show logged images with timestamp (inner logger and prog);
  - [x] Ability to change reference images and some tools settings.
 
-** Instance info **
+**Instance info**
 
-** Available commands: **
+**Available commands:**
 
 | Command | Description |
 | --- | --- |
@@ -26,7 +26,7 @@ Todo list:
 | `gRES` | Retrieve the latest available Ethernet Result Output string |
 | `gSTAT` | Retrieve the latest statistics from the device |
 
-** Available response: **
+**Available response:**
 
 | Response | Description |
 | --- | --- |
