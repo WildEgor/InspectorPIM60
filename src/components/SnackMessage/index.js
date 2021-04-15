@@ -105,7 +105,7 @@ const SnackMessage = forwardRef((props, ref) => {
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <Paper className={classes.collapse}>
                         <Typography gutterBottom> Код ошибки: </Typography>
-                            {/* {props.error} */}
+                            {props.error || 'Error'}
                         <Typography gutterBottom> Время ошибки: </Typography>
                             {currentDate}
                     </Paper>

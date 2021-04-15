@@ -1,5 +1,4 @@
 import { thunk, action } from 'easy-peasy';
-//import {Promise as BBPromise} from 'bluebird';
 import commandService from 'Services/api/commandService';
 import actionTypes from '../actionTypes';
 const {logImagesTypes, liveImagesTypes} = actionTypes
@@ -52,9 +51,9 @@ const logImagesModel = {
         actions._loadLogImages({...payload, action: meta});
     }),
     checkLockUnlock: thunk(async (actions, payload) => {
-        const { action } = payload
-        console.log('META', action.key !== 'loadLogImages')
-        if (action.key !== 'loadLogImages') {
+        //const { action } = payload
+        //console.log('META', action.key !== 'loadLogImages')
+        //if (action.key !== 'loadLogImages') {
             actions.commandIsLoadingStart(
                 {
                     actionType: logImagesTypes.UNLOCK_LOG
@@ -78,7 +77,7 @@ const logImagesModel = {
                     }
                 )
             })
-        }
+        //}
     }),
     _loadLogImages: thunk(async (actions, payload, {getStoreState, getStoreActions}) => {
         const { count, cmd, size, type, action } = payload

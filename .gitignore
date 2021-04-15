@@ -2,8 +2,8 @@
 node_modules
 
 # production
-build
-bundle.zip
+# build
+# bundle.zip
 
 # misc
 .DS_Store

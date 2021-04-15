@@ -1,5 +1,4 @@
 import { thunk, action } from 'easy-peasy';
-//import {Promise as BBPromise} from 'bluebird';
 import commandService from 'Services/api/commandService';
 import actionTypes from '../actionTypes';
 const {referenceImagesTypes} = actionTypes

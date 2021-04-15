@@ -25,21 +25,16 @@ const commonCommandsModel = {
     }),
     commandIsLoadingStart: action((state, payload) => {
         console.log('START COMMAND', payload.actionType)
-
         state.commands = {...state.commands, [payload.actionType]: { ...state.commands[payload.actionType], error: false, loading: true } }
     }),
     commandIsLoadingSuccess: action((state, payload) => {
         console.log('SUCCESS COMMAND', payload.actionType)
         console.log('DATA', payload.data)
-        state.isLoading = false
-        state.isError = false
         state.commands = {...state.commands, [payload.actionType]: { data: payload.data, error: null, loading: false } }
     }),
     commandIsLoadingFail: action((state, payload) => {
         console.log('FAIL COMMAND', payload.actionType)
         console.error('ERROR', payload.error)
-        state.isLoading = false
-        state.isError = true
         state.commands = {...state.commands, [payload.actionType]: { data: payload.data, error: payload.error, loading: false } }
     }),
     saveToFlash: thunk(async (actions, payload, {getState} )=> {
@@ -298,7 +293,7 @@ const commonCommandsModel = {
                 actions.commandIsLoadingFail(
                     {
                         actionType: commonCommandsTypes.ROI_SIZE, 
-                        error: 'ROISize < 0'
+                        error: new Error('ROISize < 0')
                     }
                 )
             }

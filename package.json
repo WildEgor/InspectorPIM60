@@ -69,7 +69,6 @@
     "axios": "^0.21.1",
     "axios-delay": "^1.0.0-rc6",
     "axios-mock-adapter": "^1.19.0",
-    "bluebird": "^3.7.2",
     "core-js": "^3.8.2",
     "d3-dsv": "^2.0.0",
     "easy-peasy": "^5.0.3",

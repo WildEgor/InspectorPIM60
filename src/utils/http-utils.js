@@ -3,15 +3,15 @@ import * as rax from 'retry-axios';
 import delayAdapterEnhancer from 'axios-delay';
 import { parseResponseCommand } from './data-utils';
 import config from '../config';
-import MockAdapter from "axios-mock-adapter";
+//import MockAdapter from "axios-mock-adapter";
 
-const baseURL = new URL(config.BASE_URL);
+const baseURL = (new URL(config.BASE_URL)).origin;
 
 /**
 * Create an Axios Client with defaults
 */
 const client = axios.create({ 
-    baseURL: baseURL.origin, 
+    baseURL, 
     adapter: delayAdapterEnhancer(axios.defaults.adapter),
     // headers: {
     //     'Access-Control-Allow-Origin': '*',
@@ -41,7 +41,7 @@ rax.attach(client);
 // mock.onGet(/ImageResult\/?.*/).reply(200, {MESSAGE: {MESSAGE_SIZE: 1231, IMAGE_DECISION: 1}})
 // mock.onGet(/LogImage.jpg\/?.*/).reply(200, 'https://www.ffonseca.com/imgs/produtos/043010_1_7115_Video_Inspector-sensor_Sick_443x281px.jpg')
 
-// mock.onGet('/CmdChannel?gMOD').reply(200, 'rgMOD 0 0 0')
+// mock.onGet('/CmdChannel?gMOD').reply(200, 'rgMOD 8100 Operation is not allowed in current mode')
 // mock.onGet('/CmdChannel?sMOD_1').reply(200, 'rsMOD 0 0')
 // mock.onGet('/CmdChannel?sMOD_0').reply(200, 'rsMOD 0 0')
 // mock.onGet('/CmdChannel?aACT_1').reply(200, 'raACT 1 0 0')
@@ -65,17 +65,14 @@ const requestApi = function(options) {
                 const parsedResponse = parseResponseCommand(response.data)
                 console.log('PARSED DATA ->>>>', parsedResponse)
                 if (parsedResponse.errorCode == 0) 
-                //{
-                    //response.data = parsedResponse
                     return Promise.resolve(parsedResponse.values || parsedResponse.mode)
-                //}
-                console.log('ERROR HTTP-UTILS', parsedResponse.errorCode)
-                return Promise.reject(parsedResponse.errorCode);
+                console.log('ERROR HTTP-UTILS', config.CAMERRORS[parsedResponse.errorCode])
+                return Promise.reject(`${parsedResponse.errorCode} : ${config.CAMERRORS[parsedResponse.errorCode]}`);
             case 'blob':
                 try {
                     console.log('RESPONSE.DATA', response)
-                    const blobData = URL.createObjectURL(response.data)
-                    //const blobData = response.data
+                    //const blobData = URL.createObjectURL(response.data)
+                    const blobData = response.data
                     return Promise.resolve(blobData)
                 } catch (error) {
                     console.log('ERROR HTTP-UTILS', error)

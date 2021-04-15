@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import CamReferenceViewer from 'Components/CamReferenceViewer';
 import { useStoreActions, useStoreRehydrated  } from 'easy-peasy';
 import Spinner from 'Components/Spinner';
-import {Promise as BBPromise} from 'bluebird';
+//import {Promise as BBPromise} from 'bluebird';
 
 function CamReferencePage (){ 
     //let isRehydrated = useStoreRehydrated();
@@ -12,10 +12,7 @@ function CamReferencePage (){
 
     useEffect(() => {
         //isRehydrated = false
-        BBPromise.each([setInitialCommandsStateViewer(), setInitialCommandsStateSettings()], (item) => {
-            //isRehydrated = false
-            return item
-        })
+        Promise.all([setInitialCommandsStateViewer(), setInitialCommandsStateSettings()])
         .then(() => {
             //isRehydrated = true
             setIsRehydrated(true)

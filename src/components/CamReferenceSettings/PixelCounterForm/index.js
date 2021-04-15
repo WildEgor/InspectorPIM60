@@ -109,7 +109,7 @@ const PixelCounterForm = (props) => {
                         commands[commonCommandsTypes.PIXEL_COUNTER_NO_PIXELS_IN_RANGE].loading
                         || commands[commonCommandsTypes.PIXEL_COUNTER_INTENSITY_RANGE].loading
                     }
-                > Попробовать снова </StyledButton>
+                > Запросить значения </StyledButton>
                 <StyledButton
                     onClick={() => {resetDefaultData()}}
                     type='reset'

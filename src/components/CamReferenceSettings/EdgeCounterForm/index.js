@@ -101,7 +101,8 @@ const EdgeCounterForm = (props) => {
                         (commands[commonCommandsTypes.ROI_SIZE].loading
                         || commands[commonCommandsTypes.EDGE_PIXEL_COUNTER_STRENGTH].loading
                         || commands[commonCommandsTypes.EDGE_PIXEL_COUNTER_NO_PIXELS_IN_RANGE].loading
-                        || !!commands[commonCommandsTypes.EDGE_PIXEL_COUNTER_NO_PIXELS_IN_RANGE].error)
+                        || !!commands[commonCommandsTypes.EDGE_PIXEL_COUNTER_NO_PIXELS_IN_RANGE].error
+                        || !!commands[commonCommandsTypes.ROI_SIZE].error)
                     }
                 > Применить </StyledButton>
                 <StyledButton
@@ -112,7 +113,7 @@ const EdgeCounterForm = (props) => {
                         || commands[commonCommandsTypes.EDGE_PIXEL_COUNTER_STRENGTH].loading
                         || commands[commonCommandsTypes.EDGE_PIXEL_COUNTER_NO_PIXELS_IN_RANGE].loading)
                     }
-                > Попробовать снова </StyledButton>
+                > Запросить значения </StyledButton>
                 <StyledButton
                     onClick={() => resetDefaultData()}
                     type='reset'

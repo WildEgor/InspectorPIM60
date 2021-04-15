@@ -66,7 +66,7 @@ const PatternForm = React.memo((props) => {
                         onClick={() => getPatternScoreThreshold({id: uid}).then(() => onUpdate())}
                         type='reset'
                         disabled={commands[commonCommandsTypes.PATTERN_SCORE_THRESHOLD].loading}
-                    > Попробовать снова </StyledButton>
+                    > Запросить значения </StyledButton>
                     <StyledButton
                         onClick={() => resetDefaultData()}
                         type='reset'

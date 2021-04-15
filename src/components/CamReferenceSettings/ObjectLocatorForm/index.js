@@ -100,7 +100,7 @@ const ObjectLocatorForm = ((props) => {
                         disabled={commands[commonCommandsTypes.OBJECT_MATCH_THRESHOLD].loading}
                         onClick={() => getObjLocMatchThreshold().then(() => onUpdate())}
                         type='reset'
-                    > Попробовать снова </StyledButton>
+                    > Запросить значения </StyledButton>
                     <StyledButton
                         onClick={() => resetDefaultData()}
                         type='reset'
