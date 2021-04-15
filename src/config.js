@@ -43,5 +43,3 @@ const config = {
 };
 
 export default config
-
-//rimraf node_modules
