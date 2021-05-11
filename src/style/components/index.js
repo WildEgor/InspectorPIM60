@@ -14,6 +14,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Skeleton from '@material-ui/lab/Skeleton';
+import Tab from '@material-ui/core/Tab';
 
 import { rgba } from 'Utils/css-utils';
 import theme from 'Style/theme';
@@ -62,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     },
     flexContainer: {
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         width: '98%',
         maxWidth: '640px',
         padding: '5px 5px',
@@ -74,7 +75,7 @@ const useStyles = makeStyles(theme => ({
     flexColumnContainer: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         width: '100%',
         padding: '5px 5px'
     },
@@ -205,6 +206,16 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'center',
     },
 }));
+
+const StyledTab = withStyles(theme => ({
+    root: {
+        backgroundColor: theme.palette.secondary.main,
+    },
+    selected: {
+        color: `${theme.palette.common.white}`,
+        backgroundColor: rgba(theme.palette.primary.main, 0.3),
+    },
+}))(Tab);
 
 const StyledIconButton = withStyles((theme) => ({
     root: {
@@ -624,5 +635,6 @@ export {
     StyledAccordion,
     StyledAccordionSummary,
     StyledIconButton,
-    StyledSkeleton
+    StyledSkeleton,
+    StyledTab
 }

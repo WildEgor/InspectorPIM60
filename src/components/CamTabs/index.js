@@ -4,13 +4,12 @@ import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+// import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
-import { green } from '@material-ui/core/colors';
 import Box from '@material-ui/core/Box';
 
 import FormControl from '@material-ui/core/FormControl';
-import {StyledSelector} from 'Style/components';
+import {StyledSelector, StyledTab} from 'Style/components';
 import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles((theme) => ({
@@ -31,18 +30,10 @@ const useStyles = makeStyles((theme) => ({
   box: {
     padding: '0px'
   },
-  tab: {
-    root: {
-      backgroundColor: theme.palette.secondary.main,
-    }
-  },
-  fabGreen: {
-    color: theme.palette.common.white,
-    backgroundColor: green[500],
-    '&:hover': {
-      backgroundColor: green[600],
-    },
-  },
+  indicator: {
+    backgroundColor: '#fff',
+    height: '3px'
+  }
 }));
 
 function TabPanel(props) {
@@ -99,22 +90,21 @@ export default function CamTabs(props) {
         setTabValue(index);
     };
 
-    React.useEffect(() => {
-
-    }, [componentNumber])
-
     return (
       <div className={classes.root}>
         <AppBar position="static" color="secondary">
             <Tabs
               value={tabValue}
               onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
+              // indicatorColor="primary"
+              classes={{
+                indicator: classes.indicator
+              }}
+              // textColor="primary"
               variant="scrollable"
               aria-label="action tabs example"
             >
-                {links.map((link, i) => <Tab disabled={link.isDisabled ?? false} key={`tab${i}`} label={link.name} {...a11yProps(0)} />)}
+                {links.map((link, i) => <StyledTab disabled={link.isDisabled ?? false} key={`tab${i}`} label={link.name} {...a11yProps(0)} />)}
             </Tabs>
         </AppBar>
         <SwipeableViews

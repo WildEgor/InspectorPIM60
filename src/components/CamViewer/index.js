@@ -73,13 +73,6 @@ const CamViewer = () => {
 
         return (
             <div>
-                <Typography variant='h5'>Статистика рецепта:</Typography>
-                <hr/>
-                <table>
-                    <tbody>
-                        {tr}
-                    </tbody>
-                </table>
                 {
                     commonCommands[commonCommandsTypes.CAM_MODE].data? 
                     <>
@@ -87,11 +80,18 @@ const CamViewer = () => {
                             Текущий режим - {commonCommands[commonCommandsTypes.CAM_MODE].data.mode == 1? 'EDIT MODE' : 'RUN MODE'}
                         </Typography>
                         {
-                            commonCommands[commonCommandsTypes.SAVE_TO_FLASH].loading && <Typography className={classes['warningColorText']} variant="h4">Сохранение...</Typography>
+                            commonCommands[commonCommandsTypes.SAVE_TO_FLASH].loading && <Typography className={classes['warningColorText']} variant="h4">Идет сохранение...</Typography>
                         }
                     </>
                     : null
                 }
+                <Typography variant='h5'>Статистика рецепта:</Typography>
+                <hr/>
+                <table>
+                    <tbody>
+                        {tr}
+                    </tbody>
+                </table>
             </div>
         )
     }
@@ -209,7 +209,7 @@ const CamViewer = () => {
                             value={imgConfig.cmd}
                             onChange={handleOverlay}
                             classes={classes}
-                            disabled={!commands[liveImagesTypes.START_STOP_LIVE].data}
+                            //disabled={!commands[liveImagesTypes.START_STOP_LIVE].data}
                         />
                     </div>
                 </AccordionDetails>

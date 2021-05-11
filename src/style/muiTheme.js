@@ -1,14 +1,15 @@
 import { createMuiTheme }  from '@material-ui/core/styles'
-import theme from './theme';
+// import theme from './theme';
 
-const muiTheme = createMuiTheme({
+const muiTheme = createMuiTheme(
+  {
     palette: {
       common: {
         white: '#FFFFFF',
         black: '#000000'
       },
       primary: { main: '#354653' },
-      secondary: {main: '#557179'}
+      secondary: {main: '#557179'},
     },
     props: {
     MuiTypography: {

@@ -33,12 +33,4 @@ const actionTypes = {
     }
 }
 
-export const commandList = {
-    liveImagesList: {
-        SELECT_REFERENCE_OBJECT: 'sINT_1', //
-        GET_NUMBER_ACTIVE_OF_REFERENCE_OBJECT: 'gINT_1', // return int [0, 31]
-        GET_COUNT_CONFIGURED_REFERENCE_OBJECTS: 'gINT_2', // return int [0, 31]
-    }
-}
-
 export default actionTypes

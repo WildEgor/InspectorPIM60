@@ -13,10 +13,6 @@ const baseURL = (new URL(config.BASE_URL)).origin;
 const client = axios.create({ 
     baseURL, 
     adapter: delayAdapterEnhancer(axios.defaults.adapter),
-    // headers: {
-    //     'Access-Control-Allow-Origin': '*',
-    // },
-    //withCredentials: true, // default
 });
 
 client.defaults.raxConfig = { instance: client };
@@ -70,9 +66,9 @@ const requestApi = function(options) {
                 return Promise.reject(`${parsedResponse.errorCode} : ${config.CAMERRORS[parsedResponse.errorCode]}`);
             case 'blob':
                 try {
-                    console.log('RESPONSE.DATA', response)
-                    //const blobData = URL.createObjectURL(response.data)
-                    const blobData = response.data
+                    //console.log('RESPONSE.DATA', response)
+                    const blobData = URL.createObjectURL(response.data)
+                    //const blobData = response.data
                     return Promise.resolve(blobData)
                 } catch (error) {
                     console.log('ERROR HTTP-UTILS', error)

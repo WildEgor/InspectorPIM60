@@ -99,9 +99,17 @@ const liveImagesModel = {
                 arr => arr.map(([key, value]) => [key, Number(value)]),
                 Object.fromEntries,
                 statObj => {
-                    const sts = getState().commands.GET_LIVE_STATISTIC.data
+                    const sts = getState().commands.GET_LIVE_STATISTIC.data || ''
                     payloadData.stat = statObj
-                    if (sts && statObj['IMAGE_NUMBER'] !== sts['IMAGE_NUMBER']) {
+                    console.group('PREFAIL STAT')
+                    console.log('statObj', statObj)
+                    console.log('sts', sts)
+                    console.groupEnd()
+                    if (sts && statObj['IMAGE_NUMBER'] !== sts.stat['IMAGE_NUMBER'] && statObj['IMAGE_DECISION'] !== 2) {
+                        console.group('FAIL STAT')
+                        console.log('statObj', statObj)
+                        console.log('sts', sts.stat)
+                        console.groupEnd()
                         actions.processImages({
                             actionType: liveImagesTypes.LIVE_IMAGE_FAIL,
                             data: payloadData

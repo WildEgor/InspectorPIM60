@@ -15,11 +15,12 @@ module.exports = merge(common, {
   },
   devServer: {
     contentBase: Path.resolve(__dirname, '../src'),
-    watchContentBase: true,
     historyApiFallback: true,
     hot: true,
     host: 'localhost',
-    port: 3000
+    port: 3000,
+    open: true,
+    compress: true,
   },
   plugins: [
     new Webpack.DefinePlugin({

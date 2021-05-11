@@ -96,8 +96,8 @@ const CamLogger = () => {
                     items={commands[logImagesTypes.LOAD_IMAGE].data[imgConfig.type]}
                     lazyLoad 
                     thumbnailPosition='left'
-                    showFullscreenButton={true} 
-                    useBrowserFullscreen={true} 
+                    showFullscreenButton={false} 
+                    useBrowserFullscreen={false} 
                     showPlayButton={true}
                     showBullets={false}
                     startIndex={0}

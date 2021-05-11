@@ -28,7 +28,7 @@ const AppWrapper = (props) =>
                 dense
                 anchorOrigin={{
                     vertical: 'top',
-                    horizontal: 'left',
+                    horizontal: 'right',
                 }}
                 TransitionComponent={Slide}
                 content={(key, msg) => (

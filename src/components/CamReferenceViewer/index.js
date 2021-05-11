@@ -230,7 +230,7 @@ const CamReferenceViewer = () => {
                                                 Текущий режим - {commonCommands[commonCommandsTypes.CAM_MODE].data.mode == 1? 'EDIT MODE' : 'RUN MODE'}
                                             </Typography>
                                             {
-                                                commonCommands[commonCommandsTypes.SAVE_TO_FLASH].loading && <Typography className={classes['warningColorText']} variant="h4">Сохранение...</Typography>
+                                                commonCommands[commonCommandsTypes.SAVE_TO_FLASH].loading && <Typography className={classes['warningColorText']} variant="h4">Идет сохранение...</Typography>
                                             }
                                         </>
                                         : null

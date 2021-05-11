@@ -7,7 +7,7 @@
   "description": "sopas pim 60 web viewer",
   "scripts": {
     "start": "webpack serve --config webpack/webpack.config.dev.js",
-    "build": "cross-env BABEL_ENV=production webpack --config webpack/webpack.config.prod.js",
+    "build": "rimraf build && cross-env BABEL_ENV=production webpack --config webpack/webpack.config.prod.js",
     "server": "npm run build && http-server --cors --proxy http://192.168.99.9 build",
     "clear": "rimraf node_modules"
   },
