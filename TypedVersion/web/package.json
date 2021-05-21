@@ -1,0 +1,24 @@
+{
+  "name": "inspector-pim60",
+  "version": "1.0.0",
+  "author": "wildegor",
+  "license": "MIT",
+  "scripts": {
+    "preinstall": "npm i react-scripts-ts -g && cd ../core && npm i",
+    "prestart": "cd ../core && npm run build",
+    "start": "react-scripts-ts start"
+  },
+  "dependencies": {
+    "core": "file:../core",
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
+    "react-scripts-ts": "2.17.0",
+  },
+  "devDependencies": {
+    "@types/jest": "23.1.1",
+    "@types/node": "10.3.4",
+    "@types/react": "16.4.1",
+    "@types/react-dom": "16.0.6",
+    "typescript": "2.9.2"
+  }
+}

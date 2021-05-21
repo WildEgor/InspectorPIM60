@@ -71,8 +71,6 @@ module.exports = {
   resolve: {
     modules: [Path.resolve(__dirname, '../src'), Path.resolve(__dirname, '../node_modules')],
     alias: {
-      //"react": "preact-compat",
-      //"react-dom": "preact-compat",
       Src: Path.resolve(__dirname, '../src/'),
       Style: Path.resolve(__dirname, '../src/style/'),
       Store: Path.resolve(__dirname, '../src/store/'),
