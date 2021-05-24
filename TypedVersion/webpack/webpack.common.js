@@ -62,9 +62,9 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin({
-      patterns: [{ from: Path.resolve(__dirname, '../static'), to: 'static' }],
-    }),
+    // new CopyWebpackPlugin({
+    //   patterns: [{ from: Path.resolve(__dirname, '../static'), to: 'static' }],
+    // }),
     ...htmlPlugins,
     // new BundleAnalyzerPlugin()
   ],
