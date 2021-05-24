@@ -17,7 +17,7 @@ const htmlPlugins = getFilesFromDir(PAGE_DIR, [".html"]).map( filePath => {
   })
 });
 
-const entry = getFilesFromDir(PAGE_DIR, [".js"]).reduce( (obj, filePath) => {
+const entry = getFilesFromDir(PAGE_DIR, [".js", '.ts', '.tsx']).reduce( (obj, filePath) => {
   const entryChunkName = filePath.replace(Path.extname(filePath), "").replace(PAGE_DIR, "");
   obj[entryChunkName] = `./${filePath}`;
   return obj;
@@ -70,13 +70,15 @@ module.exports = {
   ],
   resolve: {
     modules: [Path.resolve(__dirname, '../src'), Path.resolve(__dirname, '../node_modules')],
+    extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
     alias: {
       Src: Path.resolve(__dirname, '../src/'),
       Style: Path.resolve(__dirname, '../src/style/'),
       Store: Path.resolve(__dirname, '../src/store/'),
       Pages: Path.resolve(__dirname, '../src/pages/'),
-      Hooks: Path.resolve(__dirname, '../src/hooks/'),
+      Hooks: Path.resolve(__dirname, '../src/utils/hooks/'),
       Components: Path.resolve(__dirname, '../src/components/'),
+      Containers: Path.resolve(__dirname, '../src/containers/'),
       Utils: Path.resolve(__dirname, '../src/utils/'),
       Services: Path.resolve(__dirname, '../src/services/'),
     },
@@ -84,9 +86,13 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.mjs$/,
-        include: /node_modules/,
-        type: 'javascript/auto',
+        test: /\.(ts|tsx)$/,
+        loader: "awesome-typescript-loader",
+      },
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        loader: "source-map-loader",
       },
       {
         test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
