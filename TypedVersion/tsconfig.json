@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es5",
+    "target": "es6",
     "sourceMap": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
@@ -10,7 +10,12 @@
     "experimentalDecorators": true,
     "strictNullChecks": true,
     "skipLibCheck": true,
-    "jsx": "react"
+    "jsx": "react",
+    "baseUrl": "./",
+        "paths": {
+            "Utils/*": ["src/utils/*"],
+            "Store/*": ["src/stores/*"]
+        }
   },
   "exclude": [
     "node_modules"
