@@ -1,5 +1,9 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 import parseResponseCommand from 'Utils/http-utils'
+import {$log} from "@tsed/logger";
+
+$log.level = "debug";
+$log.name = "HttpApiService";
 
 enum StatusCode {
     Unauthorized = 401,
@@ -24,7 +28,7 @@ const injectRequestOption = (config: ICustomAxiosRequestConfig): ICustomAxiosReq
     return config;
 };
 
-class HttpApiService {
+export class HttpService {
     private _baseURL: string = process.env.NODE_ENV === 'production'? window.location.href : 'http://192.168.99.9';
     private _instance: AxiosInstance | null = null;
 
@@ -37,7 +41,7 @@ class HttpApiService {
         return this._instance != null ? this._instance : this.initHttp();
     }
     
-    initHttp() {
+    protected initHttp() {
         const http = axios.create({
           baseURL: this._baseURL,
           // headers,
@@ -90,27 +94,27 @@ class HttpApiService {
         let resp = response;
         if (response.config.parse){
             switch (response.config.responseType) {
-                case 'json': return resp.data;
+                // case 'json': break;
                 case 'text': 
                     const data = resp.data.toString();
                     const parsedResponse = parseResponseCommand(data)
                     resp.data = null
                     if (parsedResponse.errorCode == 0) 
                         resp.data = parsedResponse
-                    return resp.data 
+                    break;
                 case 'blob':
                     try {
                         const blobData = URL.createObjectURL(response.data);
                         resp.data = blobData;
-                        return resp.data
                     } catch (error) {
-                        console.log('ERROR HTTP-UTILS', error)
-                        break;
+                        console.log('[error] Create blob: ', error)
+                        $log.debug("Some debug messages");
                     }
-                default: resp.data
+                    break;
+                default: return resp.data;
             }
         }
-        return resp
+        return resp.data
     }
 
     request<T = any, R = ICustomAxiosResponse<T>>(config: ICustomAxiosRequestConfig): Promise<R> {
@@ -130,4 +134,4 @@ class HttpApiService {
     }
 }
 
-export const http = new HttpApiService('http://192.168.99.9');
+export const Client = new HttpService('http://192.168.99.9');

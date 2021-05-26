@@ -1,0 +1,1 @@
+export * as inspectorService from './inspector.service'

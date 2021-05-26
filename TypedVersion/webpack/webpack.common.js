@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const getFilesFromDir = require("../config/files");
-const PAGE_DIR = Path.join("src", "pages", Path.sep);
+const PAGE_DIR = Path.join("src", "web", "pages", Path.sep);
 
 const htmlPlugins = getFilesFromDir(PAGE_DIR, [".html"]).map( filePath => {
   const fileName = filePath.replace(PAGE_DIR, "");
@@ -69,19 +69,22 @@ module.exports = {
     // new BundleAnalyzerPlugin()
   ],
   resolve: {
+    fallback: { stream: 'false' },
     modules: [Path.resolve(__dirname, '../src'), Path.resolve(__dirname, '../node_modules')],
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
     alias: {
       Src: Path.resolve(__dirname, '../src/'),
-      Style: Path.resolve(__dirname, '../src/style/'),
-      Store: Path.resolve(__dirname, '../src/store/'),
-      Pages: Path.resolve(__dirname, '../src/pages/'),
-      Hooks: Path.resolve(__dirname, '../src/utils/hooks/'),
-      Components: Path.resolve(__dirname, '../src/components/'),
-      Containers: Path.resolve(__dirname, '../src/containers/'),
-      Utils: Path.resolve(__dirname, '../src/utils/'),
-      Services: Path.resolve(__dirname, '../src/services/'),
+      Core: Path.resolve(__dirname, '../src/core/'),
+      Styles: Path.resolve(__dirname, '../src/core/styles/'),
+      Stores: Path.resolve(__dirname, '../src/core/stores/'),
+      Pages: Path.resolve(__dirname, '../src/web/pages/'),
+      Hooks: Path.resolve(__dirname, '../src/core/hooks/'),
+      Components: Path.resolve(__dirname, '../src/web/components/'),
+      Containers: Path.resolve(__dirname, '../src/web/containers/'),
+      Utils: Path.resolve(__dirname, '../src/core/utils/'),
+      Services: Path.resolve(__dirname, '../src/core/services/'),
     },
+    
   },
   module: {
     rules: [

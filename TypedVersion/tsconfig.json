@@ -13,8 +13,9 @@
     "jsx": "react",
     "baseUrl": "./",
         "paths": {
-            "Utils/*": ["src/utils/*"],
-            "Store/*": ["src/stores/*"]
+            "Utils/*": ["src/core/utils/*"],
+            "Store/*": ["src/stores/*"],
+            "Src/*": ["src/*"],
         }
   },
   "exclude": [
