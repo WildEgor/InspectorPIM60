@@ -1,0 +1,203 @@
+/* COLOR SELECTION */
+/* =============== */
+
+/* Background Color of the whole page */
+body
+{
+	background-color: #FFFFFF !important;
+}
+
+/* Background Color of header etc */
+.backgroundColor
+{
+	background-color: #0084c2 !important;
+}
+
+/* Color and width of borders of boxes*/
+.borderColor
+{
+	border: 1px solid #0084c2;
+}
+
+
+/* Color scheme of widgets in default mode */
+.ui-state-default
+{
+	color: white;
+	background-color: #999;
+}
+
+/* Color scheme of widgets in active mode */
+.ui-state-active, .active
+{
+	color: white;
+	background-color: #0084c2;
+}
+
+/* Color scheme of widgets in mouse-over / hover mode */
+.ui-state-hover
+{
+	color: white;
+	background-color: #CCC;
+}
+
+/* Color scheme of disabled widgets */
+.ui-state-disabled
+{
+
+}
+
+html {
+    height: 100%;
+}
+
+/* General Layout */
+body {
+	background: -moz-linear-gradient(top,  rgba(0,0,0,0) 25%, rgba(0,0,0,0.10) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.10))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 25%,rgba(0,0,0,0.10) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(0,0,0,0) 25%,rgba(0,0,0,0.10) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(0,0,0,0) 25%,rgba(0,0,0,0.10) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(0,0,0,0) 25%,rgba(0,0,0,0.10) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#20000000',GradientType=0 ); /* IE6-9 */
+	background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100%;
+
+	margin:0;
+	text-align: center;
+	font-family: tahoma, verdana, arial;
+	font-size: 14px;
+}
+
+/* Template styles */
+.gradient{
+	background: -moz-linear-gradient(top,  rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.15)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#26000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+}
+
+.pageWidth{
+	width: 950px;
+	margin: 0px auto 0px auto;
+}
+
+div, h1{
+	margin:0;
+}
+
+/* Header */
+#header{
+	height: 80px;
+	width: 100%;
+	top: 0px;
+	left: 0px;
+	margin-bottom: 10px;
+}
+
+.logo{
+	background: url(logo.png);
+  	background-position: center left;
+	background-size:auto 55px;
+	background-repeat:no-repeat;
+	float: left;
+	border: 0px;
+	height: 80px;
+	width: 700px;
+	/*filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='logo.png', sizingMethod='scale');*/
+	-ms-interpolation-mode: bicubic;
+}
+
+div.deviceInfo{
+	color: white;
+	line-height: 80px;
+	float: right;
+	font-size: 16px;
+	text-transform: uppercase;
+}
+
+/* Boxes */
+.leftbox, .centerbox, .rightbox
+{
+	min-height: 513px;
+	height: 513px;
+	float: left;
+}
+
+.leftbox img, .centerbox img
+{
+	width: 100%;
+	margin-top: 3px;
+}
+
+.leftbox
+{
+	width: 170px;
+}
+
+.centerbox
+{
+	width: 554px;
+	padding-top: 5px;
+}
+
+.rightbox
+{
+	width: 200px;
+	margin-right: 0px;
+	float: right;
+	padding: 8px;
+	height: 508px;
+	min-height: 508px;
+}
+
+.box
+{
+	margin: 5px;
+	padding: 5px;
+}
+
+.box h1 {
+	font-size:14px;
+	font-weight:bold;
+}
+
+.box h2 {
+	font-size:12px;
+	color:#666666;
+	margin-bottom:20px;
+	border-bottom:solid 1px #b7ddf2;
+	padding-bottom:10px;
+}
+
+.box label {
+	display:block;
+	clear: both;
+	font-weight:bold;
+	text-align:center;
+	margin-top: 10px;
+}
+
+.shadow {
+	box-shadow: 1px 2px 3px #CCC;
+}
+
+button.large {
+	display: block;
+	padding: 6px 6px;
+	width: 90%;
+	margin: 5px auto;
+}
+
+.hmi-logimagelist ul li img {
+	border: 1px solid #b7ddf2;
+}
+
+.hmi-imagelist ul li img.selected {
+	border: 1px solid #0084c2;
+	box-shadow: 1px 2px 3px #CCC;
+}

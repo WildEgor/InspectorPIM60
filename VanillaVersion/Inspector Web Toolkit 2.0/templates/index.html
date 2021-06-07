@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html><head>
+    <title>PIM 60 HMI</title>
+    <link rel="stylesheet" href="jquery-ui-1.9.2.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="inspector-ui.css">
+    <link rel="stylesheet" type="text/css" href="template.css">
+
+    <script src="jquery-1.8.3.min.js"></script>  
+    <script src="jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="inspector.js"></script>
+    <script src="inspector-ui.js"></script>
+    <script type="text/javascript">  
+        $(function() {
+            $( document ).tooltip();
+            $(".button").button();
+        });
+    </script>
+
+    <style type="text/css">
+        #liveImage
+        {
+            /*width: 100%;*/
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="gradient backgroundColor" id="header">
+            <div class="pageWidth">
+                <a href="index.html"><div class="logo"></div></a>
+                <div class="deviceInfo">Inspector PIM60</div>
+            </div>
+        </div>
+
+        <div class="pageWidth">
+            <img class="hmi-liveimage" id="liveImage" />
+        </div>
+        
+        <div class="pageWidth" id="main">
+            <a href="supervision.html" id="supervision" class="button" title="Check the status of the camera">Supervision</a>
+            <a href="maintenance.html" id="maintenance" class="button" title="Device control for field exchange">Maintenance</a>
+            <a href="batchchange.html" id="batchchange" class="button" title="Switch reference object and fine-tune parameters">Batch Change</a>
+            <a href="resultplot.html" id="resultplot" class="button" title="Visualize result over time">Result plot</a>
+        </div>
+    </div>
+</body></html>

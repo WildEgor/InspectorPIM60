@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<html><head>
+    <title>PIM 60 HMI - Exchange Device</title>
+    <link rel="stylesheet" href="jquery-ui-1.9.2.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="inspector-ui.css">
+    <link rel="stylesheet" type="text/css" href="template.css">
+
+    <script src="jquery-1.8.3.min.js"></script>  
+    <script src="jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="inspector.js"></script>
+    <script src="inspector-ui.js"></script>
+    
+    <style type="text/css">
+        .ui-tabs
+        {
+            height: 100%;
+        }
+
+        #calibrateMM{
+            width:30px;
+        }
+
+        #saveToFlashBtn{
+            margin-top: 320px;
+        }
+
+        .textIP{
+            width: 30px;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+    function clickedFocusTab() {
+        $(".helpSection").hide();
+        $("#help-1").show();
+    }
+
+    function clickedCalibrateTab() {
+        $(".helpSection").hide();
+        $("#help-2").show();
+    }
+
+    function clickedConfigurationTab() {
+        $(".helpSection").hide();
+        $("#help-3").show();
+    }
+
+    function clickedNetworkTab() {
+        $(".helpSection").hide();
+        $("#help-4").show();
+    }
+
+    function clickedBackup() {
+        window.location = "/backup_config?config1";
+    }
+
+    function clickedUpload() {
+        // To upload the a configuration it is required to login first
+        // Replace <...> with username and password
+        // NOTE! username and password is sent in plaintext
+        /* $.post("/HandleConfig", "sopas_" + "username=<insert username>&" + "sopas_" + "password=<insert password>").done(function(){
+            $.get("/SelectRestore?prepare_on").done(function(){
+                $("#restoreform").submit();
+            });
+            alert("Please wait for the Inspector to restart...");
+        }); */
+        
+        return true;
+    }
+
+    function clickedSetIP() {
+        var IP1 = $('#IP1').val();
+        var IP2 = $('#IP2').val();
+        var IP3 = $('#IP3').val();
+        var IP4 = $('#IP4').val();
+
+        var NM1 = $('#NM1').val();
+        var NM2 = $('#NM2').val();
+        var NM3 = $('#NM3').val();
+        var NM4 = $('#NM4').val();
+
+        var GW1 = $('#GW1').val();
+        var GW2 = $('#GW2').val();
+        var GW3 = $('#GW3').val();
+        var GW4 = $('#GW4').val();
+
+        InspectorUI.SetIP(IP1,IP2,IP3,IP4).done(function(){
+        InspectorUI.SetNetmask(NM1,NM2,NM3,NM4).done(function(){
+        InspectorUI.SetGateway(GW1,GW2,GW3,GW4).done(function(){
+        InspectorUI.ApplyIP(0).done(function(){
+            alert("Success!");
+        })})})});
+    }
+
+    /* This will run when page has loaded */
+    $(function() {
+
+        // Set up the spinner used to select square side of calibration
+        $("#calibrateMM").spinner({
+            min: 0,
+            max:100
+        }).on( "spinchange", function( event, ui ) {
+            var value = $( "#calibrateMM" ).spinner( "value" );
+            $("#calibrateBtn").actionbutton("option", "squareside", value);
+        });
+
+        // Get IP adresses
+        InspectorUI.GetIP($("#IP1"), $("#IP2"),$("#IP3"),$("#IP4"));
+        InspectorUI.GetNetmask($("#NM1"), $("#NM2"),$("#NM3"),$("#NM4"));
+        InspectorUI.GetGateway($("#GW1"), $("#GW2"),$("#GW3"),$("#GW4"));
+
+        // Create tabs
+        $( ".tabBtns" ).tabs(); 
+
+        // Set up eventhandlers     
+        $("#FocusTab").click(clickedFocusTab);
+        $("#CalibrateTab").click(clickedCalibrateTab);
+        $("#ConfigurationTab").click(clickedConfigurationTab);
+        $("#NetworkTab").click(clickedNetworkTab);
+
+        $("#setIP").button().click(clickedSetIP);
+
+        $("#backupBtn").button().click(clickedBackup);
+        $("#uploadBtn").button().click(clickedUpload);
+        $( ".tabBtns" ).tabs("option", "active", 0); 
+
+        clickedFocusTab();
+    });
+    </script>
+</head>
+<body>
+
+<div class="gradient backgroundColor" id="header">
+    <div class="pageWidth">
+        <a href="index.html"><div class="logo"></div></a>
+        <div class="deviceInfo">Inspector PIM60</div>
+    </div>
+</div>
+
+<div id="container">
+    <div id="main" class="pageWidth">
+        <div class="leftbox">
+            <button class="hmi-mode large" data-mode="0" id="runBtn">Run</button>
+            <button class="hmi-mode large" data-mode="1" id="editBtn">Edit</button>
+            <button class="hmi-action large" data-id="1" id="saveToFlashBtn">Save to Flash</button>
+            <button class="hmi-action large" data-id="6" id="restartBtn">Restart</button>
+        </div>
+        <div class="centerbox">
+            <div class="tabBtns">
+                <ul>
+                    <li><a href="#tabs-1" id="FocusTab">Focus</a></li>
+                    <li><a href="#tabs-2" id="CalibrateTab">Calibrate</a></li>
+                    <li><a href="#tabs-3" id="ConfigurationTab">Configuration</a></li>
+                    <li><a href="#tabs-4" id="NetworkTab">Network</a></li>
+                </ul>
+                <div id="tabs-1">
+                    <img class="hmi-liveimage" />
+                </div>
+                <div id="tabs-2">
+                    <img class="hmi-liveimage" data-overlay="true"/>
+                    <span>Square side:</span>
+                    <input id="calibrateMM" value="6"></input>
+                    <span>mm</span>
+
+                    <button class="hmi-action" data-id="3" id="calibrateBtn">Calibrate</button>
+                    <button class="hmi-action" data-id="4" id="removeCalibrationBtn">Remove Calibration</button>
+
+                </div>
+                <div id="tabs-3">
+                    <div class="box borderColor">
+                    <span id="backupBtn" class="button">Download Configuration</span>
+                </div>
+                <div class="box borderColor">
+                    <form action="/RestoreConfig" method="post" enctype="multipart/form-data" target="upload_target" name="restoreform" id="restoreform">
+                        <input type="file" name="datafile"/>
+                        <span id="uploadBtn" class="button">Upload Configuration</span>
+                    </form>
+
+                    <!-- Hidden frame to do the file upload -->
+                    <iframe id="upload_target" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>
+                    </div>
+                </div>
+                <div id="tabs-4">
+                    <div class="box borderColor">
+                        <label>Set IP-address:</label>
+                        <input type="text" class="textIP" id="IP1" /> . 
+                        <input type="text" class="textIP" id="IP2" /> . 
+                        <input type="text" class="textIP" id="IP3" /> . 
+                        <input type="text" class="textIP" id="IP4" />
+                    </div>
+                    <div class="box borderColor">
+                        <label>Set Netmask:</label>
+                        <input type="text" class="textIP" id="NM1" /> . 
+                        <input type="text" class="textIP" id="NM2" /> . 
+                        <input type="text" class="textIP" id="NM3" /> . 
+                        <input type="text" class="textIP" id="NM4" />
+                    </div>
+                    <div class="box borderColor">
+                        <label>Set Gateway:</label>
+                        <input type="text" class="textIP" id="GW1" /> . 
+                        <input type="text" class="textIP" id="GW2" /> . 
+                        <input type="text" class="textIP" id="GW3" /> . 
+                        <input type="text" class="textIP" id="GW4" />
+                    </div>
+                    <input type="submit" id="setIP" class="button" value="Apply" />
+                </div>
+            </div>
+        </div>
+        <div class="box borderColor rightbox">
+            <h1>Help</h1>
+            <div class="helpSection" id="help-1">
+                <h2>Focus</h2>
+                <p>
+                    Focus using the Working Distance Allen screw on the side of the Inspector device.
+                </p>
+            </div>
+            <div class="helpSection" id="help-2">
+                <h2>Calibrate</h2>
+                <p>
+                    Put the calibration chess pattern in view and press calibrate.
+                </p>
+            </div>
+            <div class="helpSection" id="help-3">
+                <h2>Configuration</h2>
+                <p>
+                    Use the buttons to upload and download a full configuration. The device will need to be restarted for settings to apply.
+                </p>
+            </div>
+            <div class="helpSection" id="help-4">
+                <h2>Network</h2>
+                <p>
+                    Enter network settings and press "Apply". These settings does not apply when DHCP is enabled. The device will need to be restarted for settings to apply.
+                </p>
+            </div>
+        </div> 
+    </div>
+    <!-- End of div main -->
+</div> 
+<!-- End of div container -->   
+</body></html>
