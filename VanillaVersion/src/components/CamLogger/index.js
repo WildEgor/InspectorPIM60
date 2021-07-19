@@ -23,7 +23,7 @@ import {
 import Spinner from 'Components/Spinner';
 
 const CamLogger = () => {
-    const [changeLogImages, setChangeLogImages] = useState(true)
+    const [changeLogImages, setChangeLogImages] = useState(false)
     const countLogImages = config.CAMLOGGER.countLogImages;
     const [imgConfig, setImgConfig] = useState({ count: countLogImages, cmd: 'ShowOverlay', type: changeLogImages? 'liveImageLog' : 'camLog'})
     //const [tosterId, setTosterId] = useState({})
