@@ -46,39 +46,6 @@ const CamLogger = () => {
     // };
   }, []);
 
-  // const _handleImageError = (event) => {
-  //     // if (this.props.defaultImage &&
-  //     //     event.target.src.indexOf(this.props.defaultImage) === -1) {
-  //     //   event.target.src = this.props.defaultImage;
-  //     // }
-  // }
-
-  // const _myImageGalleryRenderer = (item) => {
-  //     return (
-  //       <div className='image-gallery-image'>
-  //         <img
-  //             src={item.original}
-  //             alt={item.originalAlt}
-  //             srcSet={item.srcSet}
-  //             sizes={item.sizes}
-  //             //onLoad={this.props.onImageLoad}
-  //             onError={(e) => _handleImageError(e)}
-  //         />
-
-  //         {
-  //           item.statistic && <div className='image-gallery-description'>{JSON.stringify(item.statistic)}</div>
-  //         }
-  //         {
-  //             item.description && (
-  //                 <span className="image-gallery-description">
-  //                     {item.description}
-  //                 </span>
-  //             )
-  //         }
-  //       </div>
-  //     )
-  //   }
-
   return (
     <div className={classes.container}>
       <div className={classes.viewer}>
@@ -94,7 +61,6 @@ const CamLogger = () => {
           />
         ) : (
           <ImageGallery
-            // renderItem={(item) => _myImageGalleryRenderer(item)}
             renderPlayPauseButton={() => (
               <button
                 onClick={() => {
@@ -180,13 +146,6 @@ const CamLogger = () => {
                 >
                   <h6>Загрузить</h6>
                 </StyledButton>
-                {/* <div className={changeLogImages? classes.hideContainer : classes.flexContainer}>
-                        <SelectOverlay
-                            value={imgConfig.cmd}
-                            onChange={handleOverlay}
-                            disabled={commands[logImagesTypes.LOAD_IMAGE].loading}
-                        />
-                    </div> */}
               </div>
             </div>
           </div>
