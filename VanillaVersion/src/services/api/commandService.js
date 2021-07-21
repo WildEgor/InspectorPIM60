@@ -1,7 +1,8 @@
+/* eslint-disable prefer-rest-params */
 // services/api/*
 import * as rax from 'retry-axios';
 import axios from 'axios';
-import { requestApi } from 'Utils/http-utils'
+import { requestApi } from 'Utils/http-utils';
 
 const hardRetry = {
   raxConfig: {
@@ -9,443 +10,416 @@ const hardRetry = {
     noResponseRetries: 5,
     retryDelay: 3000,
     httpMethodsToRetry: ['GET', 'HEAD', 'OPTIONS', 'DELETE', 'PUT'],
-    statusCodesToRetry: [[100, 199], [429, 429], [500, 599]],
+    statusCodesToRetry: [
+      [100, 199],
+      [429, 429],
+      [500, 599],
+    ],
     backoffType: 'exponential',
-    onRetryAttempt: err => {
+    onRetryAttempt: (err) => {
       const cfg = rax.getConfig(err);
       console.log(`Retry attempt [${cfg.currentRetryAttempt}]. Cause: ${err}`);
     },
-    shouldRetry: err => {
-        const cfg = rax.getConfig(err);
-        if (cfg.currentRetryAttempt >= cfg.retry) return false // ensure max retries is always respected
-    
-        // if (err.response.statusText.includes('Try again')) //Always retry this status text, regardless of code or request type
-        // return true
-  
-        return rax.shouldRetryRequest(err) //Handle the request based on your other config options, e.g. `statusCodesToRetry`
-    }
-  }
-}
+    shouldRetry: (err) => {
+      const cfg = rax.getConfig(err);
+      if (cfg.currentRetryAttempt >= cfg.retry) return false; // ensure max retries is always respected
 
-function getInt (...args){
+      // if (err.response.statusText.includes('Try again')) //Always retry this status text, regardless of code or request type
+      // return true
+
+      return rax.shouldRetryRequest(err); // Handle the request based on your other config options, e.g. `statusCodesToRetry`
+    },
+  },
+};
+
+function getInt(...args) {
   const normalArray = args;
 
-  if (!normalArray.length)
-    return `/CmdChannel?gINT_${arguments[0]}`
-  
-  const params = normalArray.join('_')
-  console.log('PARAMS', params)
-  return `/CmdChannel?gINT_${params}`
+  if (!normalArray.length) return `/CmdChannel?gINT_${arguments[0]}`;
+
+  const params = normalArray.join('_');
+  console.log('PARAMS', params);
+  return `/CmdChannel?gINT_${params}`;
 }
 
-function setInt (...args){
+function setInt(...args) {
   const normalArray = args;
-  console.log('normalArray', normalArray)
-  console.log('normalArray', normalArray.join('_'))
-  if (!normalArray.length)
-    return `/CmdChannel?sINT_${arguments[0]}`
+  console.log('normalArray', normalArray);
+  console.log('normalArray', normalArray.join('_'));
+  if (!normalArray.length) return `/CmdChannel?sINT_${arguments[0]}`;
 
-  const params = normalArray.join('_')
-  console.log('PARAMS', params)
-  return `/CmdChannel?sINT_${params}`
+  const params = normalArray.join('_');
+  console.log('PARAMS', params);
+  return `/CmdChannel?sINT_${params}`;
 }
 
 // **************** LogLogs ****************
-const lockLogImages = () => {
-  return requestApi({ 
+const lockLogImages = () =>
+  requestApi({
     method: 'GET',
     responseType: 'blob',
-    url: `/LockLog`, 
-    parse: false, 
-    delay: 3000, 
-    timeout: 65000, 
-    params: {},
-    ...hardRetry
-  });
-}
-
-const unlockLogImages = () => {
-  return requestApi({ 
-    method: 'GET',
-    responseType: 'text',
-    url: `/LockLog?Unlock`, 
-    parse: false, 
-    delay: 3000, 
-    timeout: 65000, 
-    params: {},
-    ...hardRetry
-  });
-}
-
-const loadLogImage = ({id, cmd}) => {
-  return requestApi({ 
-    method: 'GET',
-    responseType: 'blob',
-    url: `/LogImage.jpg?${id}${cmd? `&${cmd}` : ''}`,
-    parse: true, 
-    delay: 500, 
+    url: `/LockLog`,
+    parse: false,
+    delay: 3000,
     timeout: 65000,
     params: {},
-    ...hardRetry
+    ...hardRetry,
   });
-}
 
-// **************** LiveImages ****************
-const getLiveImage = ({cmd, id, s}) => {
-  const source = axios.CancelToken.source();
+const unlockLogImages = () =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: `/LockLog?Unlock`,
+    parse: false,
+    delay: 3000,
+    timeout: 65000,
+    params: {},
+    ...hardRetry,
+  });
 
-  return requestApi({ 
+const loadLogImage = ({ id, cmd }) =>
+  requestApi({
     method: 'GET',
     responseType: 'blob',
-    url: `/LiveImage.jpg${cmd? `?${cmd}` : ''}`, 
-    parse: true, 
-    delay: 150, 
-    timeout: 30000, 
+    url: `/LogImage.jpg?${id}${cmd ? `&${cmd}` : ''}`,
+    parse: true,
+    delay: 500,
+    timeout: 65000,
+    params: {},
+    ...hardRetry,
+  });
+
+// **************** LiveImages ****************
+const getLiveImage = ({ cmd, id, s }) => {
+  const source = axios.CancelToken.source();
+
+  return requestApi({
+    method: 'GET',
+    responseType: 'blob',
+    url: `/LiveImage.jpg${cmd ? `?${cmd}` : ''}`,
+    parse: true,
+    delay: 150,
+    timeout: 30000,
     params: { id, s },
     cancelToken: source.token,
     raxConfig: {
       ...hardRetry.raxConfig,
-      onRetryAttempt: err => {
+      onRetryAttempt: (err) => {
         const cfg = rax.getConfig(err);
-        startStopLive(true)
+        // startStopLive(true);
         console.log(`Retry attempt [${cfg.currentRetryAttempt}]. Cause: ${err}`);
       },
-      shouldRetry: err => {
+      shouldRetry: (err) => {
         const cfg = rax.getConfig(err);
         if (cfg.currentRetryAttempt >= cfg.retry) {
-          source.cancel("CANCEL LIVE IMAGE");
-          return false
+          source.cancel('CANCEL LIVE IMAGE');
+          return false;
         } // ensure max retries is always respected
-      }
-    }
+      },
+    },
   });
-}
+};
 
-const getLiveStatistic = ({id, s}) => {
-  return requestApi({ 
+const getLiveStatistic = ({ id, s }) =>
+  requestApi({
     method: 'GET',
     responseType: 'json',
-    url: '/ImageResult', 
-    parse: true, 
-    delay: 150, 
-    timeout: 105000, 
+    url: '/ImageResult',
+    parse: true,
+    delay: 150,
+    timeout: 105000,
     params: { id, s },
     raxConfig: {
       ...hardRetry.raxConfig,
-      shouldRetry: err => {
+      shouldRetry: (err) => {
         const cfg = rax.getConfig(err);
         if (cfg.currentRetryAttempt >= cfg.retry) {
-          //source.cancel("CANCEL LIVE IMAGE");
-          return false
-        } 
-      }
-    }
+          // source.cancel("CANCEL LIVE IMAGE");
+          return false;
+        }
+      },
+    },
   });
-}
 
 // **************** CommonCommands ****************
-const saveToFlash = () => {
-  return requestApi({ 
+const saveToFlash = () =>
+  requestApi({
     method: 'GET',
     responseType: 'text',
-    url: `/CmdChannel?aACT_1`, 
-    parse: true, 
-    delay: 3000, 
-    timeout: 65000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const setCamMode = (mode) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text', 
-    url: `/CmdChannel?sMOD_${mode}`, 
-    parse: true, 
-    delay: 3000, 
-    timeout: 65000,
-    params: {},
-    ...hardRetry.raxConfig,
-    shouldRetry: err => {
-      return true 
-    }
-  });
-}
-
-const getCamMode = () => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: `/CmdChannel?gMOD`, 
-    parse: true, 
-    delay: 3000, 
-    timeout: 65000,
-    params: {},
-    ...hardRetry.raxConfig,
-    shouldRetry: err => true 
-  });
-}
-
-const getCamStatus = () => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: `/LiveImageStatus`, 
-    parse: false, 
-    delay: 3000, 
-    params: {},
-    ...hardRetry
-  });
-}
-
-const getAvailableTools = (id) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: `/CmdChannel?gSTR_14_${id}_0`, 
-    parse: true, 
-    delay: 3000, 
-    timeout: 30000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const getROISize = (id) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: getInt(87, id), 
-    parse: true, 
-    delay: 3000,  
-    timeout: 30000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const setObjLocMatchThreshold = (id) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: setInt(32, id), 
-    parse: true, 
-    delay: 3000, 
-    timeout: 65000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const getObjLocMatchThreshold = () => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: getInt(32), 
-    parse: true, 
-    delay: 3000, 
-    timeout: 30000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const setPixelCounterIntensityRange = ({id, min, max}) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: setInt(80, id, min, max), 
-    parse: true, 
-    delay: 3000, 
-    timeout: 65000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const getPixelCounterIntensityRange = (id) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: getInt(80, id), 
-    parse: true, 
-    delay: 3000, 
-    timeout: 30000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const setPixelCounterNoPixelsInRange = ({id, max, min}) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: setInt(81, id, min, max), 
-    parse: true, 
-    delay: 3000, 
-    timeout: 65000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const getPixelCounterNoPixelsInRange = (id) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: getInt(81, id), 
-    parse: true, 
-    delay: 3000, 
-    timeout: 30000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const setEdgePixelCounterStrength = ({id, value}) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: setInt(82, id, value), 
-    parse: true, 
+    url: `/CmdChannel?aACT_1`,
+    parse: true,
     delay: 3000,
     timeout: 65000,
     params: {},
-    ...hardRetry
+    ...hardRetry,
   });
-}
 
-const getEdgePixelCounterStrength = (id) => {
-  return requestApi({
+const setCamMode = (mode) =>
+  requestApi({
     method: 'GET',
     responseType: 'text',
-    url:  getInt(82, id), 
-    parse: true, 
-    delay: 3000, 
-    timeout: 30000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const setEdgePixelCounterNoPixelsInRange = ({id, min, max}) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url:  setInt(83, id, min, max), 
-    parse: true, 
+    url: `/CmdChannel?sMOD_${mode}`,
+    parse: true,
     delay: 3000,
-    timeout: 65000, 
-    params: {},
-    ...hardRetry
-  });
-}
-
-const getEdgePixelCounterNoPixelsInRange = (id) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: getInt(83, id), 
-    parse: true, 
-    delay: 3000, 
-    timeout: 30000,
-    params: {},
-    ...hardRetry
-  });
-}
-
-const setPatternScoreThreshold = ({id, value}) => {
-  return requestApi({
-    method: 'GET',
-    responseType: 'text',
-    url: setInt(85, id, value), 
-    parse: true, 
-    delay: 3000, 
     timeout: 65000,
     params: {},
-    ...hardRetry
+    ...hardRetry.raxConfig,
+    shouldRetry: () => true,
   });
-}
 
-const getPatternScoreThreshold = (id) => {
-  return requestApi({
+const getCamMode = () =>
+  requestApi({
     method: 'GET',
     responseType: 'text',
-    url: getInt(85, id), 
-    parse: true, 
-    delay: 3000, 
+    url: `/CmdChannel?gMOD`,
+    parse: true,
+    delay: 3000,
+    timeout: 65000,
+    params: {},
+    ...hardRetry.raxConfig,
+    shouldRetry: () => true,
+  });
+
+// const getCamStatus = () =>
+//   requestApi({
+//     method: 'GET',
+//     responseType: 'text',
+//     url: `/LiveImageStatus`,
+//     parse: false,
+//     delay: 3000,
+//     params: {},
+//     ...hardRetry,
+//   });
+
+const getAvailableTools = (id) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: `/CmdChannel?gSTR_14_${id}_0`,
+    parse: true,
+    delay: 3000,
     timeout: 30000,
     params: {},
-    ...hardRetry
+    ...hardRetry,
   });
-}
+
+const getROISize = (id) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: getInt(87, id),
+    parse: true,
+    delay: 3000,
+    timeout: 30000,
+    params: {},
+    ...hardRetry,
+  });
+
+const setObjLocMatchThreshold = (id) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: setInt(32, id),
+    parse: true,
+    delay: 3000,
+    timeout: 65000,
+    params: {},
+    ...hardRetry,
+  });
+
+const getObjLocMatchThreshold = () =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: getInt(32),
+    parse: true,
+    delay: 3000,
+    timeout: 30000,
+    params: {},
+    ...hardRetry,
+  });
+
+const setPixelCounterIntensityRange = ({ id, min, max }) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: setInt(80, id, min, max),
+    parse: true,
+    delay: 3000,
+    timeout: 65000,
+    params: {},
+    ...hardRetry,
+  });
+
+const getPixelCounterIntensityRange = (id) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: getInt(80, id),
+    parse: true,
+    delay: 3000,
+    timeout: 30000,
+    params: {},
+    ...hardRetry,
+  });
+
+const setPixelCounterNoPixelsInRange = ({ id, max, min }) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: setInt(81, id, min, max),
+    parse: true,
+    delay: 3000,
+    timeout: 65000,
+    params: {},
+    ...hardRetry,
+  });
+
+const getPixelCounterNoPixelsInRange = (id) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: getInt(81, id),
+    parse: true,
+    delay: 3000,
+    timeout: 30000,
+    params: {},
+    ...hardRetry,
+  });
+
+const setEdgePixelCounterStrength = ({ id, value }) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: setInt(82, id, value),
+    parse: true,
+    delay: 3000,
+    timeout: 65000,
+    params: {},
+    ...hardRetry,
+  });
+
+const getEdgePixelCounterStrength = (id) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: getInt(82, id),
+    parse: true,
+    delay: 3000,
+    timeout: 30000,
+    params: {},
+    ...hardRetry,
+  });
+
+const setEdgePixelCounterNoPixelsInRange = ({ id, min, max }) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: setInt(83, id, min, max),
+    parse: true,
+    delay: 3000,
+    timeout: 65000,
+    params: {},
+    ...hardRetry,
+  });
+
+const getEdgePixelCounterNoPixelsInRange = (id) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: getInt(83, id),
+    parse: true,
+    delay: 3000,
+    timeout: 30000,
+    params: {},
+    ...hardRetry,
+  });
+
+const setPatternScoreThreshold = ({ id, value }) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: setInt(85, id, value),
+    parse: true,
+    delay: 3000,
+    timeout: 65000,
+    params: {},
+    ...hardRetry,
+  });
+
+const getPatternScoreThreshold = (id) =>
+  requestApi({
+    method: 'GET',
+    responseType: 'text',
+    url: getInt(85, id),
+    parse: true,
+    delay: 3000,
+    timeout: 30000,
+    params: {},
+    ...hardRetry,
+  });
 
 // **************** ReferenceCommands ****************
-const getActiveReferenceObject = () => {
-  return requestApi({
+const getActiveReferenceObject = () =>
+  requestApi({
     method: 'GET',
     responseType: 'blob',
-    url: `/ActiveReferenceImage.jpg`, 
-    parse: true, 
-    delay: 1000, 
+    url: `/ActiveReferenceImage.jpg`,
+    parse: true,
+    delay: 1000,
     timeout: 3000,
     params: {},
-    ...hardRetry
+    ...hardRetry,
   });
-}
 
-const getReferenceObject = (id) => {
-  return requestApi({
+const getReferenceObject = (id) =>
+  requestApi({
     method: 'GET',
     responseType: 'blob',
-    url: `/getRefObject?${id}`, // 0 - start 
-    parse: true, 
-    delay: 1000, 
+    url: `/getRefObject?${id}`, // 0 - start
+    parse: true,
+    delay: 1000,
     timeout: 3000,
     params: {},
-    ...hardRetry
+    ...hardRetry,
   });
-}
 
-const setReferenceObject = (id) => {
-  return requestApi({
+const setReferenceObject = (id) =>
+  requestApi({
     method: 'GET',
     responseType: 'text',
-    url: setInt(1, id), // 0 - start 
-    parse: true, 
-    delay: 3000, 
+    url: setInt(1, id), // 0 - start
+    parse: true,
+    delay: 3000,
     timeout: 65000,
     params: {},
-    ...hardRetry
+    ...hardRetry,
   });
-}
 
-const getNumberActiveReferenceObject = () => {
-  return requestApi({
+const getNumberActiveReferenceObject = () =>
+  requestApi({
     method: 'GET',
     responseType: 'text',
-    url: getInt(1), 
-    parse: true, 
-    delay: 3000, 
+    url: getInt(1),
+    parse: true,
+    delay: 3000,
     timeout: 30000,
     params: {},
-    ...hardRetry
+    ...hardRetry,
   });
-}
 
-const getCountActiveReferenceObject = () => {
-  return requestApi({
+const getCountActiveReferenceObject = () =>
+  requestApi({
     method: 'GET',
     responseType: 'text',
-    url: getInt(2), 
-    parse: true, 
-    delay: 3000, 
+    url: getInt(2),
+    parse: true,
+    delay: 3000,
     timeout: 65000,
     params: {},
-    ...hardRetry
+    ...hardRetry,
   });
-}
 
 const CommandService = {
   getLiveImage,
@@ -474,7 +448,7 @@ const CommandService = {
   getPatternScoreThreshold,
   lockLogImages,
   unlockLogImages,
-  loadLogImage
-}
+  loadLogImage,
+};
 
 export default CommandService;
