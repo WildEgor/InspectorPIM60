@@ -5,18 +5,14 @@ import Box from '@material-ui/core/Box';
 import { useInterval } from "react-use";
 
 import { StyledImage, StyledBadge } from "../../style/components";
-import { TInspectorService, EOverlay, EImageSize } from "../../core/services/inspector.service";
+import { handlePromise } from "../../core/utils/http-utils";
 
 interface Props {
-    id?: number,
-    type?: 'liveImage' | 'logImage',
-    Inspector: TInspectorService,
-    scale?: EImageSize,
-    overlay: EOverlay,
+    getImage?: () => Promise<any>,
     width?: number,
     height?: number,
     refreshTime?: number,
-    isRunning?: boolean
+    isAutoUpdate?: boolean
 }
 
 interface ImageRawProps {
@@ -40,15 +36,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function ImageBox(props: Props) {
     const { 
-        id = 0,
-        type = 'liveImage',
-        Inspector,
-        scale = 0,
-        overlay,
+        getImage,
         width = 480,
         height = 320,
         refreshTime = 700,
-        isRunning = true
+        isAutoUpdate = true
     } = props;
     const classes = useStyles({ maxWidth: width, minHeight: height });
     const [imageURL, setImageURL] = useState<string>('');
@@ -56,55 +48,42 @@ export default function ImageBox(props: Props) {
     const [error, setError] = useState<boolean>(false);
     const [delay, setDelay] = useState<number>(refreshTime);
 
-    useInterval(
-        () => {
-        if (!pending)
-            getImage();
-        },
-        isRunning ? delay : null
-    );
-
-    const getImage = async () => {
-        let response = null;
-
+    const getImageURL = async () => {
         setPending(true);
-        switch(type) {
-            case 'liveImage': 
-                response = await Inspector.getLiveImage(Date.now(), scale, overlay);
-                console.log('[Image Box][LiveImage] Response: ', response);
-            break;
-            case 'logImage':
-                response = await Inspector.getLogImage(id, scale, overlay);
-                console.log('[Image Box][LogImage] Response: ', response);
-            break;
-            default:
-            break;
-        }
+        setError(false);
 
-        if (response) {
-            setImageURL(response as string);
+        const [response, error] = await handlePromise(getImage());
+        if (!error && response) {
+            setImageURL(response);
             setPending(false);
             setError(false);
-        } else if (response.error) {
-            console.error('[Image Box] Error: ', response.error);
+        } else {
             setPending(false);
-            setError(true);
+            setError(true); 
         }
     }
 
+    useInterval(
+        () => {
+        if (!pending)
+            getImageURL();
+        },
+        isAutoUpdate ? delay : null
+    );
+
     useEffect(() => {
-        getImage();
+        getImageURL();
     }, [])
 
     return(
-            <Paper className={classes.paper}>
-                <Box display='flex' flexDirection='column'>
-                <StyledBadge color="secondary" badgeContent=" " invisible={!error}></StyledBadge>
-                <StyledImage
-                    src={imageURL}
-                    //errorIcon={<div>Error</div>}
-                />
-                </Box>
-            </Paper>
+        <Paper className={classes.paper}>
+            <Box display='flex' flexDirection='column'>
+            <StyledBadge color="secondary" badgeContent=" " invisible={!error}></StyledBadge>
+            <StyledImage
+                src={imageURL}
+                //errorIcon={<div>Error</div>}
+            />
+            </Box>
+        </Paper>
     )
 }

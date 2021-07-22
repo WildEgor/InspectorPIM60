@@ -65,27 +65,27 @@ abstract class HttpClient {
             baseURL: this._baseURL,
         });
 
-        const mock = new MockAdapter(this._instance);
+        // const mock = new MockAdapter(this._instance);
 
-        mock
-            .onGet(/LiveImage.jpg\/?.*/)
-            .reply(
-                200,
-                'https://www.ffonseca.com/imgs/produtos/043010_1_7115_Video_Inspector-sensor_Sick_443x281px.jpg'
-            );
+        // mock
+        //     .onGet(/LiveImage.jpg\/?.*/)
+        //     .reply(
+        //         200,
+        //         'https://www.ffonseca.com/imgs/produtos/043010_1_7115_Video_Inspector-sensor_Sick_443x281px.jpg'
+        //     );
         
-        mock
-            .onGet(/ImageResult\/?.*/).reply(200, { MESSAGE: { MESSAGE_SIZE: 1231, IMAGE_DECISION: 1 } });
+        // mock
+        //     .onGet(/ImageResult\/?.*/).reply(200, { MESSAGE: { MESSAGE_SIZE: 1231, IMAGE_DECISION: 1 } });
         
-        mock
-            .onGet(/LogImage.jpg\/?.*/)
-            .reply(
-                200,
-                'https://www.ffonseca.com/imgs/produtos/043010_1_7115_Video_Inspector-sensor_Sick_443x281px.jpg'
-            );
+        // mock
+        //     .onGet(/LogImage.jpg\/?.*/)
+        //     .reply(
+        //         200,
+        //         'https://www.ffonseca.com/imgs/produtos/043010_1_7115_Video_Inspector-sensor_Sick_443x281px.jpg'
+        //     );
         
-        mock.onPost('/LockLog').reply(200, 1);
-        mock.onPost('/LockLog?Unlock').reply(200, 1);
+        // mock.onPost('/LockLog').reply(200, 1);
+        // mock.onPost('/LockLog?Unlock').reply(200, 1);
 
         this._initializeResponseInterceptor();
     }

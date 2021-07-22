@@ -10,6 +10,8 @@ import CachedIcon from '@material-ui/icons/Cached';
 import { TCamMode, TInspectorService } from "../../core/services/inspector.service";
 import { StyledSwitch , StyledSkeleton, StyledBadge } from "../../style/components";
 
+import { handlePromise } from "../../core/utils/http-utils";
+
 interface Props {
     Inspector: TInspectorService
 }
@@ -36,35 +38,33 @@ export default function Mode(props: Props) {
 
     const { Inspector } = props;
 
-    const getCameraMode = useCallback(() => {
+    const getCameraMode = async () => {
         setPending(true);
         setError(false);
-        Inspector.getMode()
-        .then(resp => {
+        const [resp, error] = await handlePromise(Inspector.getMode());
+        if (!error && resp) {
             setVal(Number(resp.data));
             setPending(false);
             setError(false);
-        })
-        .catch(e => {
+        } else {
             setError(true);
-            setPending(false);
-        });
-    }, [val])
+            setPending(false); 
+        }
+    }
 
-    const setCameraMode = (mode: boolean) => {
+    const setCameraMode = async (mode: boolean) => {
         setPending(true);
         setError(false);
         const check: TCamMode = mode? 0 : 1;
         setVal(check);
-        Inspector.setMode(check)
-        .then(r => {
+        const [resp, error] = await handlePromise(Inspector.setMode(check))
+        if (!error) {
             setPending(false);
-            console.log(r)
-        })
-        .catch(e => {
+            setError(false);
+        } else {
             setPending(false);
             setError(true);
-            console.error(e)});
+        }
     }
 
     useEffect(() => {

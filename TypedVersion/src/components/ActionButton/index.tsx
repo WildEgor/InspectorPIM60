@@ -9,25 +9,25 @@ import { EActions, ECommands, TWidget, TInspectorService } from "../../core/serv
 import { StyledButton, StyledSkeleton, StyledBadge } from "../../style/components";
 
 interface Props {
-id: EActions,
-toolName?: string,
-Inspector: TInspectorService
-squareside?: number,
-usedhcp?: number
+    id: EActions,
+    toolName?: string,
+    Inspector: TInspectorService
+    squareside?: number,
+    usedhcp?: number
 }
 
 const useStyles = makeStyles((theme: Theme) =>
-createStyles({
-root: {
-    flexGrow: 1,
-},
-paper: {
-    padding: theme.spacing(1),
-    margin: theme.spacing(1),
-    maxWidth: 180,
-    minHeight: 30
-},
-}),
+    createStyles({
+        root: {
+            flexGrow: 1,
+        },
+        paper: {
+            padding: theme.spacing(1),
+            margin: theme.spacing(1),
+            maxWidth: 180,
+            minHeight: 30
+        },
+    }),
 );
 
 export default function CheckBox(props: Props) {
@@ -92,9 +92,9 @@ return(
             <Box display='flex' position='relative' alignItems='center'>
                 {pending && <><Typography variant='h5'>{options.toolName + ': '}</Typography><StyledSkeleton width={100} height={50}></StyledSkeleton></>}
                 {!pending &&   
-                <StyledButton value={val} onClick={setValue} color='primary' variant="outlined">
-                    <Typography>{options.toolName}</Typography>
-                </StyledButton>
+                    <StyledButton value={val} onClick={setValue} color='primary' variant="outlined">
+                        <Typography>{options.toolName}</Typography>
+                    </StyledButton>
                 }
             </Box>
         </StyledBadge>

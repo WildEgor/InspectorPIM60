@@ -1,39 +1,26 @@
-import React, { 
-  useEffect, 
-  useState, 
-  // useContext 
-} 
-from 'react';
-
-// import { StoreContext } from "../../core/store/rootStore";
+import React, { useEffect, useState } from 'react';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-// import Grid from '@material-ui/core/Grid';
 import CachedIcon from '@material-ui/icons/Cached';
 import Paper from '@material-ui/core/Paper';
-// import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-// import Tooltip from '@material-ui/core/Tooltip';
-// import Input from '@material-ui/core/Input';
 import Box from '@material-ui/core/Box';
-
 import Carousel from 'react-gallery-carousel';
 import 'react-gallery-carousel/dist/index.css';
+
+import { handlePromise } from "../../../core/utils/http-utils";
 
 import { 
   StyledImage,
   StyledSkeleton, 
   StyledBadge 
-} from "../../style/components";
-
-import { EImageSize, EOverlay, TInspectorService } from "../../core/services/inspector.service";
+} from "../../../style/components";
 
 interface Props {
   width?: 640 | 480,
   height?: 480 | 320,
   range: string,
-  scale: EImageSize,
-  overlay: EOverlay,
-  Inspector: TInspectorService
+  getImage: (id: number) => Promise<any>
+  lockLogger: (lock?: boolean) => Promise<any>
 }
 
 interface ImageRawProps {
@@ -64,44 +51,51 @@ createStyles({
 );
 
 const LogImageList = (props: Props) => {
-  const { Inspector, range, scale, overlay, width = 480,  height = 320 } = props;
+  const { getImage, lockLogger, range, width = 480,  height = 320 } = props;
   const classes = useStyles({ maxWidth: width, minHeight: height });
-  const [logImages, setLogImages] = useState<Array<CarouselImage>>([{ src: ' '}]);
+  const [logImages, setLogImages] = useState<Array<CarouselImage>>([{
+    src: ''
+  }]);
   const [pending, setPending] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   const getImages = async () => {
-    try {
+    const indexes = range.split('-');
+    const start = Number(indexes[0]);
+    const stop = Number(indexes[1]);
+
+    if (indexes.length && start < stop){
       setPending(true);
       setError(false);
 
-      await Inspector.setLogState(true);
+      await handlePromise(lockLogger(true))
 
-      const indexes = range.split('-');
-      const start = Number(indexes[0]);
-      const stop = Number(indexes[1]);
+      console.log('START STOP', start, stop);
 
-      if (indexes.length && start < stop){
-        const values = (await Promise.all(Array.from({ length: start + stop }, (_v , k)=> {
-          return Inspector.getLogImage(k, scale, overlay)
-        }))).map((item) => {
+      const [values, error] = await handlePromise(Promise.all<string[]>(Array.from({ length: stop - start + 1 }, (_v , k)=> {
+        return handlePromise(getImage(k + start));
+      })))
+
+      if(!error && values.length) {
+        const images: CarouselImage[] = values.map((item: string) => {
           return {
-            src: (item as unknown) as string,
-            thumbnail: (item as unknown) as string
-          } as CarouselImage
-        });
+            src: item,
+            thumbnail: item
+          }
+        })
 
+        console.log('Logger images: ', images);
+        
+        setLogImages(images);
 
         setPending(false);
         setError(false);
-        console.log('[info] Retrieve new log images: ', values);
-        setLogImages(values);
-        await Inspector.setLogState(false);
+      } else {
+        setPending(false);
+        setError(true);
       }
-    } catch (error) {
-      console.error('[LogImageList] ', error);
-      setPending(false);
-      setError(true);
+
+      await handlePromise(lockLogger(false))
     }
   }
 

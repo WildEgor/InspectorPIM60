@@ -8,7 +8,7 @@ import Box from '@material-ui/core/Box';
 import CheckBox from "../CheckBox";
 import ImageBox from "../ImageBox";
 import ActionButton from "../ActionButton";
-import LogImageList from "../LogImageList";
+import LogImageList from "../organism/LogImageList";
 
 import { StyledButton } from "../../style/components";
 
@@ -17,7 +17,7 @@ const App = observer(() => {
 
   return (
     <Box>
-      <Slider
+      {/* <Slider
         Inspector={InspectorService.getInstance("192.168.99.9")}
         //toolName='Angle offset'
         id={ECommands.DISTANCE_OFFSET}
@@ -38,25 +38,25 @@ const App = observer(() => {
         tool={0}
         id={ECommands.OBJ_LOC_ROTATION_MODE}
         Inspector={InspectorService.getInstance("192.168.99.9")}
-      />
-      <Box>
+      /> */}
+      {/* <Box>
         <ImageBox
-          scale={EImageSize.ORIG}
-          isRunning={isRun}
-          overlay={EOverlay.SHOW}
-          Inspector={InspectorService.getInstance("192.168.99.9")}
+          getImage={() => {
+            return InspectorService.getInstance('192.168.99.9').getLiveImage(Date.now(), EImageSize.ORIG, EOverlay.SHOW)
+          }}
+          refreshTime={500}
+          isAutoUpdate={isRun}
         />
         <StyledButton onClick={(e) => setIsRun(!isRun)} >Stop</StyledButton>
-      </Box>
-      <ActionButton
+      </Box> */}
+      {/* <ActionButton
         Inspector={InspectorService.getInstance("192.168.99.9")}
         id={EActions.RETEACH_REF_OBJ}
-      />
+      /> */}
       <LogImageList
-        scale={EImageSize.ORIG}
-        overlay={EOverlay.SHOW}
-        Inspector={InspectorService.getInstance("192.168.99.9")}
-        range='0-30'
+        lockLogger={(lock) => InspectorService.getInstance("192.168.99.9").setLogState(lock)}
+        getImage={(id) => InspectorService.getInstance("192.168.99.9").getLogImage(id, EImageSize.ORIG, EOverlay.SHOW)}
+        range='5-30'
       />
     </Box>
   )

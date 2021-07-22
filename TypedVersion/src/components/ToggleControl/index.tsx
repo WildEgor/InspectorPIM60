@@ -10,6 +10,8 @@ import CachedIcon from '@material-ui/icons/Cached';
 import { ECommands, TWidget, TInspectorService } from "../../core/services/inspector.service";
 import { StyledToggleButton , StyledSkeleton, StyledBadge } from "../../style/components";
 
+import { handlePromise } from "../../core/utils/http-utils";
+
 interface Props {
     tool?: number,
     id: ECommands,
@@ -28,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function ToggleControl(props: Props){
+export default function ToggleControl(props: Props): JSX.Element {
     const {
         labels,
         id = 0,
@@ -42,7 +44,7 @@ export default function ToggleControl(props: Props){
     const [options, setOptions] = useState<TWidget>(Inspector.defaultSettings[id]); // defaultSettings
     const [val, setVal] = useState<number>(Inspector.defaultSettings[id].defaultValue as number); // current 
     
-    const getValue = () => {
+    const getValue = async () => {
         setPending(true);
         setError(false);
         console.log('getValue');
@@ -51,19 +53,18 @@ export default function ToggleControl(props: Props){
         if (tool !== -1) 
             args.push(tool);
         
-        Inspector.getInt(id, args)
-        .then(resp => {
+        const [resp, error] = await handlePromise(Inspector.getInt(id, args));
+        if (!error && resp) {
             setVal(resp.data);
             setPending(false);
             setError(false);
-        })
-        .catch(e => {
+        } else {
             setPending(false);
             setError(true);
-        })
+        }
     }
 
-    const setValue = (event: any, newValue: number) => {
+    const setValue = async (event: any, newValue: number) => {
         setPending(true);
         setError(false);
 
@@ -79,16 +80,15 @@ export default function ToggleControl(props: Props){
 
         setVal(newValue);
 
-        console.log('setValue');
-        Inspector.setInt(id, newArray)
-        .then(resp => {
-            setPending(false);
-            setError(false);
-        })
-        .catch(e => {
+        const [resp, error] = await handlePromise(Inspector.setInt(id, newArray))
+
+        setPending(false);
+        setError(false);
+
+        if (error){
             setPending(false);
             setError(true);
-        })
+        }
     }
 
     const onChange = (event: React.MouseEvent<HTMLElement>, newValue: number) => {
@@ -112,7 +112,10 @@ export default function ToggleControl(props: Props){
             <StyledBadge color="secondary" badgeContent=" " invisible={!error}>
                 <Box>
                     { pending && <StyledSkeleton  width={100} height={50}/> }
-                    { error && <IconButton aria-label="update toggle" onClick={getValue}><CachedIcon/></IconButton> }
+                    { error && <IconButton aria-label="update toggle" onClick={() => {
+                        console.log('UPDATE BUTTON')
+                        getValue();
+                    }}><CachedIcon/></IconButton> }
                     { !pending && 
                         <ToggleButtonGroup
                             value={val}

@@ -351,7 +351,7 @@ class InspectorService extends HttpClient {
       responseType: 'blob',
       url: `/LiveImage.jpg${type? `?${type}` : ''}`,
       parse: true,
-      timeout: 1000,
+      timeout: 5000,
       params: { id, s },
     })
   }
@@ -368,7 +368,7 @@ class InspectorService extends HttpClient {
       responseType: 'json',
       url: '/ImageResult',
       parse: true,
-      timeout: 1000,
+      timeout: 5000,
       params: { id },
     })
   }
@@ -403,7 +403,7 @@ class InspectorService extends HttpClient {
       method: 'POST',
       url: lock? `/LockLog` : `/LockLog?Unlock`,
       parse: false,
-      timeout: 1000,
+      timeout: 5000,
       params: {},
     })
   }
@@ -420,7 +420,7 @@ class InspectorService extends HttpClient {
       url: `/LogImage.jpg?${id < 10 ? "0" + id : id}${type? `&${type}` : ''}`,
       responseType: 'blob',
       parse: false,
-      timeout: 1000,
+      timeout: 5000,
       params: {},
     })
   }
