@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import { EActions, ECommands, TWidget, TInspectorService } from "../../core/services/inspector.service";
 
-import { StyledButton, StyledSkeleton, StyledBadge } from "../../style/components";
+import StyledButton from "../atoms/StyledButton";
+import StyledSkeleton from "../atoms/StyledSkeleton";
+import StyledBadge from "../atoms/StyledBadge";
+import PaperContainer from '../PaperContainer';
 
 interface Props {
     id: EActions,
@@ -16,20 +17,6 @@ interface Props {
     usedhcp?: number
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            flexGrow: 1,
-        },
-        paper: {
-            padding: theme.spacing(1),
-            margin: theme.spacing(1),
-            maxWidth: 180,
-            minHeight: 30
-        },
-    }),
-);
-
 export default function CheckBox(props: Props) {
 const { 
     id,
@@ -38,7 +25,6 @@ const {
     usedhcp = 0,
     Inspector
 } = props;
-const classes = useStyles();
 const [pending, setPending] = useState<boolean>(false); // network status
 const [error, setError] = useState<boolean>(false); // network status
 const [options, setOptions] = useState<TWidget>(Inspector.defaultSettings[id]); // defaultSettings
@@ -87,7 +73,7 @@ const setValue = async () => {
 }
 
 return(
-        <Paper className={classes.paper}>
+    <PaperContainer width={200}>
         <StyledBadge color="secondary" badgeContent=" " invisible={!error}>
             <Box display='flex' position='relative' alignItems='center'>
                 {pending && <><Typography variant='h5'>{options.toolName + ': '}</Typography><StyledSkeleton width={100} height={50}></StyledSkeleton></>}
@@ -98,6 +84,6 @@ return(
                 }
             </Box>
         </StyledBadge>
-        </Paper>
+    </PaperContainer>   
     )
 }

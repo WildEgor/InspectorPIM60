@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -10,7 +8,10 @@ import IconButton from '@material-ui/core/IconButton';
 import CachedIcon from '@material-ui/icons/Cached';
 
 import { TWidget, TInspectorService } from "../../core/services/inspector.service";
-import { StyledCheckBox, StyledSkeleton, StyledBadge } from "../../style/components";
+import StyledCheckBox from "../atoms/StyledCheckBox";
+import StyledBadge from "../atoms/StyledBadge";
+import StyledSkeleton from "../atoms/StyledSkeleton";
+import PaperContainer from "../PaperContainer";
 
 interface Props {
     id: number,
@@ -20,15 +21,6 @@ interface Props {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-        flexGrow: 1,
-    },
-    paper: {
-        padding: theme.spacing(1),
-        margin: theme.spacing(1),
-        //maxWidth: 200,
-        minHeight: 30
-    },
     formControl: {
         margin: theme.spacing(3),
     },
@@ -103,24 +95,22 @@ export default function CheckBox(props: Props) {
     }
 
     return(
-        <Box display='flex' position='relative' alignItems='center'>
-            <Paper className={classes.paper}>
-                { error && <IconButton aria-label="update toggle" onClick={getValue}><CachedIcon/></IconButton> }
-                { pending && <StyledSkeleton  width={100} height={50}/> }
-                <StyledBadge color="secondary" badgeContent=" " invisible={!error}>
-                { !pending && 
-                    <FormControl component="fieldset" className={classes.formControl}>
-                        <FormGroup>
-                        <FormControlLabel
-                            disabled={error}
-                            control={<StyledCheckBox checked={val} onChange={handleChange} name="settings" />}
-                            label={<Typography variant='h5'>{options.toolName}</Typography>}
-                        />
-                        </FormGroup>
-                    </FormControl>
-                }
-                </StyledBadge>
-            </Paper>
-        </Box>
+        <PaperContainer width={200}>
+            { error && <IconButton aria-label="update toggle" onClick={getValue}><CachedIcon/></IconButton> }
+            { pending && <StyledSkeleton  width={100} height={50}/> }
+            <StyledBadge color="secondary" badgeContent=" " invisible={!error}>
+            { !pending && 
+                <FormControl component="fieldset" className={classes.formControl}>
+                    <FormGroup>
+                    <FormControlLabel
+                        disabled={error}
+                        control={<StyledCheckBox checked={val} onChange={handleChange} name="settings" />}
+                        label={<Typography variant='h5'>{options.toolName}</Typography>}
+                    />
+                    </FormGroup>
+                </FormControl>
+            }
+            </StyledBadge>
+        </PaperContainer>
     )
 }

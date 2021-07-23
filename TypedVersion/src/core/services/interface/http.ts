@@ -66,6 +66,8 @@ abstract class HttpClient {
         });
 
         // const mock = new MockAdapter(this._instance);
+        // mock.onGet("gINT_173_0").timeoutOnce();
+        // mock.onGet("gINT_173_0").reply(200, 1000);
 
         // mock
         //     .onGet(/LiveImage.jpg\/?.*/)
@@ -77,6 +79,9 @@ abstract class HttpClient {
         // mock
         //     .onGet(/ImageResult\/?.*/).reply(200, { MESSAGE: { MESSAGE_SIZE: 1231, IMAGE_DECISION: 1 } });
         
+        // mock
+        //     .onGet(/LogImage.jpg\/?.*/).timeoutOnce()
+
         // mock
         //     .onGet(/LogImage.jpg\/?.*/)
         //     .reply(

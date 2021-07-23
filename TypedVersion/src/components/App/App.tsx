@@ -1,36 +1,44 @@
-import React, { useState } from "react";
-import InspectorService, { EActions, ECommands, EOverlay, EImageSize } from "../../core/services/inspector.service";
+import React, { useState, useContext, useEffect } from "react";
+import { StoreContext } from "../../core/store/rootStore";
+import InspectorService, { EActions, ECommands, EOverlay, EImageSize, TCamMode } from "../../core/services/inspector.service";
 import { observer } from 'mobx-react-lite'
-import Slider from "../Slider";
+import ToolSlider from "../ToolSlider";
 import Mode from "../Mode";
 import ToggleControl from "../ToggleControl";
 import Box from '@material-ui/core/Box';
 import CheckBox from "../CheckBox";
-import ImageBox from "../ImageBox";
+import ImageBox from "../molecules/ImageBox";
 import ActionButton from "../ActionButton";
 import LogImageList from "../organism/LogImageList";
 
-import { StyledButton } from "../../style/components";
+import StyledButton from "../atoms/StyledButton";
 
 const App = observer(() => {
-  const [isRun, setIsRun] = useState<boolean>(false);
+  const { notificationStore } = useContext(StoreContext);
+
+  const Inspector = InspectorService.getInstance("192.168.99.9");
 
   return (
     <Box>
-      {/* <Slider
-        Inspector={InspectorService.getInstance("192.168.99.9")}
-        //toolName='Angle offset'
-        id={ECommands.DISTANCE_OFFSET}
-        tool={0}
-        // min={10}
-        // max={100}
-        // step={1}
-        // range={false}
+      <ToolSlider
+        toolName={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].toolName}
+        commandID={ECommands.DISTANCE_OFFSET}
+        toolID={0}
+        range={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].range}
+        min={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].min}
+        max={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].max}
+        multiplier={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].multiplier}
+        unit={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].unit}
+        dynamic={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].dynamic}
+        getValue={(id, args) => Inspector.getInt(id, args)}
+        setValue={(id, args) => Inspector.setInt(id, args)}
+        getDynamic={(args) => Inspector.getInt(ECommands.GET_ROI_SIZE, args)}
       />
       <Mode
-        Inspector={InspectorService.getInstance("192.168.99.9")}
+        getMode={() => Inspector.getMode()}
+        setMode={(mode) => Inspector.setMode(mode as TCamMode)}
       />
-      <ToggleControl
+      {/* <ToggleControl
         Inspector={InspectorService.getInstance("192.168.99.9")}
         id={ECommands.EDGE_LOC_LINE_FIT_CRITERIA}
       />
@@ -38,7 +46,7 @@ const App = observer(() => {
         tool={0}
         id={ECommands.OBJ_LOC_ROTATION_MODE}
         Inspector={InspectorService.getInstance("192.168.99.9")}
-      /> */}
+      />  */}
       {/* <Box>
         <ImageBox
           getImage={() => {
@@ -56,7 +64,14 @@ const App = observer(() => {
       <LogImageList
         lockLogger={(lock) => InspectorService.getInstance("192.168.99.9").setLogState(lock)}
         getImage={(id) => InspectorService.getInstance("192.168.99.9").getLogImage(id, EImageSize.ORIG, EOverlay.SHOW)}
-        range='5-30'
+        isError={(error) => {
+          notificationStore.setNotification({
+            message: error,
+            variant: 2,
+            timeout: 5000
+          })
+        }}
+        range={[0, 5]}
       />
     </Box>
   )

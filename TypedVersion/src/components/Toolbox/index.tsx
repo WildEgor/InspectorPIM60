@@ -1,35 +1,18 @@
-import React, { useState } from "react";
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
+import React from "react";
+import PaperContainer from "../PaperContainer";
 
-import { StyledImage, StyledBadge } from "../../style/components";
-import { TInspectorService, EOverlay, EImageSize } from "../../core/services/inspector.service";
-
+// import StyledImage from "../atoms/StyledImage";
+// import StyledBadge from "../atoms/StyledBadge";
 interface Props {
     isRunning?: boolean
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-        flexGrow: 1,
-    },
-    paper: {
-        padding: theme.spacing(1),
-        margin: theme.spacing(1),
-    },
-  }),
-);
-
 export default function Toolbox(props: Props) {
     const { 
-        isRunning = true
+        // isRunning = true
     } = props;
 
-    const classes = useStyles();
-
     return(
-        <Box></Box>
+        <PaperContainer width={300}></PaperContainer>
     );
 }

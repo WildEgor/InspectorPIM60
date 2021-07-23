@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { observer } from 'mobx-react-lite'
 import { styled } from '@material-ui/core/styles';
 
-import { StoreContext } from "../../core/store/rootStore";
-import { ENotification } from "../../core/store/notificationsStore/notificationsTypes";
+import { StoreContext } from "../../../core/store/rootStore";
+import { ENotification } from "../../../core/store/notificationsStore/notificationsTypes";
 
 const Notifier = observer(() => {
   const { notificationStore } = useContext(StoreContext)

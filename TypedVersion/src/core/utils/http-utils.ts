@@ -53,33 +53,24 @@ function parseResponseCommand(responseData: string): TParseResponseCommand {
   return o;
 }
 
-const handlePromise = async <T>(promise: Promise<T>)  => {
-  try {
-    const data = await promise;
-    return [data, undefined];
-  } catch (error) {
-    return [undefined, error];
-  }
+// Return [error, data]
+function handlePromise<T, U = Error> (
+  promise: Promise<T>,
+  errorExt?: Record<string, unknown>
+): Promise<[U | null, T | undefined]> {
+  return promise
+    .then<[null, T]>((data: T) => [null, data])
+    .catch<[U, undefined]>((err: U) => {
+      if (errorExt) {
+        Object.assign(err, errorExt);
+      }
+      return [err, undefined];
+    });
 }
-
-// function handlePromise<T, U = Error> (
-//   promise: Promise<T>,
-//   errorExt?: Record<string, unknown>
-// ): Promise<[U | null, T | undefined]> {
-//   return promise
-//     .then<[null, T]>((data: T) => [null, data])
-//     .catch<[U, undefined]>((err: U) => {
-//       if (errorExt) {
-//         Object.assign(err, errorExt);
-//       }
-//       return [err, undefined];
-//     });
-// }
 
 //const handleRequest = (fn: Function, msg: string) => async (...args) => await fn(...args).catch(e => Error(`${msg} caused by: ${e}`));
 
 export {
   handlePromise,
-  //handleRequest,
   parseResponseCommand
 };

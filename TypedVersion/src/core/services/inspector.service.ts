@@ -176,7 +176,7 @@ class InspectorService extends HttpClient {
     this.defaultSettings[ECommands.GAIN] = { type: 'slider', toolName: 'Change gain', defaultValue: 100, min: 100, max: 400 };
     this.defaultSettings[ECommands.TRIG_MODE] = { type: 'radio', toolName: 'Change trig mode', defaultValue: 'Free-running',  labels: ['Free-running', 'Triggered'] };
 
-    // Object locator
+    // 1) Object locator
     this.defaultSettings[ECommands.OBJ_LOC_MATCH_THRESHOLD] = { type: 'slider',  toolName: 'Change objloc threshold', defaultValue: 0, min: 0, max: 100 };
     this.defaultSettings[ECommands.OBJ_LOC_ROTATION_MODE] = { type: 'check', toolName: 'Change objloc rotation mode', defaultValue: false };
     this.defaultSettings[ECommands.OBJ_LOC_ROTATION_SEARCH] = { type: 'slider',  toolName: 'Change objloc rotation search', defaultValue: 0, min: 0, max: 180 };
@@ -184,20 +184,30 @@ class InspectorService extends HttpClient {
     this.defaultSettings[ECommands.OBJ_LOC_ROBUSTNESS] = { type: 'radio', toolName: 'Change objloc robustness', defaultValue: 'Normal', labels: ['High robustness', 'Normal', 'High speed'] };
     this.defaultSettings[ECommands.OBJ_LOC_ACCURACY] = { type: 'radio', toolName: 'Change objloc accuracy', defaultValue: 'Normal', labels: ['High accuracy', 'Normal', 'High speed'] };
 
-    // Blob
+    // 2) Pixel Counter
+    this.defaultSettings[ECommands.PIXEL_INTENSITY_THRESHOLD] = { type: 'slider', toolName: 'Change pixel intensity threshold', defaultValue: [0, 255], min: 0, max: 255, range: true };
+    this.defaultSettings[ECommands.PIXEL_NO_PIXELS_THRESHOLD] = { type: 'slider', toolName: 'Change pixel no pixel  threshold', dynamic: 'max', defaultValue: [0, 0], min: 0, max: 0, range: true };
+
+    // 3) Edge pixel counter
+    this.defaultSettings[ECommands.EDGE_PIXEL_EDGE_STRENGTH] = { type: 'slider', toolName: 'Change edge pixel strenght', defaultValue: 0 };
+    this.defaultSettings[ECommands.EDGE_PIXEL_NO_PIXELS_THRESHOLD] = { type: 'slider', toolName: 'Change edge pixel no pixel threshold', dynamic: 'max', defaultValue: [0, 0], min: 0, max: 0, range: true };
+
+    // 4) Pattern
+    this.defaultSettings[ECommands.PATTERN_POSITION_TOLERANCE] = { type: 'slider', toolName: 'Change pattern position tolerance', defaultValue: 0, min: 0, max: 4 };
+    this.defaultSettings[ECommands.PATTERN_SCORE_THRESHOLD] = { type: 'slider', toolName: 'Change pattern score threshold', defaultValue: false };
+
+    // 5) Blob
     this.defaultSettings[ECommands.BLOB_INTENSITY_THRESHOLD] = { type: 'slider', toolName: 'Change blob intensity treshold', defaultValue: [0, 255], min: 0, max: 255, range: true };
     this.defaultSettings[ECommands.BLOB_AREA_THRESHOLD] = { type: 'slider', toolName: 'Change blob area threshold', defaultValue: [10, 307200], min: 10, max: 307200, range: true };
-
     // TODO: Get and set max here
     // defaultSettings[CE.BLOB_ANGLE_THRESHOLD] : ... Has two values to adjust
-
     this.defaultSettings[ECommands.BLOB_STRUCTURE_THRESHOLD] = { type: 'slider', toolName: 'Change blob structure threshold', defaultValue: [0, 100000], min: 0, max: 100000, range: true };
     this.defaultSettings[ECommands.BLOB_EDGE_STRENGTH] = { type: 'slider', toolName: 'Change blob edge strenght', defaultValue: [0, 100], min: 0, max: 100 };
     this.defaultSettings[ECommands.BLOB_AMBIENT_LIGHT] = { type: 'check', toolName: 'Change blob ambient light', defaultValue: false };
     this.defaultSettings[ECommands.BLOB_SEARCH_METHOD] = { type: 'radio', toolName: 'Change blob search method', defaultValue: 'Normal', labels: ['High quality', 'Normal', 'High speed'] };
     this.defaultSettings[ECommands.BLOB_NO_BLOB_THRESHOLD] = { type: 'slider', toolName: 'Change blob no blob threshold', defaultValue: [0, 16],  min: 0, max: 16, range: true };
 
-    // Polygon
+    // 6) Polygon
     this.defaultSettings[ECommands.POLYGON_POSITION_TOLERANCE] = { type: 'slider', toolName: 'Change polygon position tolerance', defaultValue: 1, min: 1, max: 400 };
     this.defaultSettings[ECommands.POLYGON_FLEXIBILITY_TOLERANCE] = { type: 'slider', toolName: 'Change polygon flexibility tolerance', defaultValue: 0, min: 0, max: 100 };
     this.defaultSettings[ECommands.POLYGON_SCORE_THRESHOLD] = { type: 'slider', toolName: 'Change polygon score treshold', defaultValue: 0, min: 0, max: 100 };
@@ -207,43 +217,38 @@ class InspectorService extends HttpClient {
     this.defaultSettings[ECommands.POLYGON_MAX_DEFECTS_THRESHOLD] = { type: 'slider', toolName: 'Change polygon max defect threshold', defaultValue: [0, 100], min: 0, max: 100 };
     this.defaultSettings[ECommands.POLYGON_DEFECT_DETECTION_MODE] = { type: 'check', toolName: 'Change polygon defect mode', defaultValue: false };
 
-    // Pixel Counter
-    this.defaultSettings[ECommands.PIXEL_INTENSITY_THRESHOLD] = { type: 'slider', toolName: 'Change pixel intensity threshold', defaultValue: [0, 255], min: 0, max: 255, range: true };
-    this.defaultSettings[ECommands.PIXEL_NO_PIXELS_THRESHOLD] = { type: 'slider', toolName: 'Change pixel no pixel  threshold', dynamic: 'max', defaultValue: [0, 0], min: 0, max: 0, range: true };
-
-    // Edge pixel counter
-    this.defaultSettings[ECommands.EDGE_PIXEL_EDGE_STRENGTH] = { type: 'slider', toolName: 'Change edge pixel strenght', defaultValue: 0 };
-    this.defaultSettings[ECommands.EDGE_PIXEL_NO_PIXELS_THRESHOLD] = { type: 'slider', toolName: 'Change edge pixel no pixel threshold', dynamic: 'max', defaultValue: [0, 0], min: 0, max: 0, range: true };
-
-    // Pattern
-    this.defaultSettings[ECommands.PATTERN_POSITION_TOLERANCE] = { type: 'slider', toolName: 'Change pattern position tolerance', defaultValue: 0, min: 0, max: 4 };
-    this.defaultSettings[ECommands.PATTERN_SCORE_THRESHOLD] = { type: 'slider', toolName: 'Change pattern score threshold', defaultValue: false };
-
-    // Edge locator
+    // 7) Edge locator
     this.defaultSettings[ECommands.EDGE_LOC_EDGE_CONTRAST] = { type: 'slider', toolName: 'Change edge loc edge contrast', defaultValue: 0 };
     this.defaultSettings[ECommands.EDGE_LOC_LINE_FIT_CRITERIA] = { type: 'radio', toolName: 'Change edge loc line fit criteria', defaultValue: 'First', labels: ['Strongest', 'First', 'Last'] };
     this.defaultSettings[ECommands.EDGE_LOC_POLARITY] = { type: 'radio', toolName: 'Change edge loc polarity', defaultValue: 'Bright to Dark', labels: ['Any', 'Bright to Dark', 'Dark to Bright'] };
     this.defaultSettings[ECommands.EDGE_LOC_SCORE_THRESHOLD] = { type: 'slider', toolName: 'Change edge loc score threshold', defaultValue: false };
 
-    // Circle locator
+    // 8) Circle locator
     this.defaultSettings[ECommands.CIRCLE_LOC_EDGE_CONTRAST] = { type: 'slider', toolName: 'Change circle loc edge contrast', defaultValue: 0 };
     this.defaultSettings[ECommands.CIRCLE_LOC_DIAMETER_THRESHOLD] = { type: 'slider', toolName: 'Change circle loc threshold', defaultValue: [0, 500], min: 0, max: 500, range: true, unit: 0 };
     this.defaultSettings[ECommands.CIRCLE_LOC_LINE_FIT_CRITERIA] = { type: 'radio', toolName: 'Change circle loc line fit criteria', defaultValue: 'Smallest', labels: ['Strongest', 'Smallest', 'Largest'] };
     this.defaultSettings[ECommands.CIRCLE_LOC_POLARITY] = { type: 'radio', toolName: 'Change circle loc polarity', defaultValue: 'Bright to Dark', labels: ['Any', 'Bright to Dark', 'Dark to Bright'] };
-    this.defaultSettings[ECommands.CIRCLE_LOC_ROBUSTNESS] = { type: 'slider', toolName: 'Change circle loc robustness', defaultValue: 0, min: 0, max: 4 };
+    this.defaultSettings[ECommands.CIRCLE_LOC_ROBUSTNESS] = { type: 'slider', toolName: 'Change circle loc robustness', defaultValue: 0, min: 0, max: 4, range: false };
     this.defaultSettings[ECommands.CIRCLE_LOC_SCORE_THRESHOLD] = { type: 'slider', toolName: 'Change circle loc score threshold', defaultValue: 0 };
-    this.defaultSettings[ECommands.CIRCLE_LOC_QUALITY] = { type: 'slider', toolName: 'Change circle loc quality', defaultValue: 0, min: 0, max: 6 };
+    this.defaultSettings[ECommands.CIRCLE_LOC_QUALITY] = { type: 'slider', toolName: 'Change circle loc quality', defaultValue: 0, min: 0, max: 6, range: false };
     this.defaultSettings[ECommands.CIRCLE_LOC_DIAMETER_OFFSET] = { type: 'slider', toolName: 'Change circle loc diameter offset', defaultValue: -1000, min: -1000, max: 1000, range: false, multiplier: 1000, unit: 0 };
-    this.defaultSettings[ECommands.CIRCLE_LOC_DIAMETER_THRESHOLD] = { type: 'slider', toolName: 'Change circle loc diameter threshold', defaultValue: [0, 640], min: 0, max: 640, range: true, multiplier: 1000, unit: 0 };
+    // ??? doubled slider 
+    // this.defaultSettings[ECommands.CIRCLE_LOC_DIAMETER_TOLERANCE_THRESHOLD] = { type: 'slider', toolName: 'Change circle loc diameter threshold' };
 
-    // Distance
+    // 9) Distance
     this.defaultSettings[ECommands.DISTANCE_THRESHOLD] = { type: 'slider', toolName: 'Change distance threshold', defaultValue: [0, 307200], min: 0, max: 307200, range: true, multiplier: 1000, unit: 0 };
     this.defaultSettings[ECommands.DISTANCE_OFFSET] = { type: 'slider', toolName: 'Change distance offset', defaultValue: -1000, min: -1000, max: 1000, range: false, multiplier: 1000, unit: 0 };
 
-    // Angle
+    // 10) Angle
     this.defaultSettings[ECommands.ANGLE_THRESHOLD] = { type: 'slider', toolName: 'Change angle threshold', defaultValue: [0, 180], min: 0, max: 180, range: true, multiplier: 1000 };
     this.defaultSettings[ECommands.ANGLE_OFFSET] = { type: 'slider', toolName: 'Change angle offset', defaultValue: -1000, min: -1000, max: 1000, range: false, multiplier: 1000 };
   
+    // 11) Edge counter 
+    this.defaultSettings[ECommands.EDGE_COUNTER_EDGE_CONTRAST] = { type: 'slider', toolName: 'Change Edge counter edge contrast', defaultValue: 100, min: 0, max: 100, range: false, multiplier: 1000 }
+    this.defaultSettings[ECommands.EDGE_COUNTER_EDGE_QUIALITY] = { type: 'slider', toolName: 'Change Edge counter edge quality', defaultValue: 0, min: 0, max: 6, range: false }
+    this.defaultSettings[ECommands.EDGE_COUNTER_FEATURE_WIDTH] = { type: 'slider', toolName: 'Change Edge counter feature width', defaultValue: 0, min: 0, max: 640, range: false, multiplier: 10 }
+    this.defaultSettings[ECommands.EDGE_COUNTER_FEATURE_TYPE] = { type: 'radio', toolName: 'Change Edge counter feature type', defaultValue: 'Bright',  labels: ['Bright', 'Dark', 'Single Edge'] }
+
     // Actions
     this.defaultSettings[EActions.SAVE_TO_FLASH] = { type: 'button', toolName: 'Save Flash', defaultValue: 0 };
     this.defaultSettings[EActions.RETEACH_REF_OBJ] = { type: 'button', toolName: 'Reteach Object', defaultValue: 0 };

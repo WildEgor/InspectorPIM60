@@ -4,7 +4,7 @@ import {ThemeProvider as MuiThemeProvider, createMuiTheme, Theme, responsiveFont
 import { lightTheme, darkTheme } from '../style/muiTheme';
 import App from '../components/App/App'
 import { RootStoreProvider } from "../core/store/rootStore";
-import Notifier from "../components/Notifier/Notifier";
+import Notifier from "../components/organism/Notifier/Notifier";
 
 import Layout  from "../components/Layout/Layout";
 

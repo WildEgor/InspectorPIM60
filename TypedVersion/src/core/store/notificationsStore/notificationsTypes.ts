@@ -1,7 +1,7 @@
 export enum ENotification {
+    SUCCESS,
     ALERT,
     ERROR,
-    SUCCESS
 }
 
 export type TNotification = {

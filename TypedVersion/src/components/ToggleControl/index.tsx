@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -8,7 +7,11 @@ import IconButton from '@material-ui/core/IconButton';
 import CachedIcon from '@material-ui/icons/Cached';
 
 import { ECommands, TWidget, TInspectorService } from "../../core/services/inspector.service";
-import { StyledToggleButton , StyledSkeleton, StyledBadge } from "../../style/components";
+
+import PaperContainer from "../PaperContainer";
+import StyledToggleButton from "../atoms/StyledToggleButton";
+import StyledSkeleton from "../atoms/StyledSkeleton";
+import StyledBadge from "../atoms/StyledBadge";
 
 import { handlePromise } from "../../core/utils/http-utils";
 
@@ -19,17 +22,6 @@ interface Props {
     Inspector: TInspectorService
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      padding: theme.spacing(1),
-      margin: theme.spacing(1),
-      alignItems: 'center',
-      maxWidth: 260,
-    },
-  }),
-);
-
 export default function ToggleControl(props: Props): JSX.Element {
     const {
         labels,
@@ -38,7 +30,6 @@ export default function ToggleControl(props: Props): JSX.Element {
         Inspector
     } = props
 
-    const classes = useStyles(); // css in js styles
     const [pending, setPending] = useState<boolean>(false); // network status
     const [error, setError] = useState<boolean>(false); // network status
     const [options, setOptions] = useState<TWidget>(Inspector.defaultSettings[id]); // defaultSettings
@@ -53,9 +44,9 @@ export default function ToggleControl(props: Props): JSX.Element {
         if (tool !== -1) 
             args.push(tool);
         
-        const [resp, error] = await handlePromise(Inspector.getInt(id, args));
-        if (!error && resp) {
-            setVal(resp.data);
+        const [error, response] = await handlePromise(Inspector.getInt(id, args));
+        if (!error && response) {
+            setVal(response as unknown as number);
             setPending(false);
             setError(false);
         } else {
@@ -104,11 +95,10 @@ export default function ToggleControl(props: Props): JSX.Element {
     }, [])
 
     return(
-        <Box display="flex">
-            <Paper className={classes.paper}>
-                <Typography variant='h5' id="tool-toggle-label" gutterBottom>
-                    {options.toolName + " :"}
-                </Typography>
+        <PaperContainer width={200}>
+            <Typography variant='h5' id="tool-toggle-label" gutterBottom>
+                {options.toolName + " :"}
+            </Typography>
             <StyledBadge color="secondary" badgeContent=" " invisible={!error}>
                 <Box>
                     { pending && <StyledSkeleton  width={100} height={50}/> }
@@ -132,8 +122,6 @@ export default function ToggleControl(props: Props): JSX.Element {
                     }
                 </Box>
             </StyledBadge>
-            </Paper>
-        </Box>
-        
+        </PaperContainer>
     )
 }
