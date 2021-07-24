@@ -53,7 +53,12 @@ function parseResponseCommand(responseData: string): TParseResponseCommand {
   return o;
 }
 
-// Return [error, data]
+/**
+ * Return [err, data]
+ * @param promise 
+ * @param errorExt 
+ * @returns 
+ */
 function handlePromise<T, U = Error> (
   promise: Promise<T>,
   errorExt?: Record<string, unknown>

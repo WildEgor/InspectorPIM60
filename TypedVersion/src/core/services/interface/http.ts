@@ -41,7 +41,8 @@ const raxConfig = {
 }
 
 export interface ICustomAxiosRequestConfig extends AxiosRequestConfig {
-    parse?: boolean,
+    parseJson?: 'statistic' | 'tools',
+    parseCmd?: boolean,
     raxConfig?: RaxConfig 
 }
 
@@ -147,31 +148,40 @@ abstract class HttpClient {
 
     protected _handleResponse = (response: ICustomAxiosResponse): Promise<ICustomAxiosResponse> => {
         const resp = response;
-        if (response.config.parse){
             switch (response.config.responseType) {
                 case 'json': 
-                    // return Promise.resolve(resp.data);
+                    // JSON only for statistic and tools
+                    if (response.config.parseJson) {
+                        if (response.config.parseJson === 'statistic') {
+                            resp.data = JSON.stringify({ "MESSAGE_DATA": 3214 })
+                        } else if (response.config.parseJson === 'tools') {
+                            resp.data = ['PIXEL_342141', 'PIXEL_414214', 'EDGE_2131']
+                        }
+                    }
                     break;
                 case 'text': 
-                    const data = resp.data.toString();
-                    const parsedResponse = parseResponseCommand(data);
-                    resp.data = 0;
-                    if (parsedResponse.errorCode == 0) 
-                        resp.data = parsedResponse;
+                    // Parse command string
+                    if (response.config.parseCmd) {
+                        const parsedResponse = parseResponseCommand(resp.data.toString());
+                        if (parsedResponse.errorCode === 0) {
+                            resp.data = parsedResponse;
+                        } else {
+                            resp.status = 404
+                        }
+                    }
                     break;
                 case 'blob':
                     try {
                         console.log('[http.ts] Create blob response: ', response)
-                        // const blobData = URL.createObjectURL(response.data);
-                        // resp.data = blobData;
-                        // console.log('Created blob: ', blobData);
+                        const blobData = URL.createObjectURL(response.data);
+                        resp.data = blobData;
+                        console.log('Created blob: ', blobData);
                     } catch (error) {
                         console.error('[http.ts][error] Create blob: ', error)
                     }
                     break;
                 default: return Promise.resolve(resp.data);
             }
-        }
         return Promise.resolve(resp.data);
     }
 

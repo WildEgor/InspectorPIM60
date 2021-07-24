@@ -334,9 +334,10 @@ class InspectorService extends HttpClient {
    */
   private sendCommand = (command: string): Promise<ICustomAxiosResponse> => {
     return this.request({
+      responseType: 'text',
       method: 'GET',
       url: `CmdChannel?${command}`,
-      parse: true,
+      parseCmd: true,
       timeout: 5000,
     })
   }
@@ -355,7 +356,7 @@ class InspectorService extends HttpClient {
       method: 'GET',
       responseType: 'blob',
       url: `/LiveImage.jpg${type? `?${type}` : ''}`,
-      parse: true,
+      parseCmd: true,
       timeout: 5000,
       params: { id, s },
     })
@@ -372,7 +373,7 @@ class InspectorService extends HttpClient {
       method: 'GET',
       responseType: 'json',
       url: '/ImageResult',
-      parse: true,
+      parseCmd: true,
       timeout: 5000,
       params: { id },
     })
@@ -407,7 +408,6 @@ class InspectorService extends HttpClient {
     return this.request({
       method: 'POST',
       url: lock? `/LockLog` : `/LockLog?Unlock`,
-      parse: false,
       timeout: 5000,
       params: {},
     })
@@ -424,7 +424,6 @@ class InspectorService extends HttpClient {
       method: 'GET',
       url: `/LogImage.jpg?${id < 10 ? "0" + id : id}${type? `&${type}` : ''}`,
       responseType: 'blob',
-      parse: false,
       timeout: 5000,
       params: {},
     })
@@ -538,6 +537,20 @@ class InspectorService extends HttpClient {
    */
   public trig = (): Promise<ICustomAxiosResponse> => {
     return this.sendCommand(`TRIG`);
+  }
+
+  /**
+   * @info Return string[] tool's names
+   * @returns /GET promise
+   */
+  public getTools = (refID: number): Promise<ICustomAxiosResponse> => {
+    return this.request({
+      responseType: 'json',
+      parseJson: 'tools',
+      method: 'GET',
+      url: `CmdChannel?${EgetString.GET_NAME_ALL}_${refID}_1`,
+      timeout: 5000,
+    })
   }
   // ********************************************************************************************
 }

@@ -1,6 +1,4 @@
-import React, { 
-  useState, 
-} from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import CachedIcon from '@material-ui/icons/Cached';
 import Typography from '@material-ui/core/Typography';
@@ -13,34 +11,35 @@ import PaperContainer from '../PaperContainer';
 import LoaderContainer from "../molecules/LoaderContainer";
 
 interface Props {
-  range: boolean | 'min' | 'max';
-  max: number;
-  min: number;
-  multiplier: number;
-  toolName: string;
-  commandID: number;
-  toolID: number;
-  unit: number;
-  dynamic?: string | boolean;
-  getDynamic?: (args?: number[]) => Promise<any>;
-  getValue: (id: number, args?: number[]) => Promise<any>;
-  setValue: (id: number, args?: number[]) => Promise<any>;
+  range: boolean | 'min' | 'max'; // Range means you can use Slider to adjust params as 1 or 2 points 
+  max: number; // Max value
+  min: number; // Min value
+  multiplier: number; // It needs for some commands
+  toolName: string; // Just text for this block 
+  commandID: number; // Unique cmd ID 
+  toolID?: number; // Number of specific tool
+  unit?: number; // Some cmd has units like 'mm' or 'px'
+  dynamic?: string | boolean; // Some commands needs get additional data
+  getDynamic?: (args?: number[]) => Promise<any>; // Use this function to get adds data
+  getValue: (id: number, args?: number[]) => Promise<any>; // Use this function to get necessary data
+  setValue: (id: number, args?: number[]) => Promise<any>; // and to set data
 }
 
+// For helps text above slider points 
 interface ToolTipProps {
   children: React.ReactElement;
   open: boolean;
   value: number;
 }
 
-export default function ToolSlider(props: Props) {
+export default function ToolSlider(props: Props): JSX.Element {
   const {
-    range = false, // def
-    max = 100, // def
-    min = 0, // def
-    multiplier = 1, //def
-    commandID = 0, // change 
-    toolID = -1,
+    range,
+    max = 100,
+    min = 0, 
+    multiplier, 
+    commandID, 
+    toolID,
     toolName = '',
     unit,
     dynamic,
@@ -49,13 +48,13 @@ export default function ToolSlider(props: Props) {
     setValue
   } = props
 
-  const [val, setVal] = useState<number | Array<number>>(range? [min, max] : min); // current slider value
+  const [sliderValue, setSliderValue] = useState<number | Array<number>>(range? [min, max] : min); // current slider value
   const [minValue, setMinValue] = useState<number>(min);
   const [maxValue, setMaxValue] = useState<number>(max);
 
+  // MUI 
   function ValueLabelComponent(props: ToolTipProps) {
     const { children, open, value } = props;
-  
     return (
       <Tooltip open={open} enterTouchDelay={0} placement="top" title={value}>
         {children}
@@ -66,51 +65,48 @@ export default function ToolSlider(props: Props) {
   // Request actual value 
   const sendGetRequest = async () => {
       const args = []
-      if (toolID !== -1) // If Slider has 'tool' index 
+      if (toolID !== -1) // If Slider has 'tool' index, for example Object locator doesn't have toolID
         args.push(toolID);
 
-      console.log('Dynamic slider? ', dynamic)
-
-      if (dynamic) { // Request dynamic params
-        const response = await getDynamic(args);
-        if (response) {
-          console.log(`[Slider][getValue] ROI SIZE:`, response);
+      if (dynamic) { // Request dynamic params for MIN or MAX data
+        const [errorDynamic, responseDynamic] = await getDynamic(args);
+        if (!errorDynamic && responseDynamic) {
+          console.log(`[Slider][getValue] ROI SIZE:`, responseDynamic);
           if (dynamic === 'max'){
-            setMaxValue(response)
+            setMaxValue(responseDynamic)
           } else {
-            setMinValue(response)
+            setMinValue(responseDynamic)
           }
         }
       }
 
-      if (unit)
+      if (unit) // 'mm' or 'px'
         args.push(unit);
 
-      const response = await getValue(commandID, args);
+      const [errorData, responseData] = await getValue(commandID, args);
 
-      console.log(`[GET] ${commandID}: `, response);
-
-      if (Array.isArray(response)){
-        setVal([response[0] / multiplier, response[1] / multiplier]); 
-      } else {
-        setVal(response / multiplier);
+      if (!errorData) {
+        console.log(`[GET] ${commandID}: `, responseData);
+        if (Array.isArray(responseData)){
+          setSliderValue([responseData[0] / multiplier, responseData[1] / multiplier]); 
+        } else {
+          setSliderValue(responseData / multiplier);
+        }
       }
-    console.log('[slider] Response: ', response);
   }
 
-  const handleSliderChange = (event: any, newValue: number | number[]) => {
-    setVal(newValue);
-  };
-
-  const sendPostRequest = async (event: any, newValue: number | number[]) => {
-
+  // When change slider
+  const handleSliderChange = (_event: any, newValue: number | number[]) => setSliderValue(newValue);
+  
+  // Request to send some data 
+  const sendPostRequest = async (_event: any, newValue: number | number[]) => {
     const newArray = [];
     const decimals = (multiplier > 10 ? 1 : 0);
 
-    if (toolID !== -1 && commandID > 40) // If id isn't Object Locator and has 'tool' index
+    if (toolID && commandID > 40) // If id isn't Object Locator and has 'tool' index
       newArray.push(toolID);
 
-    // ????????????????????????????????????
+    // Check if data valid
     if (Array.isArray(newValue)){
       newValue.forEach(num => Number((Number(num.toFixed(decimals)) * multiplier).toFixed(0)));
       newArray.push(...newValue);
@@ -122,29 +118,23 @@ export default function ToolSlider(props: Props) {
     if (unit)
       newArray.push(unit);
     
-    try {
-      const response = await setValue(commandID, newArray);
-      console.log('[slider] Response: ', response);
-    } catch (error) {
-      console.error('[slider, setValue] Error: ', error);
-    }
+    const [errorSend, responseSend] = await setValue(commandID, newArray);
+
+    if (!errorSend) 
+      console.log('[slider] Response: ', responseSend);
   }
 
   return (
     <PaperContainer width={400}>
         <Typography variant='h5' id="tool-slider-label" gutterBottom>
-          {`${toolName}${(unit && unit == 1? ' [mm]' : ' [px] ')} : `}
+          {`${toolName}${unit && (unit === 1? ' [mm]' : ' [px] ')} : `}
         </Typography>
         <LoaderContainer 
           updateData={sendGetRequest} 
-          //isPending={() => setPending(!pending)} 
-          //isError={() => {setPending(!error)}}
         >
           <Grid container spacing={1} alignItems="center">
             <Grid item>
-                <IconButton aria-label="update slider" onClick={() => { 
-                  sendGetRequest()
-                }}>
+                <IconButton aria-label="update slider" onClick={sendGetRequest}>
                   <CachedIcon/>
                 </IconButton>
             </Grid>
@@ -154,18 +144,18 @@ export default function ToolSlider(props: Props) {
                 name='slider-input-min'
                 defaultValue={maxValue}
                 // className={classes.input}
-                value={Array.isArray(val)? val[0] : val}
+                value={Array.isArray(sliderValue)? sliderValue[0] : sliderValue}
                 margin="dense"
                 onChange={e => {
-                  if (Array.isArray(val)){
-                    setVal(e.target.value === '' ? 0 : [Number(e.target.value), val[1]]);
+                  if (Array.isArray(sliderValue)){
+                    setSliderValue(e.target.value === '' ? 0 : [Number(e.target.value), sliderValue[1]]);
                   } else {
-                    setVal(e.target.value === '' ? 0 : Number(e.target.value));
+                    setSliderValue(e.target.value === '' ? 0 : Number(e.target.value));
                   }
                 }}
                 onBlur={e => {
-                  if (Array.isArray(val)){
-                    sendPostRequest(e, e.target.value === '' ? 0 : [Number(e.target.value), val[1]]);
+                  if (Array.isArray(sliderValue)){
+                    sendPostRequest(e, e.target.value === '' ? 0 : [Number(e.target.value), sliderValue[1]]);
                   } else {
                     sendPostRequest(e, e.target.value === '' ? 0 : Number(e.target.value));
                   }
@@ -187,7 +177,7 @@ export default function ToolSlider(props: Props) {
                 ValueLabelComponent={ValueLabelComponent}
                 onChangeCommitted={sendPostRequest}
                 onChange={handleSliderChange} 
-                value={val}
+                value={sliderValue}
                 min={minValue} 
                 max={maxValue}
                 step={multiplier > 10 ? 0.1 : 1}
@@ -199,18 +189,18 @@ export default function ToolSlider(props: Props) {
                 name='slider-input-max'
                 defaultValue={max}
                 // className={classes.input}
-                value={Array.isArray(val)? val[1] : val}
+                value={Array.isArray(sliderValue)? sliderValue[1] : sliderValue}
                 margin="dense"
                 onChange={e => {
-                  if (Array.isArray(val)){
-                    handleSliderChange(e, e.target.value === '' ? 0 : [val[0], Number(e.target.value)]);
+                  if (Array.isArray(sliderValue)){
+                    handleSliderChange(e, e.target.value === '' ? 0 : [sliderValue[0], Number(e.target.value)]);
                   } else {
                     handleSliderChange(e, e.target.value === '' ? 0 : Number(e.target.value));
                   }
                 }}
                 onBlur={e => {
-                  if (Array.isArray(val)){
-                    sendPostRequest(e, e.target.value === '' ? 0 : [val[0], Number(e.target.value)]);
+                  if (Array.isArray(sliderValue)){
+                    sendPostRequest(e, e.target.value === '' ? 0 : [sliderValue[0], Number(e.target.value)]);
                   } else {
                     sendPostRequest(e, e.target.value === '' ? 0 : Number(e.target.value));
                   }

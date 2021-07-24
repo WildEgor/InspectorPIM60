@@ -13,6 +13,8 @@ import LogImageList from "../organism/LogImageList";
 
 import StyledButton from "../atoms/StyledButton";
 
+import { handlePromise } from "../../core/utils/http-utils";
+
 const App = observer(() => {
   const { notificationStore } = useContext(StoreContext);
 
@@ -24,20 +26,20 @@ const App = observer(() => {
         toolName={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].toolName}
         commandID={ECommands.DISTANCE_OFFSET}
         toolID={0}
-        range={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].range}
+        range={Inspector.defaultSettings[ECommands.CIRCLE_LOC_ROBUSTNESS].range}
         min={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].min}
         max={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].max}
         multiplier={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].multiplier}
         unit={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].unit}
         dynamic={Inspector.defaultSettings[ECommands.DISTANCE_OFFSET].dynamic}
-        getValue={(id, args) => Inspector.getInt(id, args)}
-        setValue={(id, args) => Inspector.setInt(id, args)}
-        getDynamic={(args) => Inspector.getInt(ECommands.GET_ROI_SIZE, args)}
+        getValue={(id, args) => handlePromise(Inspector.getInt(id, args))}
+        setValue={(id, args) => handlePromise(Inspector.setInt(id, args))}
+        getDynamic={(args) => handlePromise(Inspector.getInt(ECommands.GET_ROI_SIZE, args))}
       />
-      <Mode
+      {/* <Mode
         getMode={() => Inspector.getMode()}
         setMode={(mode) => Inspector.setMode(mode as TCamMode)}
-      />
+      /> */}
       {/* <ToggleControl
         Inspector={InspectorService.getInstance("192.168.99.9")}
         id={ECommands.EDGE_LOC_LINE_FIT_CRITERIA}
@@ -61,7 +63,7 @@ const App = observer(() => {
         Inspector={InspectorService.getInstance("192.168.99.9")}
         id={EActions.RETEACH_REF_OBJ}
       /> */}
-      <LogImageList
+      {/* <LogImageList
         lockLogger={(lock) => InspectorService.getInstance("192.168.99.9").setLogState(lock)}
         getImage={(id) => InspectorService.getInstance("192.168.99.9").getLogImage(id, EImageSize.ORIG, EOverlay.SHOW)}
         isError={(error) => {
@@ -72,7 +74,7 @@ const App = observer(() => {
           })
         }}
         range={[0, 5]}
-      />
+      /> */}
     </Box>
   )
 })
