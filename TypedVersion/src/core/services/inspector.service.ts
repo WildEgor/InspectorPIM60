@@ -324,7 +324,10 @@ class InspectorService extends HttpClient {
    * @param command Specific command
    * @returns /GET promise
    */
-  private sendCommand = (command: string): Promise<ICustomAxiosResponse> => {
+  private sendCommand = async (command: string): Promise<ICustomAxiosResponse> => {
+    const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    await timeout(1000);
+
     return this.request({
       responseType: 'text',
       method: 'GET',
