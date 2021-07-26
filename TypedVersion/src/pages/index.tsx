@@ -1,12 +1,12 @@
 import React, { useReducer } from "react";
 import { render } from "react-dom";
-import {ThemeProvider as MuiThemeProvider, createMuiTheme, Theme, responsiveFontSizes} from '@material-ui/core/styles'
+import { ThemeProvider as MuiThemeProvider, createMuiTheme, Theme, responsiveFontSizes } from '@material-ui/core/styles'
 import { lightTheme, darkTheme } from '../style/muiTheme';
-import App from '../components/App/App'
 import { RootStoreProvider } from "../core/store/rootStore";
-import Notifier from "../components/organism/Notifier/Notifier";
 
-import Layout  from "../components/Layout/Layout";
+import App from '../components/pages/App/App'
+import Notifier from "../components/organism/Notifier/Notifier";
+import Layout  from "../components/templates/Layout/Layout";
 
 function Main() {
   const [useDefaultTheme, toggle] = useReducer((theme) => !theme, true);
@@ -16,15 +16,15 @@ function Main() {
 
   return(
     <React.StrictMode>
-    <MuiThemeProvider theme={theme}>
-      <RootStoreProvider>
-        <Layout toggleTheme={toggle} useDefaultTheme={useDefaultTheme}>
-          <App/>
-          <Notifier/>
-        </Layout>
-      </RootStoreProvider>
-    </MuiThemeProvider>
-  </React.StrictMode>
+      <MuiThemeProvider theme={theme}>
+        <RootStoreProvider>
+          <Layout toggleTheme={toggle} useDefaultTheme={useDefaultTheme}>
+            <App/>
+            <Notifier/>
+          </Layout>
+        </RootStoreProvider>
+      </MuiThemeProvider>
+    </React.StrictMode>
   )
 }
 

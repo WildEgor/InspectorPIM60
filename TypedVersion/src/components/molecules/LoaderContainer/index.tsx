@@ -7,33 +7,33 @@ import CachedIcon from '@material-ui/icons/Cached';
 interface Props {
     updateData: () => Promise<any>;
     children: React.ReactNode;
-    refreshTime?: number;
-    isAutoUpdate?: boolean;
+    needUpdate?: boolean;
     isError?: (error: boolean) => void;
     isPending?: (pending: boolean) => void;
 }
 
 export default function ImageBox(props: Props): JSX.Element{
-    const { children, updateData } = props;
+    const { children, updateData, needUpdate, isError } = props;
     const [pending, setPending] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
     async function fetchData() {
         setPending(true);
         setError(false);
+        if (isError) isError(false);
         try {
             await updateData();
             setPending(false);
-            setError(false);
         } catch (error) {
             setPending(false);
             setError(true);
+            if (isError) isError(true);
         }
     }
 
     useEffect(() => {
         fetchData()
-    }, [])
+    }, [needUpdate])
 
     return(
         <div>

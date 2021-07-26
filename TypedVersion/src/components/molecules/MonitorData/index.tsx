@@ -1,5 +1,5 @@
 import React from 'react';
-import { ECommands, TWidget, TInspectorService } from "../../core/services/inspector.service";
+import { ECommands, TWidget, TInspectorService } from "../../../core/services/inspector.service";
 
 interface Props {
     id: number,

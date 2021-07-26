@@ -6,9 +6,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Input from '@material-ui/core/Input';
 
-import StyledSlider from "../atoms/StyledSlider";
+import StyledSlider from "../../atoms/StyledSlider";
 import PaperContainer from '../PaperContainer';
-import LoaderContainer from "../molecules/LoaderContainer";
+import LoaderContainer from "../LoaderContainer";
 
 interface Props {
   range: boolean | 'min' | 'max'; // Range means you can use Slider to adjust params as 1 or 2 points 
@@ -51,6 +51,8 @@ export default function ToolSlider(props: Props): JSX.Element {
   const [sliderValue, setSliderValue] = useState<number | Array<number>>(range? [min, max] : min); // current slider value
   const [minValue, setMinValue] = useState<number>(min);
   const [maxValue, setMaxValue] = useState<number>(max);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [errorWhenUpdate, setErrorWhenUpdate] =  useState<boolean>(false);
 
   // MUI 
   function ValueLabelComponent(props: ToolTipProps) {
@@ -70,6 +72,7 @@ export default function ToolSlider(props: Props): JSX.Element {
 
       if (dynamic) { // Request dynamic params for MIN or MAX data
         const [errorDynamic, responseDynamic] = await getDynamic(args);
+        setErrorWhenUpdate(errorDynamic as boolean);
         if (!errorDynamic && responseDynamic) {
           console.log(`[Slider][getValue] ROI SIZE:`, responseDynamic);
           if (dynamic === 'max'){
@@ -84,6 +87,7 @@ export default function ToolSlider(props: Props): JSX.Element {
         args.push(unit);
 
       const [errorData, responseData] = await getValue(commandID, args);
+      setErrorWhenUpdate(errorData as boolean);
 
       if (!errorData) {
         console.log(`[GET] ${commandID}: `, responseData);
@@ -127,20 +131,26 @@ export default function ToolSlider(props: Props): JSX.Element {
   return (
     <PaperContainer width={400}>
         <Typography variant='h5' id="tool-slider-label" gutterBottom>
-          {`${toolName}${unit && (unit === 1? ' [mm]' : ' [px] ')} : `}
+          {`${toolName}${((unit)? ` ${(unit === 1? 'mm' : 'px')}` : '')} : `}
         </Typography>
         <LoaderContainer 
           updateData={sendGetRequest} 
+          needUpdate={refetchData}
         >
           <Grid container spacing={1} alignItems="center">
             <Grid item>
-                <IconButton aria-label="update slider" onClick={sendGetRequest}>
+                <IconButton aria-label="update slider" onClick={ () => {
+                    sendGetRequest(); 
+                    setRefetchData(!refetchData)
+                  }
+                }>
                   <CachedIcon/>
                 </IconButton>
             </Grid>
             {(range === true || range === 'min') && 
             <Grid item spacing={3}>
               <Input
+                disabled={!!errorWhenUpdate}
                 name='slider-input-min'
                 defaultValue={maxValue}
                 // className={classes.input}
@@ -172,7 +182,7 @@ export default function ToolSlider(props: Props): JSX.Element {
             }
             <Grid item xs>
               <StyledSlider 
-                //disabled={error}
+                disabled={!!errorWhenUpdate}
                 valueLabelDisplay="auto"
                 ValueLabelComponent={ValueLabelComponent}
                 onChangeCommitted={sendPostRequest}
@@ -186,6 +196,7 @@ export default function ToolSlider(props: Props): JSX.Element {
             {(range === true || range === 'max') && 
             <Grid item spacing={3}>
               <Input
+                disabled={!!errorWhenUpdate}
                 name='slider-input-max'
                 defaultValue={max}
                 // className={classes.input}

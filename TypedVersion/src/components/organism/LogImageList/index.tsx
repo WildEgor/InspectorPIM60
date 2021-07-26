@@ -6,7 +6,7 @@ import { handlePromise } from "../../../core/utils/http-utils";
 
 import StyledButton from "../../atoms/StyledButton";
 import { Typography } from '@material-ui/core';
-import PaperContainer from '../../PaperContainer';
+import PaperContainer from '../../molecules/PaperContainer';
 
 import LoaderContainer from "../../molecules/LoaderContainer";
 

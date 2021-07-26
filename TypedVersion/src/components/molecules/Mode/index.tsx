@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import StyledSwitch from "../atoms/StyledSwitch";
+import StyledSwitch from "../../atoms/StyledSwitch";
 import PaperContainer from '../PaperContainer';
-import LoaderContainer from "../molecules/LoaderContainer";
+import LoaderContainer from "../LoaderContainer";
 interface Props {
     getMode: () => Promise<any>
     setMode: (mode: number) => Promise<any>

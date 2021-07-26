@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { EActions, ECommands, TWidget, TInspectorService } from "../../core/services/inspector.service";
+import { EActions, ECommands, TWidget, TInspectorService } from "../../../core/services/inspector.service";
 
-import StyledButton from "../atoms/StyledButton";
-import StyledSkeleton from "../atoms/StyledSkeleton";
-import StyledBadge from "../atoms/StyledBadge";
+import StyledButton from "../../atoms/StyledButton";
+import StyledSkeleton from "../../atoms/StyledSkeleton";
+import StyledBadge from "../../atoms/StyledBadge";
 import PaperContainer from '../PaperContainer';
 
 interface Props {
@@ -47,7 +47,7 @@ const setValue = async () => {
                 await Inspector.performAction(id, [0]);
                 break;
             case EActions.PERFORM_CALIBRATION:
-                await Inspector.setInt(ECommands.CALIBRATION_MODE, [1]);
+                await Inspector.setInt(ECommands.MAIN_CALIBRATIONMODE, [1]);
                 await Inspector.performAction(id, [squareside]);
                 break;
             case EActions.REMOVE_CALIBRATION:

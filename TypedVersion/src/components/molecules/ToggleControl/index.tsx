@@ -6,14 +6,14 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import CachedIcon from '@material-ui/icons/Cached';
 
-import { ECommands, TWidget, TInspectorService } from "../../core/services/inspector.service";
+import { ECommands, TWidget, TInspectorService } from "../../../core/services/inspector.service";
 
 import PaperContainer from "../PaperContainer";
-import StyledToggleButton from "../atoms/StyledToggleButton";
-import StyledSkeleton from "../atoms/StyledSkeleton";
-import StyledBadge from "../atoms/StyledBadge";
+import StyledToggleButton from "../../atoms/StyledToggleButton";
+import StyledSkeleton from "../../atoms/StyledSkeleton";
+import StyledBadge from "../../atoms/StyledBadge";
 
-import { handlePromise } from "../../core/utils/http-utils";
+import { handlePromise } from "../../../core/utils/http-utils";
 
 interface Props {
     tool?: number,
