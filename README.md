@@ -10,10 +10,9 @@ Todo list [old version]:
  - [x] Show logged images with timestamp (inner logger and prog);
  - [x] Ability to change reference images and some tools settings.
 
-Todo list [new]:
+Todo list [new, need test]:
 - [ ] Show current live image (interval);
 - [ ] Support all tools;
 - [ ] Change recipes;
 - [ ] Change mode;
 - [ ] Show log images;
-- [ ] 
