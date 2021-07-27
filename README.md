@@ -2,6 +2,10 @@
 
 This is an updated implementation of the part which show content and send/recieve commands from/to SICK Inspector PIM60.
 
+VanilaVersion: just sh*t code in pure JS;
+TypedVersion: attempt to transfer SICK Web Framework to React;
+Inspector Web Toolkit 2.0: old jQuery version from SICK site.
+
 **Here full documentation:**
 [![forthebadge made-with-javascript](http://ForTheBadge.com/images/badges/made-with-javascript.svg)](https://github.com/WildEgor/InspectorPIM60/tree/main/docs)
 
