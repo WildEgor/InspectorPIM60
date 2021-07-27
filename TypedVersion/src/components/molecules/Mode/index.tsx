@@ -6,43 +6,45 @@ import StyledSwitch from "../../atoms/StyledSwitch";
 import PaperContainer from '../PaperContainer';
 import LoaderContainer from "../LoaderContainer";
 interface Props {
-    getMode: () => Promise<any>
-    setMode: (mode: number) => Promise<any>
+    labels?: string[]
+    getMode: () => Promise<number>
+    setMode: (mode: number) => Promise<boolean>
 }
 
 export default function Mode(props: Props) {
-    const [val, setVal] = useState<number>(0);
+    const [buttonValue, setButtonValue] = useState<number>(0);
+    const [errorWhenUpdate, setErrorWhenUpdate] = useState<boolean>(false)
 
-    const { getMode, setMode } = props;
+    const { getMode, setMode, labels = ['RUN', 'EDIT'] } = props;
 
     const getCameraMode = async () => {
         const response = await getMode();
-        if (response) 
-            setVal(Number(response));
+        if (response) setButtonValue(response);
     }
 
-    const setCameraMode = async (mode: boolean) => {
-        const check = mode? 0 : 1;
-        await setMode(check);
-        setVal(check);
-    }
+    const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        setButtonValue(event.target.checked? 1 : 0);
+        await setMode(buttonValue);
+    };
 
     return(
         <PaperContainer width={200} >
             <Box display='flex' position='relative' alignItems='center'>
                 <Grid component="label" container alignItems="center" spacing={1}>
-                <Grid item><Typography variant='h5'>RUN</Typography></Grid>
-                    <LoaderContainer updateData={getCameraMode}>
-                        <Grid item>
-                                <StyledSwitch
-                                    value={val}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-                                        setCameraMode(checked);
-                                    }}
-                                />
-                        </Grid>
+                <Grid item><Typography variant='h5'>Change camera mode</Typography></Grid>
+                <Grid item xs>
+                    <LoaderContainer updateData={getCameraMode} isError={setErrorWhenUpdate}>
+                        <Grid item><Typography variant='h5'>{labels[0]}</Typography></Grid>
+                                <Grid item>
+                                        <StyledSwitch
+                                            disabled={errorWhenUpdate}
+                                            value={buttonValue}
+                                            onChange={handleChange}
+                                        />
+                                </Grid>
+                        <Grid item><Typography variant='h5'>{labels[1]}</Typography></Grid>
                     </LoaderContainer>
-                <Grid item><Typography variant='h5'>EDIT</Typography></Grid>
+                </Grid>
                 </Grid>
             </Box>
         </PaperContainer>

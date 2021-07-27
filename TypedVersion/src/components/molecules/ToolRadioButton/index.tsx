@@ -8,11 +8,13 @@ import Grid from '@material-ui/core/Grid';
 import CachedIcon from '@material-ui/icons/Cached';
 import IconButton from '@material-ui/core/IconButton';
 import StyledRadioButton from "../../atoms/StyledRadioButton";
+import RadioGroup from '@material-ui/core/RadioGroup'
 import PaperContainer from "../PaperContainer";
 import LoaderContainer from "../LoaderContainer";
 
 interface Props {
     toolName: string; // Just text for this block 
+    labels: string[];
     commandID: number; // Unique cmd ID 
     toolID?: number; // Number of specific tool
     getValue: (id: number, args?: number[]) => Promise<any>
@@ -34,10 +36,12 @@ export default function ToolRadioButton(props: Props) {
         toolName,
         commandID,
         toolID,
+        labels
     } = props;
 
     const classes = useStyles();
-    const [checkBoxValue, setCheckBoxValue] = useState<boolean>();
+    const [radioValue, setRadioValue] = useState<string>('0');
+    const [radioLabels, setRadioLabels] = useState<string[]>(labels)
     const [refetchData, setRefetchData] = useState<boolean>(false);
     const [errorWhenUpdate, setErrorWhenUpdate] =  useState<boolean>(false);
 
@@ -46,16 +50,18 @@ export default function ToolRadioButton(props: Props) {
         if (toolID) 
             args.push(toolID);
         
+        console.log('RADIO BUTTON COMMAND: ', commandID)    
         const [errorGetData, responseData] = await getValue(commandID, args);
         if (!errorGetData) {
-            setCheckBoxValue(!checkBoxValue);
+            console.log('RADIO BUTTON DATA: ', responseData)
+            setRadioValue(responseData);
             setErrorWhenUpdate(false)
         } else {
             setErrorWhenUpdate(true)
         }
     }
 
-    const setData = async (newValue: boolean) => {
+    const setData = async (newValue: string) => {
         const newArray = [];
         if (toolID && commandID > 40)
             newArray.push(toolID);
@@ -68,7 +74,7 @@ export default function ToolRadioButton(props: Props) {
 
         const [errorSetData, responseData] = await setValue(commandID, newArray);
         if (!errorSetData) {
-            setCheckBoxValue(newValue);
+            setRadioValue(newValue);
             setErrorWhenUpdate(false)
         } else {
             setErrorWhenUpdate(true)
@@ -76,12 +82,17 @@ export default function ToolRadioButton(props: Props) {
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCheckBoxValue(event.target.checked);
-        setData(event.target.checked)
+        const value = (event.target as HTMLInputElement).value;
+        console.log('RADIO GROUP VALUE: ', value)
+        setRadioValue(value);
+        setData(value);
     }
-
+    
     return(
-        <PaperContainer width={200}>
+        <PaperContainer width={400}>
+            <Typography variant='h5' id="tool-checkbox-label" gutterBottom>
+                {toolName}
+            </Typography>
             <LoaderContainer 
                 updateData={getData} 
                 needUpdate={refetchData}
@@ -96,15 +107,22 @@ export default function ToolRadioButton(props: Props) {
                     <CachedIcon/>
                     </IconButton>
                 </Grid>
-                <Grid item spacing={3}>
+                <Grid item xs>
                     <FormControl component="fieldset" className={classes.formControl}>
-                        <FormGroup>
-                        <FormControlLabel
-                            disabled={!!errorWhenUpdate}
-                            control={<StyledRadioButton checked={checkBoxValue} onChange={handleChange} name="settings" />}
-                            label={<Typography variant='h5'>{toolName}</Typography>}
-                        />
-                        </FormGroup>
+                        <RadioGroup row aria-label="gender" name="gender1" value={radioValue} onChange={handleChange}>
+                            {radioLabels.map((label, id) => {
+                                return(
+                                    <FormControlLabel
+                                        key={label}
+                                        // disabled={!!errorWhenUpdate}
+                                        value={`${id}`}
+                                        control={<StyledRadioButton/>}
+                                        label={<Typography variant='h5'>{label}</Typography>}
+                                    />
+                                )
+                            })}
+                            
+                        </RadioGroup>
                     </FormControl>
                 </Grid>
             </Grid>

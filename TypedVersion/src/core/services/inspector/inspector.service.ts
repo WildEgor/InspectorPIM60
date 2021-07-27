@@ -1,184 +1,32 @@
 import ipRegex from "ip-regex";
-import HttpClient, { ICustomAxiosResponse } from './interface/http';
-
-type PrependNextNum<A extends Array<unknown>> = A['length'] extends infer T ? ((t: T, ...a: A) => void) extends ((...x: infer X) => void) ? X : never : never;
-type EnumerateInternal<A extends Array<unknown>, N extends number> = { 0: A, 1: EnumerateInternal<PrependNextNum<A>, N> }[N extends A['length'] ? 0 : 1];
-export type Enumerate<N extends number> = EnumerateInternal<[], N> extends (infer E)[] ? E : never;
-export type Range<FROM extends number, TO extends number> = Exclude<Enumerate<TO>, Enumerate<FROM>>;
-
-export type TCamMode = Range<0, 2>;
-
-enum EOverlay {
-  SHOW = 'ShowOverlay',
-  HIDE = 'HideOverlay',
-  SIMPLE = 'SimplifiedOverlay'
-}
-
-enum EImageSize {
-  ORIG = 1,
-  SMALL = 2
-}
-
-enum EWEbConstants {
-  DEFAULT_REFRESH = 700
-}
-
-enum EActions {
-  /** aACT **/
-  SAVE_TO_FLASH = 1,
-  RETEACH_REF_OBJ = 2,
-  PERFORM_CALIBRATION = 3,
-  REMOVE_CALIBRATION = 4,
-  APPLY_IP_SETTINGS = 5,
-  REBOOT_DEVICE = 6,
-  PERFORM_ALIGNMENT = 7,
-}
-
-enum EgetString {
-  /** gSTR **/
-  GET_NAME_DEVICE = 1,
-  GET_NAME_REF_OBJ = 2,
-  GET_NAME_OBJ_LOC = 3,
-  GET_NAME_PIXEL = 4,
-  GET_NAME_EDGE_PIXEL = 5,
-  GET_NAME_PATTERN = 6,
-  GET_NAME_BLOB = 7,
-  GET_NAME_POLYGON = 8,
-  GET_NAME_EDGE_LOCATOR = 9,
-  GET_NAME_CIRCLE_LOCATOR = 10,
-  GET_NAME_DISTANCE = 11,
-  GET_NAME_ANGLE = 12,
-  GET_NAME_ECP = 13,
-  GET_NAME_ALL = 14,
-  GET_BEAD_TOOL_NAME = 20,
-}
-
-enum ECommands {
-  /** sINT and gINT identifiers **/
-  // Reference Image
-  REF_OBJ = 1,
-  REF_GETNOREFOBJ = 2,
-  // Setting reference image 
-  MAIN_EXPOSURE = 14,
-  MAIN_GAIN = 15,
-  MAIN_TRIGMODE = 16,
-  MAIN_CALIBRATIONMODE = 20,
-  MAIN_ILLUMMODE = 13,
-  // Device settings p.56
-  MAIN_INTERFACEPERMISSION = 112,
-  MAIN_IPADDRESS = 120,
-  MAIN_NETMASK = 121,
-  MAIN_GATEWAY = 122,
-  // Object locator
-  OBJLOC_MATCHTHRESHOLD = 32,
-  OBJLOC_ROTATIONMODE = 33,
-  OBJLOC_ROTATIONSEARCH = 34,
-  OBJLOC_SCALEDSEARCH = 35,
-  OBJLOC_ROBUSTNESS = 36,
-  OBJLOC_ACCURACY = 37,
-  OBJLOC_MOVEROTATE = 38,
-  // Blob 
-  BLOB_INTENSITYTHRESHOLD = 48,
-  BLOB_AREATHRESHOLD = 49,
-  // BLOB_ANGLETHRESHOLD = 50,
-  BLOB_STRUCTURETHRESHOLD = 53,
-  BLOB_EDGESTRENGTH = 54,
-  BLOB_AMBIENTLIGHT = 55,
-  BLOB_SEARCHMETHOD = 56,
-  //BLOB_MOVEROTATE = 58,
-  BLOB_NOBLOBTHRESHOLD = 59,
-  // Polygon
-  POLYGON_POSITIONTOLERANCE = 64,
-  POLYGON_FLEXIBILITYTOLERANCE = 65,
-  POLYGON_SCORETHRESHOLD = 66,
-  POLYGON_MARGIN = 67,
-  POLYGON_DEFECTDETECTIONWIDTH = 68,
-  POLYGON_DEFECTINTENSITYTHRESHOLD = 69,
-  POLYGON_MAXDEFECTSTHRESHOLD = 70,
-  POLYGON_DEFECTDETECTIONMODE = 71,
-  POLYGON_MOVEROTATE = 72,
-  POLYGON_MOVECORNER = 73,
-  // Pixel counter
-  PIXEL_INTENSITYTHRESHOLD = 80,
-  PIXEL_NOPIXELSTHRESHOLD = 81,
-  // Edge pixel counter
-  EDGEPIXEL_EDGESTRENGTH = 82,
-  EDGEPIXEL_NOPIXELSTHRESHOLD = 83,
-  // Pattern
-  PATTERN_POSITIONTOLERANCE = 84,
-  PATTERN_SCORETHRESHOLD = 85,
-  // Move and rotate inspections
-  ADDT_INSPECTIONMOVEROTATE = 86,
-  // Get ROI size
-  ADDT_GETROISIZE = 87,
-  // Edge locator
-  EDGELOC_EDGECONTRAST = 150,
-  EDGELOC_LINEFITCRITERIA = 151,
-  EDGELOC_POLARITY = 152,
-  EDGELOC_SCORETHRESHOLD = 153,
-  // Circle locator
-  CIRCLELOC_EDGECONTRAST = 160,
-  CIRCLELOC_DIAMETERTHRESHOLD = 161,
-  CIRCLELOC_LINEFITCRITERIA = 162,
-  CIRCLELOC_POLARITY = 163,
-  CIRCLELOC_ROBUSTNESS = 164,
-  CIRCLELOC_SCORETHRESHOLD = 165,
-  CIRCLELOC_QUALITY = 166,
-  CIRCLELOC_DIAMETEROFFSET = 167,
-  CIRCLELOC_DIAMETERTOLERANCETHRESHOLD = 169,
-  // Distance
-  DISTANCE_THRESHOLD = 170,
-  DISTANCE_OFFSET = 173,
-  // Angle
-  ANGLE_THRESHOLD = 180,
-  ANGLE_OFFSET = 181,
-  // Edge Counter
-  EDGECOUNTER_EDGECONTRAST = 190,
-  EDGECOUNTER_EDGEQUIALITY = 191,
-  EDGECOUNTER_FEATUREWIDTH = 192,
-  EDGECOUNTER_FEATURETYPE = 193,
-}
-
-export type TWidget = {
-  type: 'slider' | 'radio' | 'check' | 'button',
-  toolName: string,
-  defaultValue: number | number[] | boolean | string,
-  dynamic?: boolean | 'min' | 'max',
-  min?: number,
-  max?: number,
-  multiplier?: number,
-  step?: number,
-  labels? : string[],
-  range?: boolean | 'max' | 'min',
-  unit?: number,
-}
+import HttpClient from '../http';
+import { handlePromise } from '../../utils/http-utils'
+import { ECommands, TWidget, TCommandResponse, EImageSize, EOverlay, TCamMode, EgetString, EActions, } from "./inspector.interface";
 
 /**
- * Main class with request/response ability
+ * Main class with request/response ability and feature as api-wrapper i guess
  */
 class InspectorService extends HttpClient {
+  private static _classInstance?: InspectorService; // Class instance 
+  private static _devices?: Array<InspectorService> = []; // Array of cameras
+  private deviceMode: number; // FIXME current device mode 
+  public defaultSettings: Array<TWidget> = []; // Array of default widgets
 
-  private static _classInstance?: InspectorService;
-  private static _devices?: Array<InspectorService> = [];
-
-  private deviceMode: number;
-
-  public defaultSettings: Array<TWidget> = [];
   /**
-   * @info Singleton Pattern ???
+   * @info Singleton Pattern ??? :)))
    * @param ip 
    */
   private constructor(ip: string) {
     super(ip);
 
     // Image settings
-    this.defaultSettings[ECommands.MAIN_EXPOSURE] = { type: 'slider', toolName: 'Change exposure', defaultValue: 0.1, min: 0.1, max: 100, multiplier: 100 };
-    this.defaultSettings[ECommands.MAIN_GAIN] = { type: 'slider', toolName: 'Change gain', defaultValue: 100, min: 100, max: 400 };
+    this.defaultSettings[ECommands.MAIN_EXPOSURE] = { type: 'slider', toolName: 'Change exposure', defaultValue: 0.1, min: 0.01, max: 10, multiplier: 100 };
+    this.defaultSettings[ECommands.MAIN_GAIN] = { type: 'slider', toolName: 'Change gain', defaultValue: 0, min: 0, max: 400 };
     this.defaultSettings[ECommands.MAIN_TRIGMODE] = { type: 'radio', toolName: 'Change trig mode', defaultValue: 'Free-running',  labels: ['Free-running', 'Triggered'] };
 
     // 1) Object locator
     this.defaultSettings[ECommands.OBJLOC_MATCHTHRESHOLD] = { type: 'slider',  toolName: 'Change objloc threshold', defaultValue: 0, min: 0, max: 100 };
-    this.defaultSettings[ECommands.OBJLOC_ROTATIONMODE] = { type: 'check', toolName: 'Change objloc rotation mode', defaultValue: false };
+    this.defaultSettings[ECommands.OBJLOC_ROTATIONMODE] = { type: 'check', toolName: 'Change objloc rotation search mode', defaultValue: false };
     this.defaultSettings[ECommands.OBJLOC_ROTATIONSEARCH] = { type: 'slider',  toolName: 'Change objloc rotation search', defaultValue: 0, min: 0, max: 180 };
     this.defaultSettings[ECommands.OBJLOC_SCALEDSEARCH] = { type: 'check', toolName: 'Change objloc scaled search', defaultValue: false };
     this.defaultSettings[ECommands.OBJLOC_ROBUSTNESS] = { type: 'radio', toolName: 'Change objloc robustness', defaultValue: 'Normal', labels: ['High robustness', 'Normal', 'High speed'] };
@@ -199,8 +47,7 @@ class InspectorService extends HttpClient {
     // 5) Blob
     this.defaultSettings[ECommands.BLOB_INTENSITYTHRESHOLD] = { type: 'slider', toolName: 'Change blob intensity treshold', defaultValue: [0, 255], min: 0, max: 255, range: true };
     this.defaultSettings[ECommands.BLOB_AREATHRESHOLD] = { type: 'slider', toolName: 'Change blob area threshold', defaultValue: [10, 307200], min: 10, max: 307200, range: true };
-    // TODO: Get and set max here
-    // defaultSettings[CE.BLOB_ANGLE_THRESHOLD] : ... Has two values to adjust
+    // TODO:... Has two values to adjust defaultSettings[CE.BLOB_ANGLE_THRESHOLD] :
     this.defaultSettings[ECommands.BLOB_STRUCTURETHRESHOLD] = { type: 'slider', toolName: 'Change blob structure threshold', defaultValue: [0, 100000], min: 0, max: 100000, range: true };
     this.defaultSettings[ECommands.BLOB_EDGESTRENGTH] = { type: 'slider', toolName: 'Change blob edge strenght', defaultValue: [0, 100], min: 0, max: 100 };
     this.defaultSettings[ECommands.BLOB_AMBIENTLIGHT] = { type: 'check', toolName: 'Change blob ambient light', defaultValue: false };
@@ -232,8 +79,7 @@ class InspectorService extends HttpClient {
     this.defaultSettings[ECommands.CIRCLELOC_SCORETHRESHOLD] = { type: 'slider', toolName: 'Change circle loc score threshold', defaultValue: 0 };
     this.defaultSettings[ECommands.CIRCLELOC_QUALITY] = { type: 'slider', toolName: 'Change circle loc quality', defaultValue: 0, min: 0, max: 6, range: 'min' };
     this.defaultSettings[ECommands.CIRCLELOC_DIAMETEROFFSET] = { type: 'slider', toolName: 'Change circle loc diameter offset', defaultValue: -1000, min: -1000, max: 1000, range: 'min', multiplier: 1000, unit: 0 };
-    // ??? doubled slider 
-    // this.defaultSettings[ECommands.CIRCLE_LOC_DIAMETER_TOLERANCE_THRESHOLD] = { type: 'slider', toolName: 'Change circle loc diameter threshold' };
+    // TODO doubled slider this.defaultSettings[ECommands.CIRCLE_LOC_DIAMETER_TOLERANCE_THRESHOLD] = { type: 'slider', toolName: 'Change circle loc diameter threshold' };
 
     // 9) Distance
     this.defaultSettings[ECommands.DISTANCE_THRESHOLD] = { type: 'slider', toolName: 'Change distance threshold', defaultValue: [0, 307200], min: 0, max: 307200, range: true, multiplier: 1000, unit: 0 };
@@ -259,7 +105,7 @@ class InspectorService extends HttpClient {
     this.defaultSettings[EActions.PERFORM_ALIGNMENT] = { type: 'button', toolName: 'Perform alignment', defaultValue: 0 };
   }
 
-  public get getCameraIP() {
+  public get getCameraIP(): string {
     return this._baseIP
   }
 
@@ -270,7 +116,7 @@ class InspectorService extends HttpClient {
    */
   public static getInstance(ip: string): InspectorService {
     try {
-      if (ipRegex({exact: true}).test(ip)){
+      if (ipRegex({ exact: true }).test(ip)){
         if (!this._devices.length){ // If _devices empty create new device instance
           this._classInstance = new InspectorService(ip);
           this._devices.push(this._classInstance);
@@ -281,29 +127,17 @@ class InspectorService extends HttpClient {
             this._devices.push(this._classInstance);
           }
         }
-      } else {
-        // If IP is wrong          
+      } else {       
         throw new Error("Inspector object error - IP incorrect")
       }
     } catch (e) {
-      console.error(e);
-      return null;
+      throw new Error("Inspector object error")
     }
     
     return this._classInstance;
   }
 
-  // public static removeInstance(ip: string) {
-  //   if (this._devices.length && ipRegex({exact: true}).test(ip)) {
-  //     this._devices.filter(camera => {
-  //       if (camera.getCameraIP === ip) {
-
-  //       }
-  //     })
-  //   }
-  // }
-
-  private inEditMode(mode: number) {
+  private inEditMode(mode: number): boolean {
     return mode == 1;
   }
   
@@ -322,16 +156,21 @@ class InspectorService extends HttpClient {
   /**
    * @info Make request wrapper
    * @param command Specific command
-   * @returns /GET promise
+   * @returns array of numbers
    */
-  private sendCommand = (command: string): Promise<ICustomAxiosResponse> => {
-    return this.request({
+  private sendCommand = async (command: string): Promise<TCommandResponse> => {
+    const [error, response] = await handlePromise(this.request<string[]>({
       responseType: 'text',
       method: 'GET',
       url: `CmdChannel?${command}`,
       parseCmd: true,
       timeout: 5000,
-    })
+    }))
+
+    if(!error && response.data)
+      return { error: null, data: response.data }
+    
+    return { error: error.message, data: null }
   }
 
   // ***************************************** VIEWER *****************************************
@@ -341,50 +180,104 @@ class InspectorService extends HttpClient {
    * @param id Unique image id
    * @param s Image size: 1 - big, 2 - small
    * @param type Overlay option: 'ShowOverlay', 'SimplifiedOverlay', ''
-   * @returns /GET promise
+   * @returns string URL
    */
-  public getLiveImage = (id: number, s: EImageSize, type?: EOverlay): Promise<ICustomAxiosResponse> => {
-    return this.request({
+  public getLiveImage = async (id: number, s: EImageSize = EImageSize.SMALL, type: EOverlay = EOverlay.HIDE): Promise<string> => {
+    const [error, response] = await handlePromise(this.request<string>({
       method: 'GET',
       responseType: 'blob',
       url: `/LiveImage.jpg${type? `?${type}` : ''}`,
-      parseCmd: true,
-      timeout: 5000,
+      timeout: 80,
       params: { id, s },
-    })
+    }))
+    if(!error) return response.data
+    return null
   }
 
+  // FIXME:interface statistic WTF IT IS
   /**
    * @info Return marked image statistic
    * @param id Unique image id 
    * @param s Image size: 1 - big, 2 - small
    * @returns /GET promise
    */
-   public getLiveStatistic = (id: string): Promise<ICustomAxiosResponse> => {
-    return this.request({
+   public getLiveStatistic = async (id: string): Promise<any> => {
+    const [error, response] = await handlePromise(this.request({
       method: 'GET',
       responseType: 'json',
       url: '/ImageResult',
-      parseCmd: true,
+      parseJson: 'statistic',
       timeout: 5000,
       params: { id },
-    })
+    }))
+
+    if(!error) return response.data
+    return null
   }
 
   /**
    * @info Retrieve the latest available Ethernet Result Output string
    * @returns /GET promise
    */
-   public getResult = (): Promise<ICustomAxiosResponse> => {
-    return this.sendCommand('gRES');
+   public getResult = async (): Promise<string> => {
+    const [error, response] = await handlePromise(this.request<string>({
+      responseType: 'text',
+      method: 'GET',
+      url: `CmdChannel?gRES`,
+      parseCmd: true,
+      timeout: 5000,
+    }))
+
+    if (!error) return response.data
+    return null
+  }
+
+  // FIXME: response XML HOW PARSE THIS???
+  // /**
+  //  * @info Retrieve the latest statistics from the device
+  //  * @returns /GET promise
+  //  */
+  //  public getStatistics = (): Promise<ICustomAxiosResponse> => {
+  //   return this.sendCommand('gSTAT');
+  // }
+
+  // ******************************************************************************************
+
+  // ***************************************** REFERENCE IMAGE ********************************
+
+  /**
+   * Get active recipe image
+   * @returns image URL
+   */
+  public getActiveRecipe = async (): Promise<string> => {
+    const [error, response] = await handlePromise(this.request<string>({
+      method: 'GET',
+      responseType: 'blob',
+      url: `/ActiveReferenceImage.jpg`,
+      timeout: 5000,
+      params: {},
+    }))
+
+    if (!error) return response.data
+    return null
   }
 
   /**
-   * @info Retrieve the latest statistics from the device
-   * @returns /GET promise
+   * Get recipe image 
+   * @param id reference (recipe) id
+   * @returns image URL
    */
-   public getStatistics = (): Promise<ICustomAxiosResponse> => {
-    return this.sendCommand('gSTAT');
+  public getReferenceObject = async (id: number): Promise<string> => {
+    const [error, response] = await handlePromise(this.request<string>({
+      method: 'GET',
+      responseType: 'blob',
+      url: `/getRefObject?${id}`,
+      timeout: 5000,
+      params: {},
+    }))
+
+    if (!error) return response.data
+    return null
   }
 
   // ******************************************************************************************
@@ -394,31 +287,36 @@ class InspectorService extends HttpClient {
   /**
    * @info Lock | Unlock logger
    * @param lock true/false 
-   * @returns /POST
+   * @returns error as Error or undefined
    */
-  public setLogState = (lock: boolean): Promise<ICustomAxiosResponse> => {
-    return this.request({
+  public setLogState = async (lock: boolean): Promise<Error> => {
+    const [error, response] = await handlePromise(this.request({
       method: 'POST',
       url: lock? `/LockLog` : `/LockLog?Unlock`,
       timeout: 5000,
       params: {},
-    })
+    }))
+
+    return error;
   }
 
   /**
    * @info Return blob log image
    * @param id Number of LogImage
    * @param type 'ShowOverlay'| 'SimplifiedOverlay' | ''
-   * @returns /GET 
+   * @returns logimage URL
    */
-  public getLogImage = (id: number, s?: EImageSize,  type?: EOverlay): Promise<ICustomAxiosResponse> => {
-    return this.request({
+  public getLogImage = async (id: number, s?: EImageSize,  type?: EOverlay): Promise<string> => {
+    const [error, response] = await handlePromise(this.request<string>({
       method: 'GET',
       url: `/LogImage.jpg?${id < 10 ? "0" + id : id}${type? `&${type}` : ''}`,
       responseType: 'blob',
       timeout: 5000,
       params: {},
-    })
+    }))
+
+    if (!error) return response.data
+    return null
   }
 
   // ******************************************************************************************
@@ -427,134 +325,162 @@ class InspectorService extends HttpClient {
 
   /**
    * @info Get protocol version that is supported by the addressed device
-   * @returns /GET promise
+   * @returns camera version
    */
-  public getVersion = (): Promise<ICustomAxiosResponse> => {
-    return this.sendCommand('gVER');
+  public getVersion = async (): Promise<string> => {
+    const { data } = await this.sendCommand('gVER');
+    return data[0];
   }
 
   /**
-   * @info Get the current device mode from the device (0 = Run, 1 = Edit)
-   * @returns /GET promise
+   * @info Get the current device mode from the device 
+   * @returns camera current mode (0 = Run, 1 = Edit)
    */
-  public getMode = (): Promise<ICustomAxiosResponse> => {
-    return this.sendCommand('gMOD');
+  public getMode = async(): Promise<number> => {
+    const {data} = await this.sendCommand('gMOD');
+    return Number(data[0]);
   }
 
   /**
    * @info Set device mode (0 = Run, 1 = Edit)
    * @param mode 0 - RUN, 1 - EDIT
-   * @returns /GET promise
+   * @returns boolean action
    */
-  public setMode = (mode: TCamMode): Promise<ICustomAxiosResponse> => {
-    return this.sendCommand(`sMOD_${mode}`);
+  public setMode = async (mode: TCamMode): Promise<boolean> => {
+    const {error} = await this.sendCommand(`sMOD_${mode}`);
+    return !error;
   }
 
   /**
    * @info Get “integer” parameter from the device
    * @param id ID specific command
    * @param args One or multi params 
-   * @returns /GET promise
+   * @returns string data
    */
-  public getInt = (id: ECommands, args?: number[]): Promise<ICustomAxiosResponse> => {
+  public getInt = async (id: ECommands, args?: number[]): Promise<string[]> => {
+    let commandResponse: TCommandResponse;
+
     if (args.length) 
-      return this.sendCommand(`gINT_${id}_${this._joinParams(args)}`);
-    return this.sendCommand(`gINT_${id}`);
+      commandResponse = await this.sendCommand(`gINT_${id}_${this._joinParams(args)}`);
+    commandResponse = await this.sendCommand(`gINT_${id}`);
+
+    const { data } = commandResponse
+    return data;
   }
 
   /**
    * @info Set “integer” parameter in the device
    * @param id ID specific command
    * @param args One or multi params 
-   * @returns /GET promise
+   * @returns boolean action
    */
-  public setInt = async (id: ECommands, args?: number[]): Promise<ICustomAxiosResponse> => {
-    try {
-      const resp = await this.getMode();
-      this.deviceMode = resp.data;
+  public setInt = async (id: ECommands, args?: number[]): Promise<boolean> => {
+      this.deviceMode = await this.getMode();
+      let commandResponse: TCommandResponse;
+
       if (this.inEditMode(this.deviceMode)) {
         if (args.length)
-          return this.sendCommand(`sINT_${id}_${this._joinParams(args)}`);
-        return this.sendCommand(`sINT_${id}`);
+          commandResponse = await this.sendCommand(`sINT_${id}_${this._joinParams(args)}`);
+        commandResponse = await this.sendCommand(`sINT_${id}`);
       } else {
-        return Promise.reject(new Error("Camera in RUN mode! Please, switch to edit mode..."));
+        return Promise.reject('Camera is not in edit mode.')
       }
-    } catch (e) {
-      return await Promise.reject(new Error("Camera doesn't response..."));
-    }
+
+      return !commandResponse.error;
   }
 
   /**
    * @info Get "string" parameter from device
    * @param id ID specific string command
    * @param args One or multi params 
-   * @returns /GET promise
+   * @returns string 
    */
-  public getString = (id: EgetString, args?: number | number[]): Promise<ICustomAxiosResponse> => {
+  public getString = async (id: EgetString, args?: number | number[]): Promise<string> => {
+    let commandResponse: TCommandResponse;
+
     if (args) 
-      return this.sendCommand(`gSTR_${id}_${this._joinParams(args)}`);
-    return this.sendCommand(`gSTR_${id}`);
+      commandResponse = await this.sendCommand(`gSTR_${id}_${this._joinParams(args)}`);
+    commandResponse = await this.sendCommand(`gSTR_${id}`);
+
+    return commandResponse.data[0];
   }
 
+  // FIXME:
   /**
    * @info Action commands
    * @param id ID specific action
    * @param args One or multi params 
-   * @returns /GET promise
+   * @returns result action
    */
-  public performAction = (id: EActions, args?: number[]): Promise<ICustomAxiosResponse> => {
-    return this.getMode()
-    .then(resp => {
-      this.deviceMode = resp.data;
+  public performAction = async (id: EActions, args?: number[]): Promise<boolean> => {
+    this.deviceMode = await this.getMode();
+
+    
       if ((id === EActions.SAVE_TO_FLASH || 
         id === EActions.PERFORM_CALIBRATION || 
         id === EActions.REMOVE_CALIBRATION || 
-        id === EActions.PERFORM_ALIGNMENT)){
-          if (!this.inEditMode(this.deviceMode))
-            return Promise.reject(new Error("Camera in RUN mode! Please, switch to edit mode..."));
+        id === EActions.PERFORM_ALIGNMENT)) {
+          if (!this.inEditMode(this.deviceMode)) {
+            return Promise.reject("Camera in RUN mode! Please, switch to edit mode...");
+          }
       }
 
+      // switch(id){
+      //   case EActions.SAVE_TO_FLASH:
+      //       await this.performAction(id, []);
+      //       break;
+      //   case EActions.RETEACH_REF_OBJ:
+      //       await this.performAction(id, [0]);
+      //       break;
+      //   case EActions.PERFORM_CALIBRATION:
+      //       await this.setInt(ECommands.MAIN_CALIBRATIONMODE, [1]);
+      //       await this.performAction(id, args);
+      //       break;
+      //   case EActions.REMOVE_CALIBRATION:
+      //       await this.performAction(id, []);
+      //       break;
+      //   case EActions.APPLY_IP_SETTINGS:
+      //       await this.performAction(id, args)
+      //       break;
+      //   case EActions.REBOOT_DEVICE:
+      //       await this.performAction(id, []);
+      //       break;
+      //   default:
+      //       console.log();
+      //       break;
+      // }
+
       if (args) 
-        return this.sendCommand(`aACT_${id}_${this._joinParams(args)}`);
-      return this.sendCommand(`aACT_${id}`);
-    })
-    .catch(e => {
-      return Promise.reject(new Error("Camera doesn't response..."));
-    })
+        return !(await this.sendCommand(`aACT_${id}_${this._joinParams(args)}`)).error;
+      return !(await this.sendCommand(`aACT_${id}`)).error;
   }
 
   /**
    * @info Trig an image acquisition and analysis
-   * @returns /GET promise
+   * @returns action 
    */
-  public trig = (): Promise<ICustomAxiosResponse> => {
-    return this.sendCommand(`TRIG`);
+  public trig = async (): Promise<boolean> => {
+    return !(await this.sendCommand(`TRIG`)).error;
   }
 
+  // FIXME: test
   /**
    * @info Return string[] tool's names
-   * @returns /GET promise
+   * @returns string
    */
-  public getTools = (refID: number): Promise<ICustomAxiosResponse> => {
-    return this.request({
+  public getTools = async (refID: number): Promise<string[]> => {
+    const [error, response] = await handlePromise(this.request<string[]>({
       responseType: 'json',
       parseJson: 'tools',
       method: 'GET',
       url: `CmdChannel?${EgetString.GET_NAME_ALL}_${refID}_1`,
       timeout: 5000,
-    })
+    }))
+
+    if (!error) return response.data
+    return null
   }
   // ********************************************************************************************
-}
-
-export type TInspectorService = InspectorService
-
-export {
-  ECommands,
-  EgetString,
-  EActions,
-  EOverlay,
-  EImageSize
 }
 
 export default InspectorService

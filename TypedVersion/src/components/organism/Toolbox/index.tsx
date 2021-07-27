@@ -3,14 +3,14 @@ import ToolSlider from "../../molecules/ToolSlider";
 import ToolCheckBox from "../../molecules/ToolCheckBox";
 import ToolRadioButton from "../../molecules/ToolRadioButton";
 import LoaderContainer from "../../molecules/LoaderContainer";
-import { ECommands, TWidget } from "../../../core/services/inspector.service";
+import { ECommands, TWidget } from "../../../core/services/inspector/inspector.interface";
 import Tabs from "../../molecules/Tabs";
 
 interface Props {
     defaultSettings: TWidget[];
-    getInt: (id: number, args?: number[]) => Promise<any>;
-    setInt: (id: number, args?: number[]) => Promise<any>;
-    getTools: (id: number) => Promise<any>;
+    getInt: (id: number, args?: number[]) => Promise<string[]>;
+    setInt: (id: number, args?: number[]) => Promise<boolean>;
+    getTools: (id: number) => Promise<string[]>;
 }
 
 export default function Toolbox(props: Props) {
@@ -26,14 +26,6 @@ export default function Toolbox(props: Props) {
     const getData = async () => {
         // await new Promise(resolve => setTimeout(resolve, 5000));
 
-        const [errorCurrentObj, responseCurrentObject] = await getInt(ECommands.REF_OBJ, [])
-        if (!errorCurrentObj) {
-            const [errorTools, responseTools] = await getTools(responseCurrentObject as number);
-            if (!errorTools && responseTools) {
-                console.log('TOOLS :)')
-            }
-        }
-
         /*
             Because of a bug in the web API the name and image of reference objects can become out of sync 
             when objects are added or removed from the list of reference objects in SOPAS. It is therefore 
@@ -41,6 +33,13 @@ export default function Toolbox(props: Props) {
             Unfortunatly there is no easy way of sorting the images, but with copy and remove commands 
             it is possible with some extra effort.
         */
+
+        const responseCurrentObject = await getInt(ECommands.REF_OBJ, []);
+
+        if (responseCurrentObject) {
+            const responseTools = await getTools(Number(responseCurrentObject[0]));
+            if (responseTools) setAvailableTools(responseTools)
+        }
     }
 
     return(
@@ -73,25 +72,30 @@ export default function Toolbox(props: Props) {
                                         />
                                     )
                                 } else if (defaultSettings[ECommands[tool]]?.type == 'check') {
-                                    // return <div><p>{`CHECK ${tool}`}</p></div>
-                                    return (<ToolCheckBox
-                                        key={tool + id} 
-                                        toolName={defaultSettings[ECommands[tool]].toolName}
-                                        commandID={ECommands[tool]}
-                                        toolID={id}
-                                        getValue={(id, args) => getInt(id, args)}
-                                        setValue={(id, args) => setInt(id, args)}
-                                    />)
+                                    return (
+                                        // <div><p>{`CHECK ${tool}`}</p></div>
+                                        <ToolCheckBox
+                                            key={tool + id} 
+                                            toolName={defaultSettings[ECommands[tool]].toolName}
+                                            commandID={ECommands[tool]}
+                                            toolID={id}
+                                            getValue={(id, args) => getInt(id, args)}
+                                            setValue={(id, args) => setInt(id, args)}
+                                        />
+                                    )
                                 } else if (defaultSettings[ECommands[tool]]?.type === 'radio') {
                                     return (
-                                    <ToolRadioButton
-                                        key={tool + id} 
-                                        toolName={defaultSettings[ECommands[tool]].toolName}
-                                        commandID={ECommands[tool]}
-                                        toolID={id}
-                                        getValue={(id, args) => getInt(id, args)}
-                                        setValue={(id, args) => setInt(id, args)}
-                                    />)
+                                        // <div><p>{`Radio ${tool}`}</p></div>
+                                        <ToolRadioButton
+                                            key={tool + id} 
+                                            labels={defaultSettings[ECommands[tool]].labels}
+                                            toolName={defaultSettings[ECommands[tool]].toolName}
+                                            commandID={ECommands[tool]}
+                                            toolID={id}
+                                            getValue={(id, args) => getInt(id, args)}
+                                            setValue={(id, args) => setInt(id, args)}
+                                        />
+                                    )
                                 }
                             }
                             )

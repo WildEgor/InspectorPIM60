@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useInterval } from "react-use";
-
 import StyledImage from "../../atoms/StyledImage";
-import StyledBadge from "../../atoms/StyledBadge";
-import { handlePromise } from "../../../core/utils/http-utils";
-
+import LoaderContainer from "../LoaderContainer";
 interface Props {
-    getImage?: () => Promise<any>,
+    getImage: () => Promise<string>,
     width?: number,
     height?: number,
     refreshTime?: number,
@@ -21,49 +18,37 @@ interface ImageRawProps {
 export default function ImageBox(props: Props) {
     const { 
         getImage,
-        width = 480,
-        refreshTime = 700,
+        width = 640,
+        height = 480,
+        refreshTime = 70,
         isAutoUpdate = true
     } = props;
     const [imageURL, setImageURL] = useState<string>('');
     const [pending, setPending] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
+    const [updateEvent, setUpdateEvent] = useState<boolean>(false);
     const [delay, setDelay] = useState<number>(refreshTime);
 
     const getImageURL = async () => {
-        setPending(true);
-        setError(false);
-
-        const [error, response] = await handlePromise(getImage());
-        if (!error && response) {
-            setImageURL(response);
-            setPending(false);
-            setError(false);
-        } else {
-            setPending(false);
-            setError(true); 
-        }
+        const response = await getImage();
+        if (response) setImageURL(response);
     }
 
     useInterval(
         () => {
         if (!pending)
-            getImageURL();
-        },
+            setUpdateEvent(!updateEvent)
+        }
+        ,
         isAutoUpdate ? delay : null
     );
 
-    useEffect(() => {
-        getImageURL();
-    }, [])
-
     return(
-        <>
-            <StyledBadge color="secondary" badgeContent=" " invisible={!error}></StyledBadge>
+        <LoaderContainer updateData={getImageURL} isPending={setPending} needUpdate={updateEvent}>
             <StyledImage
                 src={imageURL}
-                //errorIcon={<div>Error</div>}
+                errorIcon={<> <p> X </p> </>}
+                imageStyle={{ width, height }}
             />
-        </>
+        </LoaderContainer>
     )
 }

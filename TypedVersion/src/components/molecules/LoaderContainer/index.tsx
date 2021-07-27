@@ -12,22 +12,25 @@ interface Props {
     isPending?: (pending: boolean) => void;
 }
 
-export default function ImageBox(props: Props): JSX.Element{
-    const { children, updateData, needUpdate, isError } = props;
+export default function LoaderContainer(props: Props): JSX.Element{
+    const { children, updateData, needUpdate, isError, isPending } = props;
     const [pending, setPending] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
     async function fetchData() {
         setPending(true);
-        setError(false);
-        if (isError) isError(false);
+        isError && isError(false);
+        isPending && isPending(true)
         try {
             await updateData();
+            setError(false);
             setPending(false);
+            isPending && isPending(false)
         } catch (error) {
             setPending(false);
             setError(true);
-            if (isError) isError(true);
+            isError && isError(true);
+            isPending && isPending(false)
         }
     }
 
@@ -38,14 +41,16 @@ export default function ImageBox(props: Props): JSX.Element{
     return(
         <div>
             {pending && <StyledSkeleton animation="pulse">{children}</StyledSkeleton>}
-            {error &&
+            {!pending && error &&
                 <>
-                    <StyledBadge color="secondary" badgeContent=" "/>
-                    <IconButton aria-label="update slider" onClick={() => { 
-                        fetchData()
-                    }}>
-                    <CachedIcon/>
-                    </IconButton>
+                    <StyledBadge overlap="rectangular" anchorOrigin={{vertical: 'top', horizontal: 'right',}} color="secondary" badgeContent=" ">
+                        <IconButton aria-label="update slider" onClick={() => { 
+                            fetchData()
+                        }}>
+                        <CachedIcon/>
+                        </IconButton>
+                        {!pending && children}
+                    </StyledBadge>
                 </>
             }
             {!pending && !error && <>{children}</>}

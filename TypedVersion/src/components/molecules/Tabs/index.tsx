@@ -9,7 +9,7 @@ import Box from '@material-ui/core/Box';
 
 type Tab = {
   name: string;
-  component: React.ReactElement;
+  component: React.ReactNode;
 }
 
 interface TabsProps {

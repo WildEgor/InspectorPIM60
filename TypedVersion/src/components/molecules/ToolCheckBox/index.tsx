@@ -96,7 +96,7 @@ export default function ToolCheckBox(props: Props) {
                     <CachedIcon/>
                     </IconButton>
                 </Grid>
-                <Grid item spacing={3}>
+                <Grid item xs>
                     <FormControl component="fieldset" className={classes.formControl}>
                         <FormGroup>
                         <FormControlLabel

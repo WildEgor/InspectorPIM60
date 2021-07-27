@@ -1,56 +1,67 @@
 type TParseResponseCommand = {
   type: string;
   errorCode?: number;
-  protocolVersion?: string;
-  resultString?: string;
   identifier?: number;
   errorMessage?: string;
-  mode?: number;
-  values?: string[] | number[];
+  data?: string[];
 };
 
-function parseResponseCommand(responseData: string): TParseResponseCommand {
-  const begin: number = responseData.indexOf('r');
-  const end: number = responseData.length - 1;
-  const a: string[] = responseData.substr(begin, end - begin).split(' ');
-  const o: TParseResponseCommand = { type: 'rgVER' };
+/*
+  [type] /..../
+  rgVER [errorCode] [protocolVersion]
+  rgRES [errorCode] [errorMessage/resultString]
+  rsMOD [errorCode] [errorMessage]
+  rgMOD [errorCode] [mode] [errorMessage]
+  rTRIG [errorCode] [errorMessage]
+  rsINT [identifier] [errorCode] [errorMessage]
+  rgINT [identifier] [errorCode] [ret1][ret2] ...[retN] [errorMessage]
+  raACT [identifier] [errorCode] [errorMessage]
+  rgSTR [identifier] [errorCode] [errorMessage/nameString]
+  rgSTAT [statistics in XML format]
+*/
 
-  o.type = a.splice(0, 1).join();
+function parseResponseCommand(responseData: string): string[] {
+  const begin: number = responseData.indexOf('r'); 
+  const end: number = responseData.length - 1;
+  const a: string[] = responseData.substr(begin, end - begin).split(' '); // split string to array 
+  const o: TParseResponseCommand = { type: '' };
+
+  o.type = a.splice(0, 1).join(); // get Type
+  o.data = [];
 
   if (o.type === 'rgVER') {
-    o.errorCode = parseInt(a[0], 10);
-    const [protocolVersion] = a;
-    o.protocolVersion = protocolVersion;
+    o.errorCode = Number(a[0]);
+    o.data.push(a[1]);
   } else if (o.type === 'rgRES') {
-    o.errorCode = parseInt(a[0], 10);
-    o.resultString = responseData.slice(begin + 8, end);
+    o.errorCode = Number(a[0]);
+    o.data.push(responseData.slice(begin + 8, end)); /// FIXME maybe a[1]
   } else {
     // for INT, STR and ACT, the second element is the identifier
     if (o.type === 'rsINT' || o.type === 'rgINT' || o.type === 'raACT' || o.type === 'rgSTR') {
-      o.identifier = parseInt(a.splice(0, 1).join(), 10);
+      o.identifier = Number(a.splice(0, 1).join());
     }
     // next element is always the error code
-    o.errorCode = parseInt(a.splice(0, 1).join(), 10);
+    o.errorCode = Number(a.splice(0, 1).join());
     // the rest is either an error message or valid return data
     if (o.errorCode) {
       o.errorMessage = a.join(' ');
     } else if (o.type === 'rgMOD') {
-      o.mode = parseInt(a[0], 10);
+      o.data.push(a[0]);
     } else if (o.type === 'rgSTR') {
-      const str = a.join(' ');
-      const newStr = str.replace(/\"/g, '');
-      let arr = newStr.split(',');
-      arr = arr.map((item) => item.trim());
-      o.values = arr;
+      // FIXME WTF?!
+      o.data = {...a.join(' ').replace(/\"/g, '').split(',').map((item) => item.trim())};
     } else {
-      o.values = [];
       for (let i = 0; i < a.length; i += 1) {
-        if (a[i]) o.values[i] = parseInt(a[i], 10);
+        if (a[i]) o.data.push(a[i]);
       }
     }
   }
-  console.log('PARSE DATA DONE: ', o);
-  return o;
+
+  console.log('PARSE DATA RESULT: ', o);
+
+  if (o.errorCode === 0) 
+    return o.data
+  return [];
 }
 
 /**

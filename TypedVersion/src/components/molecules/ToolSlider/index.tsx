@@ -20,9 +20,9 @@ interface Props {
   toolID?: number; // Number of specific tool
   unit?: number; // Some cmd has units like 'mm' or 'px'
   dynamic?: string | boolean; // Some commands needs get additional data
-  getDynamic?: (args?: number[]) => Promise<any>; // Use this function to get adds data
-  getValue: (id: number, args?: number[]) => Promise<any>; // Use this function to get necessary data
-  setValue: (id: number, args?: number[]) => Promise<any>; // and to set data
+  getDynamic?: (args?: number[]) => Promise<string[]>; // Use this function to get adds data
+  getValue: (id: number, args?: number[]) => Promise<string[]>; // Use this function to get necessary data
+  setValue: (id: number, args?: number[]) => Promise<boolean>; // and to set data
 }
 
 // For helps text above slider points 
@@ -40,7 +40,7 @@ export default function ToolSlider(props: Props): JSX.Element {
     multiplier, 
     commandID, 
     toolID,
-    toolName = '',
+    toolName,
     unit,
     dynamic,
     getDynamic,
@@ -71,28 +71,26 @@ export default function ToolSlider(props: Props): JSX.Element {
         args.push(toolID);
 
       if (dynamic) { // Request dynamic params for MIN or MAX data
-        const [errorDynamic, responseDynamic] = await getDynamic(args);
-        setErrorWhenUpdate(errorDynamic as boolean);
-        if (!errorDynamic && responseDynamic) {
-          console.log(`[Slider][getValue] ROI SIZE:`, responseDynamic);
-          if (dynamic === 'max'){
-            setMaxValue(responseDynamic)
-          } else {
-            setMinValue(responseDynamic)
-          }
-        }
+        const responseDynamic = await getDynamic(args);
+        console.log('[ToolSlider] Response dynamic:', responseDynamic)
+        // if (responseDynamic) {
+        //   console.log(`[Slider][getValue] ROI SIZE:`, responseDynamic);
+        //   if (dynamic === 'max'){
+        //     setMaxValue(Number(responseDynamic[0]))
+        //   } else {
+        //     setMinValue(Number(responseDynamic[0]))
+        //   }
+        // }
       }
 
       if (unit) // 'mm' or 'px'
         args.push(unit);
 
-      const [errorData, responseData] = await getValue(commandID, args);
-      setErrorWhenUpdate(errorData as boolean);
+      const responseData = await getValue(commandID, args);
 
-      if (!errorData) {
-        console.log(`[GET] ${commandID}: `, responseData);
+      if (responseData) {
         if (Array.isArray(responseData)){
-          setSliderValue([responseData[0] / multiplier, responseData[1] / multiplier]); 
+          setSliderValue([Number(responseData[0]) / multiplier, Number(responseData[1]) / multiplier]); 
         } else {
           setSliderValue(responseData / multiplier);
         }
@@ -122,10 +120,10 @@ export default function ToolSlider(props: Props): JSX.Element {
     if (unit)
       newArray.push(unit);
     
-    const [errorSend, responseSend] = await setValue(commandID, newArray);
+    const responseSend = await setValue(commandID, newArray);
 
-    if (!errorSend) 
-      console.log('[slider] Response: ', responseSend);
+    if (responseSend) 
+      console.log('[slider] Success set data: ');
   }
 
   return (
@@ -136,6 +134,7 @@ export default function ToolSlider(props: Props): JSX.Element {
         <LoaderContainer 
           updateData={sendGetRequest} 
           needUpdate={refetchData}
+          isError={setErrorWhenUpdate}
         >
           <Grid container spacing={1} alignItems="center">
             <Grid item>
