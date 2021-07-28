@@ -94,6 +94,8 @@ export default function ToolSlider(props: Props): JSX.Element {
         } else {
           setSliderValue(responseData / multiplier);
         }
+      } else {
+        throw new Error('Slider error')
       }
   }
 

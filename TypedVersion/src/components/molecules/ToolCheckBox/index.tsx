@@ -82,6 +82,7 @@ export default function ToolCheckBox(props: Props) {
 
     return(
         <PaperContainer width={200}>
+            <Typography variant='h5'>{toolName}</Typography>
             <LoaderContainer 
                 updateData={getData} 
                 needUpdate={refetchData}

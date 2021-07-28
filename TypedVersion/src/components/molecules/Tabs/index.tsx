@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -14,6 +14,7 @@ type Tab = {
 
 interface TabsProps {
   components: Tab[]
+  lazyLoad?: boolean
 }
 
 interface TabPanelProps {
@@ -35,7 +36,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        {children}
+        <Box>{children}</Box>
       )}
     </div>
   );
@@ -56,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export default function FullWidthTab(props: TabsProps) {
-  const { components } = props;
+  const { components, lazyLoad } = props;
 
   const classes = useStyles();
   const theme = useTheme();
@@ -74,11 +75,12 @@ export default function FullWidthTab(props: TabsProps) {
     <div className={classes.root}>
       <AppBar position="static" color="default">
         <Tabs
+          // disabled={!lazyLoad}
           value={value}
           onChange={handleChange}
           indicatorColor="primary"
           textColor="primary"
-          variant="fullWidth"
+          variant="scrollable"
           aria-label="full width tabs example"
         >
           {components.map(item => <Tab key={item.name + Math.random()*0x10} label={item.name} {...a11yProps(0)} />)}
@@ -89,11 +91,7 @@ export default function FullWidthTab(props: TabsProps) {
         index={value}
         onChangeIndex={handleChangeIndex}
       >
-        {components.map((item, id) => {
-          <TabPanel value={value} index={id} dir={theme.direction}>
-            <>{item.component}</>
-          </TabPanel>
-        })}
+        {components.map((item, id) => <TabPanel index={id} value={value} key={id} dir={theme.direction}><Box p={3}><>{item.component}</></Box></TabPanel>)}
       </SwipeableViews>
     </div>
   );

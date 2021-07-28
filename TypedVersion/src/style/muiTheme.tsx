@@ -18,15 +18,15 @@ const common = {
   },
 },
 typography: {
-  h1: { fontSize: '1.8rem', },
-  h2: { fontSize: '1.5rem', },
-  h3: { fontSize: '1.25rem', },
-  h4: { fontSize: '1rem', },
-  h5: { fontSize: '0.55rem', },
-  h6: { fontSize: '0.45rem', },
+  h1: { fontSize: '3rem', },
+  h2: { fontSize: '2.5rem', },
+  h3: { fontSize: '2rem', },
+  h4: { fontSize: '1.5rem', },
+  h5: { fontSize: '1rem', },
+  h6: { fontSize: '0.5rem', },
   subtitle1: { fontSize: '0.40rem', },
   body1: {
-    fontWeight: 500,
+    fontWeight: 600,
   },
   button: {
     //fontStyle: '',

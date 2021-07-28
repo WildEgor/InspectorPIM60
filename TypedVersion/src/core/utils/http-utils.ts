@@ -84,9 +84,14 @@ function handlePromise<T, U = Error> (
     });
 }
 
+function delayPromise(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
 //const handleRequest = (fn: Function, msg: string) => async (...args) => await fn(...args).catch(e => Error(`${msg} caused by: ${e}`));
 
 export {
+  delayPromise,
   handlePromise,
   parseResponseCommand
 };

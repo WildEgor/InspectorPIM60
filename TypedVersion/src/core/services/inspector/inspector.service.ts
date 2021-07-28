@@ -1,7 +1,7 @@
 import ipRegex from "ip-regex";
 import HttpClient from '../http';
-import { handlePromise } from '../../utils/http-utils'
-import { ECommands, TWidget, TCommandResponse, EImageSize, EOverlay, TCamMode, EgetString, EActions, } from "./inspector.interface";
+import { handlePromise, delayPromise } from '../../utils/http-utils'
+import { TWidget, TCommandResponse, EImageSize, EOverlay, TCamMode, EgetString, EActions, ECommands, } from "./inspector.interface";
 
 /**
  * Main class with request/response ability and feature as api-wrapper i guess
@@ -131,12 +131,17 @@ class InspectorService extends HttpClient {
         throw new Error("Inspector object error - IP incorrect")
       }
     } catch (e) {
-      throw new Error("Inspector object error")
+      throw new Error("Inspector object error - IP incorrect")
     }
     
     return this._classInstance;
   }
 
+  /**
+   * @info Camera mode
+   * @param mode 
+   * @returns boolean mode
+   */
   private inEditMode(mode: number): boolean {
     return mode == 1;
   }
@@ -159,12 +164,14 @@ class InspectorService extends HttpClient {
    * @returns array of numbers
    */
   private sendCommand = async (command: string): Promise<TCommandResponse> => {
+    await delayPromise(3000);
+
     const [error, response] = await handlePromise(this.request<string[]>({
       responseType: 'text',
       method: 'GET',
       url: `CmdChannel?${command}`,
       parseCmd: true,
-      timeout: 5000,
+      timeout: 500,
     }))
 
     if(!error && response.data)
@@ -173,161 +180,13 @@ class InspectorService extends HttpClient {
     return { error: error.message, data: null }
   }
 
-  // ***************************************** VIEWER *****************************************
-
-  /**
-   * @info Return blob image item
-   * @param id Unique image id
-   * @param s Image size: 1 - big, 2 - small
-   * @param type Overlay option: 'ShowOverlay', 'SimplifiedOverlay', ''
-   * @returns string URL
-   */
-  public getLiveImage = async (id: number, s: EImageSize = EImageSize.SMALL, type: EOverlay = EOverlay.HIDE): Promise<string> => {
-    const [error, response] = await handlePromise(this.request<string>({
-      method: 'GET',
-      responseType: 'blob',
-      url: `/LiveImage.jpg${type? `?${type}` : ''}`,
-      timeout: 80,
-      params: { id, s },
-    }))
-    if(!error) return response.data
-    return null
-  }
-
-  // FIXME:interface statistic WTF IT IS
-  /**
-   * @info Return marked image statistic
-   * @param id Unique image id 
-   * @param s Image size: 1 - big, 2 - small
-   * @returns /GET promise
-   */
-   public getLiveStatistic = async (id: string): Promise<any> => {
-    const [error, response] = await handlePromise(this.request({
-      method: 'GET',
-      responseType: 'json',
-      url: '/ImageResult',
-      parseJson: 'statistic',
-      timeout: 5000,
-      params: { id },
-    }))
-
-    if(!error) return response.data
-    return null
-  }
-
-  /**
-   * @info Retrieve the latest available Ethernet Result Output string
-   * @returns /GET promise
-   */
-   public getResult = async (): Promise<string> => {
-    const [error, response] = await handlePromise(this.request<string>({
-      responseType: 'text',
-      method: 'GET',
-      url: `CmdChannel?gRES`,
-      parseCmd: true,
-      timeout: 5000,
-    }))
-
-    if (!error) return response.data
-    return null
-  }
-
-  // FIXME: response XML HOW PARSE THIS???
-  // /**
-  //  * @info Retrieve the latest statistics from the device
-  //  * @returns /GET promise
-  //  */
-  //  public getStatistics = (): Promise<ICustomAxiosResponse> => {
-  //   return this.sendCommand('gSTAT');
-  // }
-
-  // ******************************************************************************************
-
-  // ***************************************** REFERENCE IMAGE ********************************
-
-  /**
-   * Get active recipe image
-   * @returns image URL
-   */
-  public getActiveRecipe = async (): Promise<string> => {
-    const [error, response] = await handlePromise(this.request<string>({
-      method: 'GET',
-      responseType: 'blob',
-      url: `/ActiveReferenceImage.jpg`,
-      timeout: 5000,
-      params: {},
-    }))
-
-    if (!error) return response.data
-    return null
-  }
-
-  /**
-   * Get recipe image 
-   * @param id reference (recipe) id
-   * @returns image URL
-   */
-  public getReferenceObject = async (id: number): Promise<string> => {
-    const [error, response] = await handlePromise(this.request<string>({
-      method: 'GET',
-      responseType: 'blob',
-      url: `/getRefObject?${id}`,
-      timeout: 5000,
-      params: {},
-    }))
-
-    if (!error) return response.data
-    return null
-  }
-
-  // ******************************************************************************************
-
-  // ***************************************** LOGGER *****************************************
-
-  /**
-   * @info Lock | Unlock logger
-   * @param lock true/false 
-   * @returns error as Error or undefined
-   */
-  public setLogState = async (lock: boolean): Promise<Error> => {
-    const [error, response] = await handlePromise(this.request({
-      method: 'POST',
-      url: lock? `/LockLog` : `/LockLog?Unlock`,
-      timeout: 5000,
-      params: {},
-    }))
-
-    return error;
-  }
-
-  /**
-   * @info Return blob log image
-   * @param id Number of LogImage
-   * @param type 'ShowOverlay'| 'SimplifiedOverlay' | ''
-   * @returns logimage URL
-   */
-  public getLogImage = async (id: number, s?: EImageSize,  type?: EOverlay): Promise<string> => {
-    const [error, response] = await handlePromise(this.request<string>({
-      method: 'GET',
-      url: `/LogImage.jpg?${id < 10 ? "0" + id : id}${type? `&${type}` : ''}`,
-      responseType: 'blob',
-      timeout: 5000,
-      params: {},
-    }))
-
-    if (!error) return response.data
-    return null
-  }
-
-  // ******************************************************************************************
-
   // ***************************************** COMMANDS *****************************************
 
   /**
    * @info Get protocol version that is supported by the addressed device
    * @returns camera version
    */
-  public getVersion = async (): Promise<string> => {
+   public getVersion = async (): Promise<string> => {
     const { data } = await this.sendCommand('gVER');
     return data[0];
   }
@@ -359,9 +218,8 @@ class InspectorService extends HttpClient {
    */
   public getInt = async (id: ECommands, args?: number[]): Promise<string[]> => {
     let commandResponse: TCommandResponse;
-
-    if (args.length) 
-      commandResponse = await this.sendCommand(`gINT_${id}_${this._joinParams(args)}`);
+    
+    if (args && args.length) commandResponse = await this.sendCommand(`gINT_${id}_${this._joinParams(args)}`);
     commandResponse = await this.sendCommand(`gINT_${id}`);
 
     const { data } = commandResponse
@@ -469,18 +327,203 @@ class InspectorService extends HttpClient {
    * @returns string
    */
   public getTools = async (refID: number): Promise<string[]> => {
+    await delayPromise(3000);
+
     const [error, response] = await handlePromise(this.request<string[]>({
       responseType: 'json',
       parseJson: 'tools',
       method: 'GET',
       url: `CmdChannel?${EgetString.GET_NAME_ALL}_${refID}_1`,
-      timeout: 5000,
+      timeout: 500,
     }))
 
     if (!error) return response.data
     return null
   }
   // ********************************************************************************************
+
+  // ***************************************** VIEWER *****************************************
+
+  /**
+   * @info Return blob image item
+   * @param id Unique image id
+   * @param s Image size: 1 - big, 2 - small
+   * @param type Overlay option: 'ShowOverlay', 'SimplifiedOverlay', ''
+   * @returns string URL
+   */
+  public getLiveImage = async (id: number, s: EImageSize = EImageSize.SMALL, type: EOverlay = EOverlay.HIDE): Promise<string> => {
+    const [error, response] = await handlePromise(this.request<string>({
+      method: 'GET',
+      responseType: 'blob',
+      url: `/LiveImage.jpg${type? `?${type}` : ''}`,
+      timeout: 80,
+      params: { id, s },
+    }))
+    if(!error) return response.data
+    return null
+  }
+
+  // FIXME:interface statistic WTF IT IS
+  /**
+   * @info Return marked image statistic
+   * @param id Unique image id 
+   * @param s Image size: 1 - big, 2 - small
+   * @returns /GET promise
+   */
+   public getLiveStatistic = async (id: string): Promise<any> => {
+    const [error, response] = await handlePromise(this.request({
+      method: 'GET',
+      responseType: 'json',
+      url: '/ImageResult',
+      parseJson: 'statistic',
+      timeout: 500,
+      params: { id },
+    }))
+
+    if(!error) return response.data
+    return null
+  }
+
+  /**
+   * @info Retrieve the latest available Ethernet Result Output string
+   * @returns /GET promise
+   */
+   public getResult = async (): Promise<string> => {
+    const [error, response] = await handlePromise(this.request<string>({
+      responseType: 'text',
+      method: 'GET',
+      url: `CmdChannel?gRES`,
+      parseCmd: true,
+      timeout: 500,
+    }))
+
+    if (!error) return response.data
+    return null
+  }
+
+  // FIXME: response XML HOW PARSE THIS???
+  // /**
+  //  * @info Retrieve the latest statistics from the device
+  //  * @returns /GET promise
+  //  */
+  //  public getStatistics = (): Promise<ICustomAxiosResponse> => {
+  //   return this.sendCommand('gSTAT');
+  // }
+
+  // ******************************************************************************************
+
+  // ***************************************** REFERENCE IMAGE ********************************
+
+  /**
+   * Get active recipe image
+   * @returns image URL
+   */
+  public getActiveRecipe = async (): Promise<string> => {
+    await delayPromise(3000);
+
+    const [error, response] = await handlePromise(this.request<string>({
+      method: 'GET',
+      responseType: 'blob',
+      url: `/ActiveReferenceImage.jpg`,
+      timeout: 500,
+      params: {},
+    }))
+
+    if (!error) return response.data
+    return null
+  }
+
+  /**
+   * Get recipe image 
+   * @param id reference (recipe) id
+   * @returns image URL
+   */
+  public getReferenceObject = async (id: number): Promise<string> => {
+    await delayPromise(3000);
+
+    const [error, response] = await handlePromise(this.request<string>({
+      method: 'GET',
+      responseType: 'blob',
+      url: `/getRefObject?${id}`,
+      timeout: 500,
+      params: {},
+    }))
+
+    if (!error) return response.data
+    return null
+  }
+
+  public getRecipeName = async (id: number): Promise<string> => {
+    const [error, response] = await handlePromise(this.getString(EgetString.GET_NAME_REF_OBJ, id))
+    if (!error) return response
+    return null
+  }
+
+  public getRecipeNames = async (count: number): Promise<string[]> => {
+    const recipeNames = Promise.all<string>(Array.from({ length: count }, (_v , k)=> {
+      return this.getRecipeName(k);
+    }))
+    return recipeNames;
+  }
+
+  public getRecipeCount = async (): Promise<number> => {
+    const count = await this.getInt(ECommands.REF_GETNOREFOBJ)
+    if (count) return Number(count[0])
+    return null;
+  }
+
+  public getActiveReferenceIndex = async (): Promise<number> => {
+    const id = await this.getInt(ECommands.REF_OBJ)
+    if (id) return Number(id[0])
+    return null
+  }
+
+  public updateRecipe = async(id: number): Promise<boolean>   => {
+    return await this.setInt(ECommands.REF_OBJ, [id])
+  }
+
+  // ******************************************************************************************
+
+  // ***************************************** LOGGER *****************************************
+
+  /**
+   * @info Lock | Unlock logger
+   * @param lock true/false 
+   * @returns error as Error or undefined
+   */
+  public setLogState = async (lock: boolean): Promise<boolean> => {
+    // await delayPromise(3000);
+
+    const [error, response] = await handlePromise(this.request<boolean>({
+      method: 'POST',
+      url: lock? `/LockLog` : `/LockLog?Unlock`,
+      timeout: 500,
+      params: {},
+    }))
+
+    return !error;
+  }
+
+  /**
+   * @info Return blob log image
+   * @param id Number of LogImage
+   * @param type 'ShowOverlay'| 'SimplifiedOverlay' | ''
+   * @returns logimage URL
+   */
+  public getLogImage = async (id: number, s?: EImageSize,  type?: EOverlay): Promise<string> => {
+    const [error, response] = await handlePromise(this.request<string>({
+      method: 'GET',
+      url: `/LogImage.jpg?${id < 10 ? "0" + id : id}${type? `&${type}` : ''}`,
+      responseType: 'blob',
+      timeout: 500,
+      params: {},
+    }))
+
+    if (!error) return response.data
+    return null
+  }
+
+  // ******************************************************************************************
 }
 
 export default InspectorService

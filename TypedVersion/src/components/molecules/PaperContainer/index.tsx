@@ -28,7 +28,7 @@ createStyles({
 
 const PaperContainer = (props: Props): JSX.Element => {
     const { width = 480, children} = props;
-    const classes = useStyles({ maxWidth: width });
+    const classes = useStyles({ maxWidth: (width + 15) });
 
     return(
         <Paper className={classes.paper}>

@@ -5,6 +5,8 @@ import ToolRadioButton from "../../molecules/ToolRadioButton";
 import LoaderContainer from "../../molecules/LoaderContainer";
 import { ECommands, TWidget } from "../../../core/services/inspector/inspector.interface";
 import Tabs from "../../molecules/Tabs";
+import { Typography } from "@material-ui/core";
+import PaperContainer from "../../molecules/PaperContainer";
 
 interface Props {
     defaultSettings: TWidget[];
@@ -21,7 +23,8 @@ export default function Toolbox(props: Props) {
         getTools
     } = props;
 
-    const [availableTools, setAvailableTools] = useState<string[]>(['PIXEL_toolnameblabla_ID', 'EDGECOUNTER_blabla_ID', 'BLOB_bllssd_ID'])
+    const [toolTabs, setToolTabs] = useState([])
+    const [pending, setPending] = useState<boolean>(false);
 
     const getData = async () => {
         // await new Promise(resolve => setTimeout(resolve, 5000));
@@ -35,79 +38,81 @@ export default function Toolbox(props: Props) {
         */
 
         const responseCurrentObject = await getInt(ECommands.REF_OBJ, []);
+        const responseTools = await getTools(Number(responseCurrentObject[0]));
 
-        if (responseCurrentObject) {
-            const responseTools = await getTools(Number(responseCurrentObject[0]));
-            if (responseTools) setAvailableTools(responseTools)
+        if (responseTools){
+            setToolTabs(responseTools.map((tool, id) => {
+                const tools = Object.keys(ECommands).filter(key => (!isNaN(Number(ECommands[key])) && tool.includes(key.split('_')[0])));
+                if (tools.length) {
+                    return (
+                        { name: tool,
+                        component: <div>
+                        {
+                        tools.map(tool => {
+                            if (defaultSettings[ECommands[tool]]?.type == 'slider'){
+                                return (
+                                    <ToolSlider
+                                        key={tool + id} 
+                                        toolName={defaultSettings[ECommands[tool]].toolName}
+                                        commandID={ECommands[tool]}
+                                        toolID={id}
+                                        range={defaultSettings[ECommands[tool]].range}
+                                        min={defaultSettings[ECommands[tool]].min}
+                                        max={defaultSettings[ECommands[tool]].max}
+                                        multiplier={defaultSettings[ECommands[tool]].multiplier}
+                                        unit={defaultSettings[ECommands[tool]].unit}
+                                        dynamic={defaultSettings[ECommands[tool]].dynamic}
+                                        getValue={(id, args) => getInt(id, args)}
+                                        setValue={(id, args) => setInt(id, args)}
+                                        getDynamic={(args) => getInt(ECommands.ADDT_GETROISIZE, args)}
+                                    />
+                                )
+                            } else if (defaultSettings[ECommands[tool]]?.type == 'check') {
+                                return (
+                                    <ToolCheckBox
+                                        key={tool + id} 
+                                        toolName={defaultSettings[ECommands[tool]].toolName}
+                                        commandID={ECommands[tool]}
+                                        toolID={id}
+                                        getValue={(id, args) => getInt(id, args)}
+                                        setValue={(id, args) => setInt(id, args)}
+                                    />
+                                )
+                            } else if (defaultSettings[ECommands[tool]]?.type === 'radio') {
+                                return (
+                                    <ToolRadioButton
+                                        key={tool + id} 
+                                        labels={defaultSettings[ECommands[tool]].labels}
+                                        toolName={defaultSettings[ECommands[tool]].toolName}
+                                        commandID={ECommands[tool]}
+                                        toolID={id}
+                                        getValue={(id, args) => getInt(id, args)}
+                                        setValue={(id, args) => setInt(id, args)}
+                                    />
+                                )
+                            }
+                        }
+                        )
+                        }
+                    </div>
+                        }
+                    )
+                } else {
+                    throw new Error('No tools')
+                }
+            }))
         }
     }
 
     return(
-        <LoaderContainer updateData={getData}>
-            {availableTools && availableTools.map((tool, id) => {
-                const tools = Object.keys(ECommands).filter(key => (!isNaN(Number(ECommands[key])) && tool.includes(key.split('_')[0])));
-                if (tools.length) {
-                    return (
-                        <div>
-                            {
-                            tools.map(tool => {
-                                console.log(defaultSettings[ECommands[tool]], tool)
-                                if (defaultSettings[ECommands[tool]]?.type == 'slider'){
-                                    return (
-                                        // <div><p>{`SLIDER ${tool}`}</p></div>
-                                        <ToolSlider
-                                            key={tool + id} 
-                                            toolName={defaultSettings[ECommands[tool]].toolName}
-                                            commandID={ECommands[tool]}
-                                            toolID={id}
-                                            range={defaultSettings[ECommands[tool]].range}
-                                            min={defaultSettings[ECommands[tool]].min}
-                                            max={defaultSettings[ECommands[tool]].max}
-                                            multiplier={defaultSettings[ECommands[tool]].multiplier}
-                                            unit={defaultSettings[ECommands[tool]].unit}
-                                            dynamic={defaultSettings[ECommands[tool]].dynamic}
-                                            getValue={(id, args) => getInt(id, args)}
-                                            setValue={(id, args) => setInt(id, args)}
-                                            getDynamic={(args) => getInt(ECommands.ADDT_GETROISIZE, args)}
-                                        />
-                                    )
-                                } else if (defaultSettings[ECommands[tool]]?.type == 'check') {
-                                    return (
-                                        // <div><p>{`CHECK ${tool}`}</p></div>
-                                        <ToolCheckBox
-                                            key={tool + id} 
-                                            toolName={defaultSettings[ECommands[tool]].toolName}
-                                            commandID={ECommands[tool]}
-                                            toolID={id}
-                                            getValue={(id, args) => getInt(id, args)}
-                                            setValue={(id, args) => setInt(id, args)}
-                                        />
-                                    )
-                                } else if (defaultSettings[ECommands[tool]]?.type === 'radio') {
-                                    return (
-                                        // <div><p>{`Radio ${tool}`}</p></div>
-                                        <ToolRadioButton
-                                            key={tool + id} 
-                                            labels={defaultSettings[ECommands[tool]].labels}
-                                            toolName={defaultSettings[ECommands[tool]].toolName}
-                                            commandID={ECommands[tool]}
-                                            toolID={id}
-                                            getValue={(id, args) => getInt(id, args)}
-                                            setValue={(id, args) => setInt(id, args)}
-                                        />
-                                    )
-                                }
-                            }
-                            )
-                            }
-                        </div>
-                    )
-                }
-                return <div key={tool}></div>
-            })}
-            <Tabs
-                components={[{ name: 'Component1', component: <div><p>Component1</p></div>}, { name: 'Component1', component: <div><p>Component1</p></div>}]}
-            />
-        </LoaderContainer>
+        <PaperContainer width={640}>
+            <Typography variant='h5'>Toolbox</Typography>
+            <LoaderContainer updateData={getData} isPending={setPending}>
+                <Tabs
+                    lazyLoad={pending}
+                    components={toolTabs}
+                />
+            </LoaderContainer>
+        </PaperContainer>
     );
 }

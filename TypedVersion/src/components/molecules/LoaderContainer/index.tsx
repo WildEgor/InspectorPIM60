@@ -3,6 +3,30 @@ import React, { useEffect, useState } from 'react';
 import StyledBadge from "../../atoms/StyledBadge";
 import StyledSkeleton from "../../atoms/StyledSkeleton";
 import CachedIcon from '@material-ui/icons/Cached';
+import { Grid } from '@material-ui/core';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import Backdrop from '@material-ui/core/Backdrop';
+import Box from '@material-ui/core/Box';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
+    },
+    content: {
+        position: 'relative',
+    },
+    overlay: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        color: 'black',
+        backgroundColor: 'inherit'
+     }
+  }),
+);
 
 interface Props {
     updateData: () => Promise<any>;
@@ -14,6 +38,9 @@ interface Props {
 
 export default function LoaderContainer(props: Props): JSX.Element{
     const { children, updateData, needUpdate, isError, isPending } = props;
+
+    const classes = useStyles();
+
     const [pending, setPending] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
@@ -39,21 +66,23 @@ export default function LoaderContainer(props: Props): JSX.Element{
     }, [needUpdate])
 
     return(
-        <div>
+        <>
             {pending && <StyledSkeleton animation="pulse">{children}</StyledSkeleton>}
             {!pending && error &&
-                <>
-                    <StyledBadge overlap="rectangular" anchorOrigin={{vertical: 'top', horizontal: 'right',}} color="secondary" badgeContent=" ">
-                        <IconButton aria-label="update slider" onClick={() => { 
-                            fetchData()
-                        }}>
-                        <CachedIcon/>
+            <StyledBadge anchorOrigin={{vertical: 'top', horizontal: 'right',}} color="secondary" badgeContent=" ">
+                <Grid container spacing={1} alignItems="center">
+                    <Grid className={classes.content} item xl container direction="row" spacing={2}>
+                        {!pending && <StyledSkeleton animation={false}>{children}</StyledSkeleton>}
+                    </Grid>
+                    <Grid className={classes.overlay} item>
+                        <IconButton aria-label="update slider" onClick={fetchData}>
+                            <CachedIcon/>
                         </IconButton>
-                        {!pending && children}
-                    </StyledBadge>
-                </>
+                    </Grid>
+                </Grid>
+            </StyledBadge>
             }
             {!pending && !error && <>{children}</>}
-        </div>
+        </>
     )
 }

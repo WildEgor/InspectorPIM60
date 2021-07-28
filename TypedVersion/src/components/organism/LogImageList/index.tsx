@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import Carousel from 'react-gallery-carousel';
 import 'react-gallery-carousel/dist/index.css';
 
-import { handlePromise } from "../../../core/utils/http-utils";
-
 import StyledButton from "../../atoms/StyledButton";
 import { Typography } from '@material-ui/core';
 import PaperContainer from '../../molecules/PaperContainer';
@@ -14,9 +12,9 @@ interface Props {
   width?: number,
   height?: number,
   range: Array<number>,
-  getImage: (id: number) => Promise<any>
-  isError: (error: string) => void,
-  lockLogger: (lock?: boolean) => Promise<any>
+  getImage: (id: number) => Promise<string>
+  isError?: (error: string) => void,
+  lockLogger: (lock?: boolean) => Promise<boolean>
 }
 
 interface CarouselImage {
@@ -33,42 +31,57 @@ const LogImageList = (props: Props) => {
   const [logImages, setLogImages] = useState<CarouselImage[]>([{
     src: ''
   }]);
-  const [pending, setPending] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
+  const [needUpdateLogger, setNeedUpdateLogger] = useState<boolean>(false);
 
   const getImages = async () => {
     if (range.length && range[0] < range[1]){
-      await lockLogger(true)
+      const isLock = await lockLogger(true)
 
-      const [errorLogImages, logImages] = await handlePromise(Promise.all<string>(Array.from({ length: range[1] - range[0] + 1 }, (_v , k)=> {
-        return getImage(k + range[0]);
-      })))
+      if (isLock) {
+        const logImages = await Promise.all<string>(Array.from({ length: range[1] - range[0] + 1 }, (_v , k)=> {
+          return getImage(k + range[0]);
+        }))
+  
+        const isUnlock = await lockLogger(false)
 
-      if (errorLogImages) isError('Error when request log images');
-
-      await lockLogger(false)
-
-      console.log('Logger images: ', logImages);
-
-      if(!errorLogImages && logImages.length) {
-        const images: CarouselImage[] = logImages.map((item: string) => {
-          return {
-            src: item,
-            thumbnail: item,
-            sizes: `(max-width: 640px) ${width}px`
-          }
-        })
-        
-        setLogImages(images);
+        if (!isUnlock) {
+          throw new Error('Error when update unlock logger')
+        }
+  
+        if(logImages) {
+          const images: CarouselImage[] = logImages.map((item: string) => {
+            return {
+              src: item,
+              thumbnail: item,
+              sizes: `(max-width: 640px) ${width}px`
+            }
+          })
+          
+          setLogImages(images);
+        } else {
+          throw new Error('Error when empty log images')
+        }
+      } else {
+        await lockLogger(false)
+        throw new Error('Error when update lock logger')
       }
+
     }
   }
 
   return(
     <PaperContainer width={640}>
-      <LoaderContainer updateData={getImages} isPending={() => setPending(!pending)} isError={() => {setPending(!error)}}>
+      <LoaderContainer updateData={getImages} needUpdate={needUpdateLogger}>
         <Carousel images={logImages} style={{ height: height, width: width }} />
-        <StyledButton value={0} onClick={getImages} color='primary' variant="outlined" disabled={pending}>
+        <StyledButton value={0} 
+        onClick={() => {
+            setNeedUpdateLogger(!needUpdateLogger)
+            getImages()
+          }
+        } 
+          color='primary' 
+          variant="outlined"
+        >
           <Typography>Update</Typography>
         </StyledButton>
       </LoaderContainer>

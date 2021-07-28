@@ -38,10 +38,16 @@ const config: webpack.Configuration = {
       cacheGroups: {
         defaultVendors: {
           test: /[\\/]node_modules[\\/]/,
+          name(module){
+            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+            return packageName;
+          },
+          //chunks: "all",
           priority: -10,
           reuseExistingChunk: true,
         },
         default: {
+          //chunks: "all",
           minChunks: 1,
           priority: -20,
           reuseExistingChunk: true,

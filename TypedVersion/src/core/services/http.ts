@@ -187,6 +187,7 @@ abstract class HttpClient {
     }
 
     protected request<T, R = ICustomAxiosResponse<T>>(config: ICustomAxiosRequestConfig): Promise<R> {
+        console.info('MAKE REQUEST: ', config)
         const conf = {...config, ...raxConfig};
         return this._instance.request(conf);
     }
