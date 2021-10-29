@@ -38,7 +38,7 @@ const LogImageList = (props: Props) => {
       const isLock = await lockLogger(true)
 
       if (isLock) {
-        const logImages = await Promise.all<string>(Array.from({ length: range[1] - range[0] + 1 }, (_v , k)=> {
+        const logImages = await Promise.all<string>(Array.from({ length: range[1] - (range[0] + 1) }, (_v , k)=> {
           return getImage(k + range[0]);
         }))
   
@@ -74,13 +74,13 @@ const LogImageList = (props: Props) => {
       <LoaderContainer updateData={getImages} needUpdate={needUpdateLogger}>
         <Carousel images={logImages} style={{ height: height, width: width }} />
         <StyledButton value={0} 
-        onClick={() => {
-            setNeedUpdateLogger(!needUpdateLogger)
-            getImages()
-          }
-        } 
-          color='primary' 
-          variant="outlined"
+          onClick={() => {
+              setNeedUpdateLogger(!needUpdateLogger)
+              getImages()
+            }
+          } 
+            color='primary' 
+            variant="outlined"
         >
           <Typography>Update</Typography>
         </StyledButton>

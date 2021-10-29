@@ -351,16 +351,15 @@ class InspectorService extends HttpClient {
    * @param type Overlay option: 'ShowOverlay', 'SimplifiedOverlay', ''
    * @returns string URL
    */
-  public getLiveImage = async (id: number, s: EImageSize = EImageSize.SMALL, type: EOverlay = EOverlay.HIDE): Promise<string> => {
+  public getLiveImage = async (id: string, s: EImageSize = EImageSize.SMALL, type: EOverlay = EOverlay.HIDE): Promise<string> => {
     const [error, response] = await handlePromise(this.request<string>({
       method: 'GET',
       responseType: 'blob',
       url: `/LiveImage.jpg${type? `?${type}` : ''}`,
-      timeout: 80,
+      timeout: 100,
       params: { id, s },
     }))
-    if(!error) return response.data
-    return null
+    if(!error) return URL.createObjectURL(response.data)
   }
 
   // FIXME:interface statistic WTF IT IS
@@ -425,11 +424,11 @@ class InspectorService extends HttpClient {
       method: 'GET',
       responseType: 'blob',
       url: `/ActiveReferenceImage.jpg`,
-      timeout: 500,
+      timeout: 3000,
       params: {},
     }))
 
-    if (!error) return response.data
+    if (!error) return URL.createObjectURL(response.data)
     return null
   }
 
@@ -445,11 +444,11 @@ class InspectorService extends HttpClient {
       method: 'GET',
       responseType: 'blob',
       url: `/getRefObject?${id}`,
-      timeout: 500,
+      timeout: 30000,
       params: {},
     }))
 
-    if (!error) return response.data
+    if (!error) return URL.createObjectURL(response.data)
     return null
   }
 
@@ -497,7 +496,7 @@ class InspectorService extends HttpClient {
     const [error, response] = await handlePromise(this.request<boolean>({
       method: 'POST',
       url: lock? `/LockLog` : `/LockLog?Unlock`,
-      timeout: 500,
+      timeout: 10000,
       params: {},
     }))
 
@@ -515,11 +514,11 @@ class InspectorService extends HttpClient {
       method: 'GET',
       url: `/LogImage.jpg?${id < 10 ? "0" + id : id}${type? `&${type}` : ''}`,
       responseType: 'blob',
-      timeout: 500,
+      timeout: 30000,
       params: {},
     }))
 
-    if (!error) return response.data
+    if (!error) return URL.createObjectURL(response.data)
     return null
   }
 

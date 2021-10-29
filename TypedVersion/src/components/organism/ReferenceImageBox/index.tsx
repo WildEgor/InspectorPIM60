@@ -21,6 +21,7 @@ interface CarouselImage {
 }
 
 interface Props {
+    id?: number,
     width: number,
     height?: number,
     getRecipeImage: (id: number) => Promise<string>

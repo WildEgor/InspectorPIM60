@@ -7,6 +7,7 @@ import { serverURI } from "../../../core/config/api.config";
 import LogImageList from "../../organism/LogImageList";
 import ImageBox from "../../molecules/ImageBox";
 import Toolbox from "../../organism/Toolbox";
+import MonitorData from "../../molecules/MonitorData";
 
 const App = observer(() => {
   //const { notificationStore } = useContext(StoreContext);
@@ -20,8 +21,12 @@ const App = observer(() => {
       getImage={(id) => Inspector.getLogImage(id)}
       lockLogger={(lock) => Inspector.setLogState(lock)}
     /> */}
-    <ReferenceImageBox
-      width={640}
+    <ImageBox
+      getImage={Inspector.getLiveImage}
+    />
+    {/* <ReferenceImageBox
+      width={480}
+      height={320}
       getMode={Inspector.getMode}
       setMode={Inspector.setMode}
       getRecipeImage={Inspector.getReferenceObject}
@@ -30,13 +35,13 @@ const App = observer(() => {
       updateRecipe={Inspector.updateRecipe}
       getActiveRecipeNumber={Inspector.getActiveReferenceIndex}
       getRecipes={Inspector.getRecipeCount}
-    />
-    <Toolbox
+    /> */}
+    {/* <Toolbox
       defaultSettings={Inspector.defaultSettings}
       getInt={Inspector.getInt}
       setInt={Inspector.setInt}
       getTools={Inspector.getTools}
-    />
+    />   */}
     </>
   )
 })
