@@ -1,10 +1,9 @@
 import React from 'react'
 import clsx from 'clsx';
 import { withStyles, Theme } from '@material-ui/core/styles';
-import { SwitchClassKey } from '@material-ui/core/Switch';
-import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
+import Checkbox, { CheckboxClassKey, CheckboxProps } from '@material-ui/core/Checkbox';
 
-interface Styles extends Partial<Record<SwitchClassKey, string>> {
+interface Styles extends Partial<Record<CheckboxClassKey, string>> {
     checkedIcon?: string;
     icon?: string;
     focusVisible?: string;

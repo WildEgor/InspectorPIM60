@@ -1,8 +1,8 @@
 import Path from 'path';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import getFilesFromDir from "../../config/files";
 import webpack from "webpack";
+import getFilesFromDir from "../../config/files";
 
 const PAGE_DIR = Path.join("src", "pages", Path.sep);
 
@@ -92,7 +92,7 @@ const config: webpack.Configuration = {
             },
         },
       {
-        test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
+        test: /\.(svg|ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
         use: {
           loader: 'file-loader',
           options: {
@@ -100,18 +100,18 @@ const config: webpack.Configuration = {
           },
         },
       },
-      {
-        test: /\.svg$/,
-        use: [
-          'babel-loader',
-          {
-            loader: 'react-svg-loader',
-            options: {
-              jsx: true,
-            },
-          },
-        ],
-      },
+      // {
+      //   test: /\.svg$/,
+      //   use: [
+      //     'babel-loader',
+      //     {
+      //       loader: 'react-svg-loader',
+      //       options: {
+      //         jsx: true,
+      //       },
+      //     },
+      //   ],
+      // },
     ],
   },
 };

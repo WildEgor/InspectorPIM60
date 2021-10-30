@@ -59,7 +59,7 @@ const LiveViewer = (props: Props) => {
         SUCCESS: '#A0D231'
     }
 
-    const { showProgress = true, showSettings = false, getImageStatistic, width = 640, height = 480, getImage } = props;
+    const { showProgress = true, showSettings = true, getImageStatistic, width = 630, height = 480, getImage } = props;
     const [imgProgressColor, setImgProgressColor] = useState({ clr: '#FF0000' });
     const [selectorValue, setSelectorValue] = useState<number>(100);
     const [imageSizeSelectorValue, setImageSizeSelectorValue] = useState<number>(0)
@@ -93,7 +93,7 @@ const LiveViewer = (props: Props) => {
 
     return(
         <PaperContainer width={width}>
-                <Grid container spacing={1} alignItems="center">
+                <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12}>
                         <ImageBox
                             refreshTime={selectorValue}
@@ -121,7 +121,8 @@ const LiveViewer = (props: Props) => {
                                 />
                             </Grid>
                     }
-                    { showSettings && <><Grid item xs={12}>
+                    { showSettings && <>
+                    <Grid item xs={3}>
                         <FormControl>
                             <InputLabel id="demo-customized-select-label"><Typography variant={'h4'}>REQUEST RATE: </Typography></InputLabel>
                             <StyledSelector
@@ -135,6 +136,8 @@ const LiveViewer = (props: Props) => {
                                 {refreshTimes.map((time) => <MenuItem key={Math.random() * time} value={time}>{time}</MenuItem>)}
                             </StyledSelector>
                         </FormControl>
+                    </Grid>
+                    <Grid item xs={3}>
                         <FormControl>
                             <InputLabel id="sdaadl"><Typography variant={'h4'}>IMAGE SIZE: </Typography></InputLabel>
                             <StyledSelector
@@ -148,6 +151,8 @@ const LiveViewer = (props: Props) => {
                                 {imageSizeValues.map((o, i) => <MenuItem key={o.name} value={i}>{o.name}</MenuItem>)}
                             </StyledSelector>
                         </FormControl>
+                    </Grid>
+                    <Grid item xs={3}>
                         <FormControl>
                             <InputLabel id="asdsad"><Typography variant={'h4'}>OVERLAY: </Typography></InputLabel>
                             <StyledSelector
