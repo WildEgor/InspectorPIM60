@@ -1,4 +1,5 @@
 import ipRegex from "ip-regex";
+import Bottleneck from "bottleneck";
 import HttpClient from '../http';
 import { handlePromise, delayPromise } from '../../utils/http-utils'
 import { TWidget, TCommandResponse, EImageSize, EOverlay, TCamMode, EgetString, EActions, ECommands, } from "./inspector.interface";
@@ -7,6 +8,7 @@ import { TWidget, TCommandResponse, EImageSize, EOverlay, TCamMode, EgetString, 
  * Main class with request/response ability and feature as api-wrapper i guess
  */
 class InspectorService extends HttpClient {
+  private _limiter?: Bottleneck;
   private static _classInstance?: InspectorService;
   private static _devices?: Set<InspectorService> = new Set(); // Array of cameras
   private _deviceMode?: number;
@@ -18,6 +20,11 @@ class InspectorService extends HttpClient {
    */
   private constructor(ip: string) {
     super(ip);
+
+    this._limiter = new Bottleneck({
+      maxConcurrent: 1,
+      minTime: 333
+    });
 
     // Image settings
     this.defaultSettings[ECommands.MAIN_EXPOSURE] = { type: 'slider', toolName: 'Change exposure', defaultValue: 0.1, min: 0.01, max: 10, multiplier: 100 };
@@ -177,15 +184,15 @@ class InspectorService extends HttpClient {
    * @returns array of numbers
    */
   private sendCommand = async (command: string): Promise<TCommandResponse> => {
-    await delayPromise(3000);
-
-    const [error, response] = await handlePromise(this.request<string[]>({
+    const wrapped = this._limiter.wrap(() => handlePromise(this.request<string[]>({
       responseType: 'text',
       method: 'GET',
       url: `CmdChannel?${command}`,
       parseCmd: true,
       timeout: 500,
-    }))
+    })));
+
+    const [error, response] = await wrapped();
 
     if(!error && response.data)
       return { error: null, data: response.data }
@@ -357,6 +364,24 @@ class InspectorService extends HttpClient {
 
   // ***************************************** VIEWER *****************************************
 
+  public getLiveImageWithStatistic = async (id: string, s: EImageSize = EImageSize.SMALL, type: EOverlay = EOverlay.HIDE): Promise<{
+    image: string,
+    statistic: any
+  }> => {
+
+    const [image, statistic] = await Promise.all([this.getLiveImage(id, s, type), this.getLiveStatistic(id)]);
+
+    if (!image && !statistic) return {
+      image,
+      statistic,
+    }
+
+    return {
+      image: null,
+      statistic: null
+    }
+  }
+
   /**
    * @info Return blob image item
    * @param id Unique image id
@@ -365,14 +390,16 @@ class InspectorService extends HttpClient {
    * @returns string URL
    */
   public getLiveImage = async (id: string, s: EImageSize = EImageSize.SMALL, type: EOverlay = EOverlay.HIDE): Promise<string> => {
-    const [error, response] = await handlePromise(this.request<string>({
+    const wrapped = this._limiter.wrap(() => handlePromise(this.request<string>({
       method: 'GET',
       responseType: 'blob',
       url: `/LiveImage.jpg${type? `?${type}` : ''}`,
       timeout: 100,
       params: { id, s },
-    }))
-    if(!error) return URL.createObjectURL(response.data)
+    })))
+
+    const [error, response] = await wrapped();
+    if(!error) return response.data
   }
 
   // FIXME:interface statistic WTF IT IS
@@ -388,7 +415,7 @@ class InspectorService extends HttpClient {
       responseType: 'json',
       url: '/ImageResult',
       parseJson: 'statistic',
-      timeout: 500,
+      timeout: 100,
       params: { id },
     }))
 
@@ -441,7 +468,7 @@ class InspectorService extends HttpClient {
       params: {},
     }))
 
-    if (!error) return URL.createObjectURL(response.data)
+    if (!error) return response.data
     return null
   }
 
@@ -461,7 +488,7 @@ class InspectorService extends HttpClient {
       params: {},
     }))
 
-    if (!error) return URL.createObjectURL(response.data)
+    if (!error) return response.data
     return null
   }
 
@@ -531,7 +558,7 @@ class InspectorService extends HttpClient {
       params: {},
     }))
 
-    if (!error) return URL.createObjectURL(response.data)
+    if (!error) return response.data;
     return null
   }
 

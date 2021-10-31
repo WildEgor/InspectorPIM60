@@ -171,11 +171,11 @@ abstract class HttpClient {
                     break;
                 case 'blob':
                     try {
-                        console.log('[http.ts] Create blob response: ', response)
-                        //const blobData = URL.createObjectURL(response.data);
-                        //resp.data = blobData;
-                        //console.log('Created blob: ', blobData);
-                        resp.data = response.data
+                        // console.log('[http.ts] Create blob response: ', response)
+                        const blobData = URL.createObjectURL(response.data);
+                        resp.data = blobData;
+                        // console.log('Created blob: ', blobData);
+                        // resp.data = response.data
                     } catch (error) {
                         console.error('[http.ts][error] Create blob: ', error)
                         return Promise.reject(resp)

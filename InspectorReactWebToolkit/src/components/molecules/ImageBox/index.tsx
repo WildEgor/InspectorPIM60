@@ -40,9 +40,11 @@ export default function ImageBox(props: Props) {
 
     useInterval(
         async () => {
+            setPending(true);
             if (!pending) {
                 await getImageURL()
                 setUpdateEvent(!updateEvent)
+                setPending(false);
             }   
         }
         ,

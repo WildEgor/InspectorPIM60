@@ -79,16 +79,22 @@ const LiveViewer = (props: Props) => {
         setOverlaySizeSelectorValue(event.target.value as number);
     };
 
-    const processStatistic = async (guid: string) => {
+    const processImageWithStatistic = async (id: string, s?: string, o?: string) => {
+        const image = await getImage(id, imageSizeValues[imageSizeSelectorValue].value, overlayValuse[overlaySizeSelectorValue].value)
+
+        let statistic = null;
+
         if (getImageStatistic) {
-            const stat = await getImageStatistic(guid)
-            if (stat) {
-                const [score, des] = Object.keys(stat).filter(key => (key === 'OBJECT_LOC.SCORE' || key === 'IMAGE_DECISION')).map(i => parseInt(i));
+            statistic =  await getImageStatistic(id)
+            if (statistic) {
+                const [score, des] = Object.keys(statistic).filter(key => (key === 'OBJECT_LOC.SCORE' || key === 'IMAGE_DECISION')).map(i => parseInt(i));
                 setImgProgressColor({ clr: score === 2? progressColors.SUCCESS : progressColors.ERROR })
                 // setImagePercentage(Math.random() * 100)
                 setImagePercentage(des)
             } 
         }
+
+        return [image, statistic];
     }
 
     return(
@@ -101,15 +107,9 @@ const LiveViewer = (props: Props) => {
                             width={width}
                             height={height}
                             getImage={async (id) => {
-
-                                const [image, stat] = await Promise.all([
-                                    getImage(id, imageSizeValues[imageSizeSelectorValue].value, overlayValuse[overlaySizeSelectorValue].value),
-                                    showProgress && processStatistic(id),
-                                ])
-
-                                // return image;
-                                return 'https://via.placeholder.com/640x480.jpg';
-                            }} // () => 'https://via.placeholder.com/640x480.jpg'
+                                const [image, statistic] = await processImageWithStatistic(id);
+                                return image? image : './logo.png';
+                            }} 
                         />
                     </Grid>
                     {

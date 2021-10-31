@@ -32,6 +32,15 @@ const LogImageList = (props: Props) => {
   const [needUpdateLogger, setNeedUpdateLogger] = useState<boolean>(false);
   const [errorWhenUpdate, setErrorWhenUpdate] = useState<boolean>(true);
 
+  const errorHandler = (message: string) => {
+    if (isError) {
+      isError(message);
+      throw new Error(message)
+    } else {
+      console.error(message);
+    }
+  }
+
   const getImages = async () => {
       if (range.length && range[0] < range[1]){
         const isLock = await lockLogger(true)
@@ -45,7 +54,7 @@ const LogImageList = (props: Props) => {
   
           if (!isUnlock) {
             setErrorWhenUpdate(true);
-            isError? isError('Error when update unlock logger') : console.error('Error when update unlock logger');
+            errorHandler('Error when update unlock logger');
           }
     
           if(logImages) {
@@ -60,15 +69,16 @@ const LogImageList = (props: Props) => {
             setLogImages(images);
           } else {
             setErrorWhenUpdate(true);
-            isError? isError('Error when empty log images') : console.error('Error when empty log images');
-            throw new Error('Error when empty log images')
+            errorHandler('Error when empty log images');
           }
         } else {
           await lockLogger(false)
           setErrorWhenUpdate(true);
-          isError? isError('Error when update lock logger') : console.error('Error when update lock logger');
-          throw new Error('Error when update lock logger')
+          errorHandler('Error when update lock logger');
         }
+      } else {
+        setErrorWhenUpdate(true);
+        errorHandler('System error!'); 
       }
   }
 
