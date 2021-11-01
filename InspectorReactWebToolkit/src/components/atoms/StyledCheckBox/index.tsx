@@ -1,14 +1,15 @@
 import React from 'react'
 import clsx from 'clsx';
-import { withStyles, Theme } from '@material-ui/core/styles';
-import Checkbox, { CheckboxClassKey, CheckboxProps } from '@material-ui/core/Checkbox';
+import { Theme } from '@mui/material/styles';
+import withStyles from '@mui/styles/withStyles';
+import Checkbox, { CheckboxClassKey, CheckboxProps } from '@mui/material/Checkbox';
 
 interface Styles extends Partial<Record<CheckboxClassKey, string>> {
     checkedIcon?: string;
     icon?: string;
     focusVisible?: string;
 }
-  
+
 interface StyledCheckBoxProps extends CheckboxProps {
     classes: Styles;
 }
@@ -69,4 +70,4 @@ const StyledCheckBox = withStyles((theme: Theme) => ({
     );
   });
 
-  export default StyledCheckBox;
+export default StyledCheckBox;

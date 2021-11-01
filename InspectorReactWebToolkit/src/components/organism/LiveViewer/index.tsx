@@ -1,7 +1,7 @@
 
-import { Card, Grid, InputLabel, MenuItem, Typography } from '@material-ui/core';
-import React, { useState } from 'react';
-import FormControl from '@material-ui/core/FormControl';
+import { Card, Grid, InputLabel, MenuItem, SelectChangeEvent, Typography } from '@mui/material';
+import React, { ChangeEvent, useState } from 'react';
+import FormControl from '@mui/material/FormControl';
 import StyledButton from 'Src/components/atoms/StyledButton';
 import ImageBox from 'Src/components/molecules/ImageBox';
 import PaperContainer from 'Src/components/molecules/PaperContainer';
@@ -67,16 +67,16 @@ const LiveViewer = (props: Props) => {
     const [imagePercentage, setImagePercentage] = useState<number>(0)
     const [isPaused, setIsPaused] = useState(false)
 
-    const handleSpeedChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setSelectorValue(event.target.value as number);
+    const handleSpeedChange = (event: SelectChangeEvent<{ value: unknown }>) => {
+        setSelectorValue(event.target.value as unknown as number);
     };
 
-    const handleImageSizeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setImageSizeSelectorValue(event.target.value as number);
+    const handleImageSizeChange = (event: SelectChangeEvent<{ value: unknown }>) => {
+        setImageSizeSelectorValue(event.target.value as unknown as number);
     };
 
-    const handleOverlayChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setOverlaySizeSelectorValue(event.target.value as number);
+    const handleOverlayChange = (event: SelectChangeEvent<{ value: unknown }>) => {
+        setOverlaySizeSelectorValue(event.target.value as unknown as number);
     };
 
     const processImageWithStatistic = async (id: string) => {

@@ -3,7 +3,7 @@ import Carousel from 'react-gallery-carousel';
 import 'react-gallery-carousel/dist/index.css';
 
 import StyledButton from "../../atoms/StyledButton";
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import PaperContainer from '../../molecules/PaperContainer';
 
 import LoaderContainer from "../../molecules/LoaderContainer";

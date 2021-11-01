@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import Typography from '@material-ui/core/Typography';
-import CachedIcon from '@material-ui/icons/Cached';
-import IconButton from '@material-ui/core/IconButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Typography from '@mui/material/Typography';
+import CachedIcon from '@mui/icons-material/Cached';
+import IconButton from '@mui/material/IconButton';
 import PaperContainer from "../PaperContainer";
 import StyledToggleButton from "../../atoms/StyledToggleButton";
 import LoaderContainer from '../LoaderContainer';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 interface Props {
     toolName: string
@@ -64,7 +64,7 @@ export default function ToolToggleControl(props: Props): JSX.Element {
         setValue(newValue);
     }
 
-    return(
+    return (
         <PaperContainer width={400}>
             <Typography variant='h5' id="tool-toggle-label" gutterBottom>
                 {toolName + " :"}
@@ -75,11 +75,14 @@ export default function ToolToggleControl(props: Props): JSX.Element {
             >
                 <Grid container spacing={1} alignItems="center">
                     <Grid item>
-                        <IconButton aria-label="update slider" onClick={ () => {
-                            getValue(); 
-                            setRefetchData(!refetchData)
-                        }
-                        }>
+                        <IconButton
+                            aria-label="update slider"
+                            onClick={ () => {
+                                getValue(); 
+                                setRefetchData(!refetchData)
+                            }
+                            }
+                            size="large">
                         <CachedIcon/>
                         </IconButton>
                     </Grid>
@@ -100,5 +103,5 @@ export default function ToolToggleControl(props: Props): JSX.Element {
                 </Grid>
             </LoaderContainer>
         </PaperContainer>
-    )
+    );
 }

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Grid from '@material-ui/core/Grid';
-import CachedIcon from '@material-ui/icons/Cached';
-import IconButton from '@material-ui/core/IconButton';
+import { Theme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import Typography from '@mui/material/Typography';
+import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
+import CachedIcon from '@mui/icons-material/Cached';
+import IconButton from '@mui/material/IconButton';
 import StyledCheckBox from "../../atoms/StyledCheckBox";
 import PaperContainer from "../PaperContainer";
 import LoaderContainer from "../LoaderContainer";
@@ -80,7 +82,7 @@ export default function ToolCheckBox(props: Props) {
         setData(event.target.checked)
     }
 
-    return(
+    return (
         <PaperContainer width={200}>
             <Typography variant='h5'>{toolName}</Typography>
             <LoaderContainer 
@@ -89,11 +91,14 @@ export default function ToolCheckBox(props: Props) {
             >
             <Grid container spacing={1} alignItems="center">
                 <Grid item>
-                    <IconButton aria-label="update slider" onClick={ () => {
-                        getData(); 
-                        setRefetchData(!refetchData)
-                    }
-                    }>
+                    <IconButton
+                        aria-label="update slider"
+                        onClick={ () => {
+                            getData(); 
+                            setRefetchData(!refetchData)
+                        }
+                        }
+                        size="large">
                     <CachedIcon/>
                     </IconButton>
                 </Grid>
@@ -111,5 +116,5 @@ export default function ToolCheckBox(props: Props) {
             </Grid>
             </LoaderContainer>
         </PaperContainer>
-    )
+    );
 }

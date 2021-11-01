@@ -5,7 +5,7 @@ import ToolRadioButton from "../../molecules/ToolRadioButton";
 import LoaderContainer from "../../molecules/LoaderContainer";
 import { ECommands, TWidget } from "../../../core/services/inspector/inspector.interface";
 import Tabs from "../../molecules/Tabs";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import PaperContainer from "../../molecules/PaperContainer";
 
 interface Props {

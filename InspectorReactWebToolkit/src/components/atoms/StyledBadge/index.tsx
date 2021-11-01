@@ -1,7 +1,10 @@
 import React from "react";
 
-import Badge from '@material-ui/core/Badge';
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Badge from '@mui/material/Badge';
+import { Theme } from '@mui/material/styles';
+
+import withStyles from '@mui/styles/withStyles';
+import createStyles from '@mui/styles/createStyles';
 
 const _StyledBadge = withStyles((theme: Theme) =>
   createStyles({

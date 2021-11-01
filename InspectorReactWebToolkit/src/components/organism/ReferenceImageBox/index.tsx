@@ -1,17 +1,17 @@
-import { Grid } from '@material-ui/core';
+import { Grid, SelectChangeEvent } from '@mui/material';
 import React, { useState } from 'react';
-import FormControl from '@material-ui/core/FormControl';
+import FormControl from '@mui/material/FormControl';
 import Carousel from 'react-gallery-carousel';
 import 'react-gallery-carousel/dist/index.css';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 import LoaderContainer from "../../molecules/LoaderContainer";
 import PaperContainer from '../../molecules/PaperContainer';
 import StyledSelector from '../../atoms/StyledSelector';
 import StyledInput from '../../atoms/StyledInput';
 import StyledButton from '../../atoms/StyledButton';
 import Mode from "../../molecules/Mode";
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 interface CarouselImage {
     src: string, // required
     srcset?: string, // `https://placedog.net/400/240?id=1 400w, https://placedog.net/700/420?id=1 700w, https://placedog.net/1000/600?id=1 1000w`,
@@ -93,7 +93,7 @@ export default function ReferenceImageBox(props: Props) {
         }
     }
 
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleChange = (event: SelectChangeEvent<unknown>) => {
         setCurrentRecipeIndex(event.target.value as number)
         setSelectorValue(event.target.value as string);
     };

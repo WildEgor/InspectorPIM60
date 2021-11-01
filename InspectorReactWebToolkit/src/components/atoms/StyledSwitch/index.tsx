@@ -1,7 +1,7 @@
 
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles';
-import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
+import withStyles from '@mui/styles/withStyles';
+import Switch, { SwitchClassKey, SwitchProps } from '@mui/material/Switch';
 
 interface Styles extends Partial<Record<SwitchClassKey, string>> {
     checkedIcon?: string;

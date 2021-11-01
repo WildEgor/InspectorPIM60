@@ -1,11 +1,12 @@
-import Skeleton from '@material-ui/lab/Skeleton';
-import { withStyles, Theme } from '@material-ui/core/styles';
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import Skeleton from '@mui/material/Skeleton';
+import { Theme, alpha } from '@mui/material/styles';
+
+import withStyles from '@mui/styles/withStyles';
 
 const StyledSkeleton = withStyles((theme: Theme) => ({
     wave: {
         '&::after': {
-            background: `linear-gradient(0.25turn, ${fade(theme.palette.primary.main, 0.3)}, ${fade(theme.palette.secondary.main, 0.8)}, ${fade(theme.palette.primary.main, 0.3)})`
+            background: `linear-gradient(0.25turn, ${alpha(theme.palette.primary.main, 0.3)}, ${alpha(theme.palette.secondary.main, 0.8)}, ${alpha(theme.palette.primary.main, 0.3)})`
         }
     },
     withChildren: {},

@@ -1,6 +1,8 @@
 import React from 'react'
-import { withStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import LinearProgress, { LinearProgressProps } from '@material-ui/core/LinearProgress';
+import { Theme } from '@mui/material/styles';
+import withStyles from '@mui/styles/withStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 
 const StyledProgressBar = withStyles((theme: Theme) => ({
   root: {

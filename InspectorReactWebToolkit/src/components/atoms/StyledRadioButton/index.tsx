@@ -1,5 +1,5 @@
-import { withStyles } from '@material-ui/core/styles';
-import Radio, { RadioProps } from '@material-ui/core/Radio';
+import withStyles from '@mui/styles/withStyles';
+import Radio, { RadioProps } from '@mui/material/Radio';
 
 const StyledRadioButton = withStyles(theme => ({
     root: {

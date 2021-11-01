@@ -2,9 +2,9 @@
   "name": "my-app",
   "version": "0.0.1",
   "scripts": {
-    "start": "webpack serve --config src/webpack/webpack.dev.config.ts",
+    "dev": "webpack serve --config src/webpack/webpack.dev.config.ts",
     "build": "webpack --config src/webpack/webpack.prod.config.ts",
-    "dev": "npm run build && node src/express.js"
+    "start": "npm run build && node src/express.js"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
@@ -14,7 +14,10 @@
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/styles": "^4.11.4",
     "@mui-treasury/layout": "^4.5.1",
+    "@mui/icons-material": "^5.0.5",
+    "@mui/lab": "^5.0.0-alpha.53",
     "@mui/material": "^5.0.6",
+    "@mui/styles": "^5.0.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@types/material-ui": "^0.21.8",
     "axios": "^0.21.4",

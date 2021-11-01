@@ -1,21 +1,21 @@
-import { createTheme, Theme }  from '@material-ui/core/styles'
+import { createTheme, Theme, adaptV4Theme } from '@mui/material/styles';
 
 const common = {
   props: {
-  MuiTypography: {
-    variantMapping: {
-      h1: 'h1',
-      h2: 'h2',
-      h3: 'h3',
-      h4: 'h4',
-      h5: 'h5',
-      h6: 'h6',
-      subtitle1: 'h3',
-      subtitle2: 'h4',
-      body1: 'span',
-      body2: 'span',
+    MuiTypography: {
+      variantMapping: {
+        h1: 'h1',
+        h2: 'h2',
+        h3: 'h3',
+        h4: 'h4',
+        h5: 'h5',
+        h6: 'h6',
+        subtitle1: 'h3',
+        subtitle2: 'h4',
+        body1: 'span',
+        body2: 'span',
+      },
     },
-  },
 },
 typography: {
   h1: { fontSize: '3rem', },
@@ -35,17 +35,17 @@ typography: {
 }
 
 // define light theme colors
-export const lightTheme: Theme = createTheme({
+export const lightTheme: Theme = createTheme(adaptV4Theme({
   palette: {
-      type: "light",
+      mode: "light",
   },
   ...common
-});
+}));
 
 // define dark theme colors
-export const darkTheme: Theme = createTheme({
+export const darkTheme: Theme = createTheme(adaptV4Theme({
   palette: {
-      type: "light",
+      mode: "light",
       common: {
         white: '#FFFFFF',
         black: '#000000'
@@ -57,4 +57,4 @@ export const darkTheme: Theme = createTheme({
       },
   },
   ...common
-});
+}));

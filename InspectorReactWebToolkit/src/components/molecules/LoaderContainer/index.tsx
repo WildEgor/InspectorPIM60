@@ -1,10 +1,13 @@
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 import React, { useEffect, useState } from 'react';
 import StyledBadge from "../../atoms/StyledBadge";
 import StyledSkeleton from "../../atoms/StyledSkeleton";
-import CachedIcon from '@material-ui/icons/Cached';
-import { Grid } from '@material-ui/core';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import CachedIcon from '@mui/icons-material/Cached';
+import { Grid } from '@mui/material';
+import { Theme } from '@mui/material/styles';
+
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,24 +66,22 @@ export default function LoaderContainer(props: Props): JSX.Element{
         fetchData()
     }, [needUpdate])
 
-    return(
-        <>
-            {pending && <StyledSkeleton animation="pulse">{children}</StyledSkeleton>}
-            {!pending && error &&
-            <StyledBadge anchorOrigin={{vertical: 'top', horizontal: 'right',}} color="secondary" badgeContent=" ">
-                <Grid container spacing={1} alignItems="center">
-                    <Grid className={classes.content} item xl container direction="row" spacing={2}>
-                        {!pending && <StyledSkeleton animation={false}>{children}</StyledSkeleton>}
-                    </Grid>
-                    <Grid className={classes.overlay} item>
-                        <IconButton aria-label="update slider" onClick={fetchData}>
-                            <CachedIcon/>
-                        </IconButton>
-                    </Grid>
+    return <>
+        {pending && <StyledSkeleton animation="pulse">{children}</StyledSkeleton>}
+        {!pending && error &&
+        <StyledBadge anchorOrigin={{vertical: 'top', horizontal: 'right',}} color="secondary" badgeContent=" ">
+            <Grid container spacing={1} alignItems="center">
+                <Grid className={classes.content} item xl container direction="row" spacing={2}>
+                    {!pending && <StyledSkeleton animation={false}>{children}</StyledSkeleton>}
                 </Grid>
-            </StyledBadge>
-            }
-            {!pending && !error && <>{children}</>}
-        </>
-    )
+                <Grid className={classes.overlay} item>
+                    <IconButton aria-label="update slider" onClick={fetchData} size="large">
+                        <CachedIcon/>
+                    </IconButton>
+                </Grid>
+            </Grid>
+        </StyledBadge>
+        }
+        {!pending && !error && <>{children}</>}
+    </>;
 }

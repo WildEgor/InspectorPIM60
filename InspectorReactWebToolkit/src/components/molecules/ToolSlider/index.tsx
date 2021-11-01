@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Grid from '@material-ui/core/Grid';
-import CachedIcon from '@material-ui/icons/Cached';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Input from '@material-ui/core/Input';
+import Grid from '@mui/material/Grid';
+import CachedIcon from '@mui/icons-material/Cached';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Input from '@mui/material/Input';
 
 import StyledSlider from "../../atoms/StyledSlider";
 import PaperContainer from '../PaperContainer';
@@ -140,11 +140,14 @@ export default function ToolSlider(props: Props): JSX.Element {
         >
           <Grid container spacing={1} alignItems="center">
             <Grid item>
-                <IconButton aria-label="update slider" onClick={ () => {
-                    sendGetRequest(); 
-                    setRefetchData(!refetchData)
+                <IconButton
+                  aria-label="update slider"
+                  onClick={ () => {
+                      sendGetRequest(); 
+                      setRefetchData(!refetchData)
+                    }
                   }
-                }>
+                  size="large">
                   <CachedIcon/>
                 </IconButton>
             </Grid>
@@ -185,7 +188,7 @@ export default function ToolSlider(props: Props): JSX.Element {
               <StyledSlider 
                 disabled={!!errorWhenUpdate}
                 valueLabelDisplay="auto"
-                ValueLabelComponent={ValueLabelComponent}
+                // ValueLabelComponent={ValueLabelComponent}
                 onChangeCommitted={sendPostRequest}
                 onChange={handleSliderChange} 
                 value={sliderValue}

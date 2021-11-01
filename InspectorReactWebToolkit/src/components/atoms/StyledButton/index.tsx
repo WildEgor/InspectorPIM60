@@ -1,6 +1,6 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles';
-import Button, { ButtonClassKey, ButtonProps } from '@material-ui/core/Button';
+import withStyles from '@mui/styles/withStyles';
+import Button, { ButtonClassKey, ButtonProps } from '@mui/material/Button';
 
 interface Styles extends Partial<Record<ButtonClassKey, string>> {
     component: any,

@@ -1,5 +1,7 @@
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { withStyles, Theme } from '@material-ui/core/styles';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Theme } from '@mui/material/styles';
+
+import withStyles from '@mui/styles/withStyles';
 
 const StyledSpinner = withStyles((theme: Theme) => ({
 }))(CircularProgress)

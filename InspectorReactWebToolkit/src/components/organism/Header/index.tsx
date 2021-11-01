@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { AppBar, Box, FormControlLabel, FormGroup, Grid, Link, SvgIcon, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Box, FormControlLabel, FormGroup, Grid, Link, SvgIcon, Toolbar, Typography } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import StyledButton from "Src/components/atoms/StyledButton";
 // import StyledSwitch from "Src/components/atoms/StyledSwitch";
@@ -53,7 +53,7 @@ const Header = (props: HeaderProps) => {
           </IconButton>
         </Grid>
       <Grid item xs={10}>
-        <Link href='logger.html'>
+        <Link href='logger.html' underline="hover">
           <StyledButton
             color='secondary' 
             variant="contained"
@@ -61,7 +61,7 @@ const Header = (props: HeaderProps) => {
             <Typography>LOGGER</Typography>
           </StyledButton>
         </Link>
-        <Link href='liveviewer.html'>
+        <Link href='liveviewer.html' underline="hover">
           <StyledButton
             color='secondary' 
             variant="contained"
@@ -69,7 +69,7 @@ const Header = (props: HeaderProps) => {
             <Typography>LIVE</Typography>
           </StyledButton>
         </Link>
-        <Link href='batchchange.html'>
+        <Link href='batchchange.html' underline="hover">
           <StyledButton
             color='secondary' 
             variant="contained"
@@ -81,7 +81,7 @@ const Header = (props: HeaderProps) => {
           </Grid>
       </Toolbar>
     </AppBar>
-  )
+  );
 }
 
 export default Header;

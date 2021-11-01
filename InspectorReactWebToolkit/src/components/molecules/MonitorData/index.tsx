@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useInterval } from "react-use";
 import PaperContainer from '../PaperContainer';
 import LoaderContainer from "../LoaderContainer";
-import Box from '@material-ui/core/Box';
-import { Grid, Typography } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import { Grid, Typography } from '@mui/material';
 
 interface Props {
     id: number,

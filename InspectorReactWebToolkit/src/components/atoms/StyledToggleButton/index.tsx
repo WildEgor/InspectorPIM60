@@ -1,6 +1,6 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles';
-import ToggleButton from '@material-ui/lab/ToggleButton';
+import withStyles from '@mui/styles/withStyles';
+import ToggleButton from '@mui/material/ToggleButton';
 
 const _StyledToggleButton = withStyles((theme) => ({
 }))(ToggleButton);

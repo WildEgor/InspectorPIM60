@@ -1,5 +1,7 @@
-import Select from "@material-ui/core/Select";
-import { withStyles, Theme } from '@material-ui/core/styles';
+import Select from "@mui/material/Select";
+import { Theme } from '@mui/material/styles';
+
+import withStyles from '@mui/styles/withStyles';
 
 const StyledSelector = withStyles((theme: Theme) => ({
     root: {
