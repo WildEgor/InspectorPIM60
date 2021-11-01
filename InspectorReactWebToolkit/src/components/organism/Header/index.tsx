@@ -9,7 +9,7 @@ interface HeaderProps {
   isChecked?: (check: boolean) => void;
 }
 
-import Icon from "../../../public/icons/logo-site.svg"
+import Icon from "Src/logo-site.svg"
 
 const Header = (props: HeaderProps) => {
   const { isChecked } = props

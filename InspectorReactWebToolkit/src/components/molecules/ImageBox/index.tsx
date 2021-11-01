@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useInterval } from "react-use";
 import StyledImage from "../../atoms/StyledImage";
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
     guid?: (guid: string) => void,
@@ -10,11 +10,6 @@ interface Props {
     height?: number,
     refreshTime?: number,
     isAutoUpdate?: boolean
-}
-
-interface ImageRawProps {
-    maxWidth: number,
-    minHeight: number
 }
 
 export default function ImageBox(props: Props) {
@@ -32,19 +27,19 @@ export default function ImageBox(props: Props) {
     const [delay, setDelay] = useState<number>(refreshTime);
 
     const getImageURL = async () => {
-        const id = uuidv4();
+        setPending(true);
+        const id = String(Math.floor(Date.now())); // uuidv4();
         guid && guid(id);
         const response = await getImage(id);
         if (response) setImageURL(response);
+        setPending(false);
     }
 
     useInterval(
         async () => {
-            setPending(true);
             if (!pending) {
                 await getImageURL()
                 setUpdateEvent(!updateEvent)
-                setPending(false);
             }   
         }
         ,

@@ -86,13 +86,13 @@ const LogImageList = (props: Props) => {
     <PaperContainer width={640}>
       {errorWhenUpdate && <Typography variant='h5'>Logger</Typography>}
       <LoaderContainer updateData={getImages} needUpdate={needUpdateLogger} isError={setErrorWhenUpdate}>
-        <Carousel images={logImages} style={{ height: height, width: width }} />
+        <Carousel images={logImages} style={{ height: height - 10, width: width - 10 }} />
         <StyledButton 
           size='small'
           value={0} 
           onClick={() => {
               setNeedUpdateLogger(!needUpdateLogger)
-              getImages()
+              // getImages()
             }
           } 
           color='primary' 

@@ -184,12 +184,15 @@ class InspectorService extends HttpClient {
    * @returns array of numbers
    */
   private sendCommand = async (command: string): Promise<TCommandResponse> => {
-    const wrapped = this._limiter.wrap(() => handlePromise(this.request<string[]>({
+    const wrapped = 
+    // this._limiter.wrap
+    (
+      () => handlePromise(this.request<string[]>({
       responseType: 'text',
       method: 'GET',
       url: `CmdChannel?${command}`,
       parseCmd: true,
-      timeout: 500,
+      timeout: 3000,
     })));
 
     const [error, response] = await wrapped();
@@ -354,7 +357,7 @@ class InspectorService extends HttpClient {
       parseJson: 'tools',
       method: 'GET',
       url: `CmdChannel?${EgetString.GET_NAME_ALL}_${refID}_1`,
-      timeout: 500,
+      timeout: 1000,
     }))
 
     if (!error) return response.data
@@ -390,11 +393,14 @@ class InspectorService extends HttpClient {
    * @returns string URL
    */
   public getLiveImage = async (id: string, s: EImageSize = EImageSize.SMALL, type: EOverlay = EOverlay.HIDE): Promise<string> => {
-    const wrapped = this._limiter.wrap(() => handlePromise(this.request<string>({
+    const wrapped = 
+    this._limiter.wrap
+    (
+      () => handlePromise(this.request<string>({
       method: 'GET',
       responseType: 'blob',
       url: `/LiveImage.jpg${type? `?${type}` : ''}`,
-      timeout: 100,
+      timeout: 3000,
       params: { id, s },
     })))
 
@@ -415,7 +421,7 @@ class InspectorService extends HttpClient {
       responseType: 'json',
       url: '/ImageResult',
       parseJson: 'statistic',
-      timeout: 100,
+      timeout: 3000,
       params: { id },
     }))
 
@@ -433,7 +439,7 @@ class InspectorService extends HttpClient {
       method: 'GET',
       url: `CmdChannel?gRES`,
       parseCmd: true,
-      timeout: 500,
+      timeout: 3000,
     }))
 
     if (!error) return response.data

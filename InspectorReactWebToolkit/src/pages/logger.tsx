@@ -10,7 +10,7 @@ import App from 'Src/components/pages/Logger'
 import Layout  from "Src/components/templates/Layout/Layout";
 import { Flip } from 'react-toastify';
 import { Box } from "@material-ui/core";
-import Header from "Src/components/pages/Header";
+import Header from "Src/components/organism/Header";
 
 function Main() {
   const [useDefaultTheme, toggle] = useReducer((theme) => !theme, true);

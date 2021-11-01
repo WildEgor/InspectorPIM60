@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
 import MockAdapter from "axios-mock-adapter";
+import { flatten } from 'flat';
 import * as rax from 'retry-axios';
 import {parseResponseCommand} from '../utils/http-utils'
 
@@ -121,7 +122,6 @@ abstract class HttpClient {
     }
 
     private _handleError(error: Error | AxiosError) {
-
         if (axios.isAxiosError(error))  {
             const { code } = error;
             switch (Number(code)) {
@@ -147,7 +147,6 @@ abstract class HttpClient {
               
             // Just a stock error
           }
-    
         return Promise.reject(error);
     }
 
@@ -158,9 +157,9 @@ abstract class HttpClient {
                     // JSON only for statistic and tools
                     if (response.config.parseJson) {
                         if (response.config.parseJson === 'statistic') {
-                            resp.data = JSON.stringify({ "MESSAGE_DATA": 3214 })
+                            resp.data = flatten(response.data);
                         } else if (response.config.parseJson === 'tools') {
-                            resp.data = ['PIXEL_342141', 'PIXEL_414214', 'EDGE_2131']
+                            // resp.data = ['PIXEL_342141', 'PIXEL_414214', 'EDGE_2131']
                         }
                     }
                     break;
@@ -172,7 +171,9 @@ abstract class HttpClient {
                 case 'blob':
                     try {
                         // console.log('[http.ts] Create blob response: ', response)
-                        const blobData = URL.createObjectURL(response.data);
+                        const url = response.data;
+                        const blobData = URL.createObjectURL(url);
+                        URL.revokeObjectURL(url);
                         resp.data = blobData;
                         // console.log('Created blob: ', blobData);
                         // resp.data = response.data
@@ -187,7 +188,7 @@ abstract class HttpClient {
     }
 
     protected request<T, R = ICustomAxiosResponse<T>>(config: ICustomAxiosRequestConfig): Promise<R> {
-        console.info('MAKE REQUEST: ', config)
+        // console.info('MAKE REQUEST: ', config)
         const conf = {...config, ...raxConfig};
         return this._instance.request(conf);
     }

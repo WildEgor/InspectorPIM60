@@ -4,7 +4,7 @@ import InspectorService from "../../../core/services/inspector/inspector.service
 
 import { inspectorDevices } from "../../../core/config/api.config";
 import LiveViewer from "Src/components/organism/LiveViewer";
-import Header from "../Header";
+import Header from "../../organism/Header";
 import { Box } from "@material-ui/core";
 
 const App = observer(() => {
