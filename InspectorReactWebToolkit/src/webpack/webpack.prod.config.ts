@@ -4,6 +4,7 @@ import ESLintPlugin from "eslint-webpack-plugin";
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
+import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { merge } from 'webpack-merge';
 
 import common from './webpack.common';
@@ -80,6 +81,11 @@ const config: webpack.Configuration = merge(common, {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
+    new CopyWebpackPlugin({
+      patterns: [
+          { from: 'src/pages/templates', to:'./' }
+      ]
+    })
   ],
 });
 

@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html><head>
+<title>PIM 60 HMI</title>
+
+<link rel="stylesheet" href="jquery-ui-1.9.2.custom.min.css">
+<link rel="stylesheet" type="text/css" href="inspector-ui.css">
+<link rel="stylesheet" type="text/css" href="template.css">
+
+<script src="jquery-1.8.3.min.js"></script>  
+<script src="jquery-ui-1.9.2.custom.min.js"></script>
+<script src="inspector.js"></script>
+<script src="inspector-ui.js"></script>
+
+<style type="text/css">
+
+	/* Make tabs full height*/
+	.ui-tabs {
+		height: 100%;
+	}
+
+	/* Remove any extra padding on the tab pages*/
+	.ui-tabs .ui-tabs-panel
+	{
+		padding: 0;
+	}
+
+	/* Set log image size*/
+	.hmi-refimage, .hmi-logimagelist ul li img{
+		width: 540px;
+		max-height: 500px;
+	}
+
+	/* Position and Size the update log images button */
+	#updateButton
+	{
+		height: 56px;
+		width: 56x;
+		margin: 2px;
+		position: absolute;
+		right: 0px;
+		left: 0px;
+		z-index: 2;
+	}
+
+	/* Position and Size the reference images*/
+	#refImageBanks{
+		height: 350px;
+		margin: 5px 10px;
+		overflow-x: hidden;
+	}
+
+	#refImageBanks img{
+		width: 119px;
+	}
+
+	#control
+	{
+		padding: 1px;
+		width: 942px; /* Set to: pageWidth.width - 2 * box.margin - 2 */
+		clear: both;
+	}
+	
+
+	/* Position the save to flash button at the buttom of right box*/
+	#saveBtn{
+		position: relative;
+		bottom: 0;
+		left: 5px;
+		margin: 5px;
+	}
+
+	/* Needed to position save to flash button correctly */
+	.rightbox {
+		position: relative;
+	}
+
+	#controller{
+		background-color: #F5F5F5;
+		border: 1px solid #DDDDDD;
+		border-radius: 4px 0 4px 0;
+		color: #3B3C3E;
+		font-size: 12px;
+		font-weight: bold;
+		left: -1px;
+		padding: 10px 7px 5px;
+		overflow-y: scroll;
+	}
+
+	.selected-image ul li img.selected {
+		border: 5px solid #0084c2;
+	}
+</style>
+
+<!--[if lt IE 9]>
+	<style type="text/css">
+		/* Fix for Internet Explorer */
+		#refImageBanks ul li div{
+				margin-left: 3px;
+				float: left;
+			}
+	</style>
+<![endif]-->
+
+<script type="text/javascript">
+	InspectorUI.AddDevicesIP(["192.168.99.9"]);
+
+	/*Update the log images */
+	function updateLogImages() {
+		$( "#updateButton" ).button("option", "disabled", true);
+		InspectorUI.RefreshLogImageList(function(){
+			$( "#updateButton" ).button("option", "disabled", false);
+		});
+	};
+
+	/* This will run when page has loaded */
+	$(function() {
+		// Show or hide controls based on camera mode
+		$(InspectorUI).on("modeChange", function(e, newMode){
+			if (newMode == 0)
+			{
+				// Entered Run-mode
+				$("#control").hide("slide", {direction:"right"}, "slow");
+				$("#reTeach").show();
+			}
+			else
+			{
+				// Entered Edit-mode
+				InspectorUI.RefreshControls();
+				$("#control").show("slide", {direction:"right"}, "slow");
+				$("#reTeach").hide();
+			}
+		});
+
+		// Update control values on reference object change
+		$(InspectorUI).on("refObjChange", function(e, newIndex){
+			InspectorUI.RefreshControls();
+		});
+
+		// Create tabs
+		$( ".tabBtns" ).tabs();
+
+		// Connect update button to reload log images
+		$( "#updateButton" ).button({
+				icons: { primary: "ui-icon-refresh" },
+				text: false
+			}).click(function(){updateLogImages();});
+
+		$(function() {
+            $( document ).tooltip();
+            $(".button").button();
+        });
+
+		$(".hmi-liveimage").liveimage("option", "interval", 100);
+	});
+</script>
+</head>
+<body>
+	<!-- <div class="gradient backgroundColor" id="header">
+		<div class="pageWidth">
+			<a href="index.html"><div class="logo"></div></a>
+			<div class="deviceInfo">Inspector PIM60</div>
+		</div>
+	</div> -->
+	<div class="pageWidth" id="main">
+		<a href="logger.html" id="supervision" class="button" title="Check the status of the camera">Logger Page</a>
+		<a href="liveviewer.html" id="maintenance" class="button" title="Device control for field exchange">Liveviewer Page</a>
+		<a href="batchchange.html" id="batchchange" class="button" title="Switch reference object and fine-tune parameters">Maintenance Page</a>
+		<a href="supervision.html" id="batchchange" class="button" title="Switch reference object and fine-tune parameters">Supervision Page</a>
+	</div>
+
+	<div id="container">
+		<div id="main" class="pageWidth">
+			<div class="leftbox">
+					<button id="runBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="0">Run</button>
+					<button id="editBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="1">Edit</button>
+					<div id="refImageBanks" class="hmi-refimagelist borderColor selected-image" data-cameraip="192.168.99.9" data-orientation="vertical" data-selectable="true"></div>
+					<button id="reTeach" class="hmi-action large" data-cameraip="192.168.99.9" data-id="2">Re-Teach</button>
+			</div>
+			<div class="centerbox">
+				<div class="tabBtns">
+					<ul>
+						<li><a href="#tabs-1" id="LiveImageBtn">Live image</a></li>
+						<li><a href="#tabs-2" id="ReferenceImageBtn" >Reference image</a></li>
+						<li><a href="#tabs-3" id="LoggedImageBtn">Logged images</a></li>
+					</ul>
+					<div id="tabs-1">
+						<img class="hmi-liveimage" data-cameraip="192.168.99.9" data-overlay="show" data-scale="2"/>
+					</div>
+					<div id="tabs-2">
+						<div>
+							<img class="hmi-refimage" data-cameraip="192.168.99.9" data-toolregion="38, 0:86"/>
+						</div>
+					</div>
+					<div id="tabs-3">
+						<div>
+							<button id="updateButton"></button>
+							<div class="hmi-logimagelist" data-cameraip="192.168.99.9" data-index="0-3" data-orientation="horizontal"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="box borderColor rightbox" id="controller">
+				<h1>Settings</h1>
+				<h2>Settings are commited live</h2>
+
+				<button id="saveBtn" class="hmi-action large" data-id="1" data-cameraip="192.168.99.9">Save to flash</button>
+
+				<label>Exposure:</label>
+				<div class="hmi-parameter" data-id="14" data-cameraip="192.168.99.9"></div>
+
+				<label>Gain:</label>
+				<div class="hmi-parameter" data-id="15" data-cameraip="192.168.99.9"></div>
+
+				<label>Change pixel counter intensity treshold in range:</label>
+				<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="80"></div>
+
+				<label>Pixels in range:</label>
+				<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="81"></div>
+
+				<label>Change object locator match treshold:</label>
+				<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="32"></div>
+
+				<label>Change pattern score treshold in range:</label>
+				<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="85"></div>
+
+				<!-- <label>Move and rotate objlocator:</label>
+				<div class="hmi-refimage" data-cameraip="192.168.99.9" data-tool="0" data-id="38"></div> -->
+
+			</div> 
+		</div>
+		<!-- End of div main -->
+	</div> 
+<!-- End of div container -->	
+</body></html>

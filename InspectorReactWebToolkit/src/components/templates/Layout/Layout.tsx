@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useReducer } from "react";
+import React, { FC, ReactNode, useEffect, useReducer } from "react";
 import clsx from "clsx";
 import { Theme } from "@mui/material/styles";
 import makeStyles from '@mui/styles/makeStyles';
@@ -49,6 +49,11 @@ interface Props {
 const Layout: FC<Props> = ({ useDefaultTheme, toggleTheme, children }) => {
   const classes = useStyles();
   const [open, toggle] = useReducer((open) => !open, true);
+
+  useEffect(() => {
+    toggle()
+  }, [toggleTheme])
+
   return (
     <div className={classes.root}>
       <CssBaseline />

@@ -97,9 +97,15 @@ const LiveViewer = (props: Props) => {
 
     return(
         <PaperContainer width={width}>
-            <Grid container spacing={2} alignItems="center">
+            <Grid 
+                container 
+                spacing={2} 
+                alignItems="center" 
+                justifyContent="center" 
+                style={{ minHeight: '30vh' }}
+            >
                 <Grid item xs={12}>
-                    <Card sx={{ maxWidth: width }}>
+                    <Card sx={{ maxWidth: width, maxHeight: height }}>
                         <ImageBox
                             refreshTime={selectorValue}
                             isAutoUpdate={!isPaused}
@@ -113,21 +119,34 @@ const LiveViewer = (props: Props) => {
                     </Card>
                 </Grid>
                 {
-                    showProgress && 
-                        <Grid item xs={12}>
-                            <StyledProgressBar
-                                variant="determinate" 
-                                value={imagePercentage} 
-                            />
-                        </Grid>
+                showProgress && 
+                <Grid item xs={12}>
+                    <StyledProgressBar
+                        variant="determinate" 
+                        value={imagePercentage} 
+                    />
+                </Grid>
                 }
-                { showSettings && <>
+                { 
+                showSettings && <>
+                <Grid item xs={2}>
+                    <StyledButton 
+                        size='small'
+                        value={0} 
+                        onClick={() => {setIsPaused(!isPaused)}
+                        } 
+                        color='primary' 
+                        variant="outlined"
+                    >
+                        {!isPaused? <Typography>PAUSE</Typography> : <Typography>START</Typography>}
+                    </StyledButton>
+                </Grid>
                 <Grid item xs={3}>
                     <FormControl>
                         <InputLabel id="demo-customized-select-label"><Typography variant={'h4'}>REQUEST RATE: </Typography></InputLabel>
                         <StyledSelector
                             style={{
-                                width: '180px',
+                                width: '100px',
                             }}
                             value={selectorValue}
                             onChange={handleSpeedChange}
@@ -142,7 +161,7 @@ const LiveViewer = (props: Props) => {
                         <InputLabel id="sdaadl"><Typography variant={'h4'}>IMAGE SIZE: </Typography></InputLabel>
                         <StyledSelector
                             style={{
-                                width: '180px',
+                                width: '120px',
                             }}
                             value={imageSizeSelectorValue}
                             onChange={handleImageSizeChange}
@@ -166,19 +185,8 @@ const LiveViewer = (props: Props) => {
                             {overlayValuse.map((o, i) => <MenuItem key={o.name} value={i}>{o.name}</MenuItem>)}
                         </StyledSelector>
                     </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                    <StyledButton 
-                        size='small'
-                        value={0} 
-                        onClick={() => {setIsPaused(!isPaused)}
-                        } 
-                        color='primary' 
-                        variant="outlined"
-                    >
-                        {!isPaused? <Typography>PAUSE</Typography> : <Typography>START</Typography>}
-                    </StyledButton>
-                </Grid></>}
+                </Grid></>
+                }
             </Grid>
         </PaperContainer>
     )

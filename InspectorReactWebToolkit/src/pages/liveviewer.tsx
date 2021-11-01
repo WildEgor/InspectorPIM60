@@ -15,8 +15,8 @@ import App from 'Src/components/pages/LiveViewer'
 // import Notifier from "Src/components/organism/Notifier/Notifier";
 import Layout  from "Src/components/templates/Layout/Layout";
 import { Flip, ToastContainer } from "react-toastify";
-import { Box } from "@mui/material";
 import Header from "Src/components/organism/Header";
+import { Box } from "@mui/system";
 
 
 declare module '@mui/styles/defaultTheme' {
@@ -28,7 +28,7 @@ declare module '@mui/styles/defaultTheme' {
 // import Header from "Src/components/pages/Header";
 
 function LivePage () {
-  const [useDefaultTheme, toggle] = useReducer((theme) => !theme, false);
+  const [useDefaultTheme, toggle] = useReducer((theme) => !theme, true);
   // define custom theme
   let theme: Theme = createTheme(adaptV4Theme(useDefaultTheme ? lightTheme : darkTheme));
   theme = responsiveFontSizes(theme);
@@ -54,7 +54,7 @@ function LivePage () {
                 pauseOnHover
               />
               <Box width={660}>
-                <Header/>
+                <Header isChecked={() => toggle()}/>
                 <App/>
               </Box> 
             </Layout>

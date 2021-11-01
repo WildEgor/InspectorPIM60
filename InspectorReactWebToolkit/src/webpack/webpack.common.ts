@@ -78,7 +78,7 @@ const config: webpack.Configuration = {
     rules: [
         {
             test: /\.(ts|js)x?$/i,
-            exclude: /node_modules/,
+            exclude: [/node_modules/, /src\/pages\/tempates/],
             use: {
               loader: "babel-loader",
               options: {

@@ -27,7 +27,7 @@ declare module '@mui/styles/defaultTheme' {
 
 
 function Main() {
-  const [useDefaultTheme, toggle] = useReducer((theme) => !theme, false);
+  const [useDefaultTheme, toggle] = useReducer((theme) => !theme, true);
   // define custom theme
   let theme: Theme = createTheme(adaptV4Theme(useDefaultTheme ? lightTheme : darkTheme));
   theme = responsiveFontSizes(theme);
@@ -53,7 +53,7 @@ function Main() {
                 pauseOnHover
               />
               <Box width={660}>
-                <Header/>
+                <Header isChecked={() => toggle()}/>
                 <App/>
               </Box> 
             </Layout>

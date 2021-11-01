@@ -5,6 +5,7 @@ import ESLintPlugin from "eslint-webpack-plugin";
 import { merge } from 'webpack-merge';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin'
 
 import common from './webpack.common';
 
@@ -38,6 +39,11 @@ const config: webpack.Configuration = merge(common, {
     }),
     new ReactRefreshWebpackPlugin(),
     new MiniCssExtractPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+          { from: 'src/pages/templates', to:'./' }
+      ]
+    })
   ],
   devtool: "inline-source-map",
   devServer: {

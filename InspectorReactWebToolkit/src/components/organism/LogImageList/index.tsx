@@ -46,7 +46,7 @@ const LogImageList = (props: Props) => {
         const isLock = await lockLogger(true)
   
         if (isLock) {
-          const logImages = await Promise.all<string>(Array.from({ length: range[1] - (range[0] + 1) }, (_v , k)=> {
+          const logImages = await Promise.all<string>(Array.from({ length: (range[1] - range[0])}, (_v , k)=> {
             return getImage(k + range[0]);
           }))
     

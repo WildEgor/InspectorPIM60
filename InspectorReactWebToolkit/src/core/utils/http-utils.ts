@@ -57,7 +57,7 @@ function parseResponseCommand(responseData: string): string[] {
     }
   }
 
-  console.log('PARSE DATA RESULT: ', o);
+  // console.log('PARSE DATA RESULT: ', o);
 
   if (o.errorCode === 0) 
     return o.data
@@ -84,14 +84,26 @@ function handlePromise<T, U = Error> (
     });
 }
 
+/**
+ * 
+ * @param ms 
+ * @returns 
+ */
 function delayPromise(ms: number) {
   return new Promise( resolve => setTimeout(resolve, ms) );
 }
-
-//const handleRequest = (fn: Function, msg: string) => async (...args) => await fn(...args).catch(e => Error(`${msg} caused by: ${e}`));
+/**
+ * 
+ * @param fn 
+ * @param msg 
+ * @returns 
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types
+const handleRequest = (fn: Function, msg: string) => async (...args) => await fn(...args).catch(e => Error(`${msg} caused by: ${e}`));
 
 export {
   delayPromise,
   handlePromise,
+  handleRequest,
   parseResponseCommand
 };

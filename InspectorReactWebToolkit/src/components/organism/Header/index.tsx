@@ -10,10 +10,11 @@ interface HeaderProps {
 }
 
 import Icon from "Src/logo-site.svg"
+import StyledSwitch from "Src/components/atoms/StyledSwitch";
 
 const Header = (props: HeaderProps) => {
   const { isChecked } = props
-  const [auth, setAuth] = React.useState(true);
+  const [auth, setAuth] = React.useState(false);
   
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuth(event.target.checked);
@@ -27,18 +28,6 @@ const Header = (props: HeaderProps) => {
     <AppBar position="static">
       <Toolbar>
       <Grid container>
-      {/* <FormGroup>
-        <FormControlLabel
-          control={
-            <StyledSwitch
-              checked={auth}
-              onChange={handleChange}
-              aria-label="login switch"
-            />
-          }
-          label={''}
-        />
-      </FormGroup> */}
       <Grid item xs={2}>
         <IconButton
             size="large"
@@ -52,7 +41,7 @@ const Header = (props: HeaderProps) => {
             </SvgIcon>
           </IconButton>
         </Grid>
-      <Grid item xs={10}>
+      <Grid item xs={8}>
         <Link href='logger.html' underline="hover">
           <StyledButton
             color='secondary' 
@@ -78,6 +67,20 @@ const Header = (props: HeaderProps) => {
           </StyledButton>
         </Link>
         </Grid>
+        <Grid item xs={2}>
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <StyledSwitch
+              checked={auth}
+              onChange={handleChange}
+              aria-label="login switch"
+            />
+          }
+          label={''}
+        />
+      </FormGroup>
+      </Grid>
           </Grid>
       </Toolbar>
     </AppBar>

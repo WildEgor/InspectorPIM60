@@ -1,0 +1,233 @@
+
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
+
+.errormsg{
+	color: rgba(255, 0, 0, 0.6);
+}
+
+.overlay {
+    background: rgba(255, 255, 255, 0.85) url(ajax-loader.gif) center center no-repeat;
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+     z-index:9999;
+    color:white;
+}
+
+.ui-slider .ui-slider-handle {
+	width: 0.5em;
+}
+
+.ui-slider-input {
+	display: block;
+	float: left;
+	margin: 2px 0 20px 0;
+	padding: 2px;
+	width: 40px;
+	height: 22px;
+	line-height: 22px;
+	font-size: 14px;
+	border: none;
+	background-image: none;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: text-bottom;
+	outline: 0;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-ms-box-sizing: content-box;
+	box-sizing: content-box;
+}
+
+.ui-menu { 
+    list-style:none;
+    padding: 2px;
+    margin: 0;
+    display: block;
+    outline: none;
+}
+
+.ui-menu .ui-menu { 
+    margin-top: -3px;
+    position: absolute;
+}
+
+.ui-menu .ui-menu-item { 
+    margin: 0 20px 0 0;
+    padding: 0;
+    zoom: 1;
+    width: 100%;
+}
+
+.ui-menu .ui-menu-divider { 
+    margin: 5px -2px 5px -2px;
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+    border-width: 1px 0 0 0; 
+}
+
+.ui-menu .ui-menu-item a {
+    text-decoration: none;
+    display: block;
+    padding: 2px .4em;
+    line-height: 1.5;
+    zoom: 1;
+    font-weight: normal;
+}
+
+.ui-menu .ui-menu-item a.ui-state-focus,
+.ui-menu .ui-menu-item a.ui-state-active {
+    font-weight: normal;
+    margin: -1px;
+}
+
+.ui-menu .ui-state-disabled { 
+    font-weight: normal;
+    margin: .4em 0 .2em;
+    line-height: 1.5;
+}
+
+.ui-menu .ui-state-disabled a { cursor: default; }
+
+/* icon support */
+.ui-menu-icons { position: relative; }
+.ui-menu-icons .ui-menu-item a { 
+    position: relative;
+    padding-left: 2em;
+}
+
+/* left-aligned */
+.ui-menu .ui-icon { 
+    position: absolute;
+    top: .2em; left: .2em; }
+
+/* right-aligned */
+.ui-menu .ui-menu-icon { 
+    position: static;
+    float: right;
+    margin-top: 4px;
+}
+
+.ui-shadow-inset {
+	-moz-box-shadow: inset 0 1px 4px rgba(0,0,0,.2);
+	-webkit-box-shadow: inset 0 1px 4px rgba(0,0,0,.2);
+	box-shadow: inset 0 1px 4px rgba(0,0,0,.2);
+}
+
+.hmi-parameter.ui-slider {
+	position: relative;
+	overflow: visible;
+	margin-left: 48px;
+	top: 7px;
+}
+
+.ui-rangeslider-first {
+	float: left;
+}
+
+.ui-rangeslider-last {
+	float: right;
+}
+
+.ui-rangeslider {
+	margin-right: 48px;
+}
+
+.hmi-parameter.ui-slider.pending a, .hmi-parameter.ui-buttonset.pending label.ui-state-active, .hmi-parameter checkbox {
+	background-image: url("ajax-loader.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.hmi-parameter.ui-buttonset.pending label.ui-state-active {
+	background-image: url("ajax-loader.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.hmi-parameter.checkbox.pending, overlay img.pending {
+	background-image: url("ajax-loader.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+
+img.hmi-liveimage {
+	width: 640px;
+}
+
+img.hmi-refimage {
+	width: 640px;
+}
+
+.hmi-imagelist {	
+	overflow: auto;
+}
+
+.hmi-imagelist ul {
+	padding: 0;
+	width: 100%;
+	margin: 0;
+}
+
+.hmi-imagelist ul li{
+	list-style-type: none;
+	display: inline;
+	margin: 1px;
+}
+
+.hmi-imagelist ul li img{
+	max-height: 122px;
+}
+
+.hmi-imagelist ul li img.selected {
+	border: 2px solid #F00; 
+}
+
+.hmi-plot{
+    text-align: center;
+    width: 100%;
+}
+
+.hmi-plot-container{
+    display: inline-block;
+    width: 100%;
+}
+
+.hmi-plot-placeholder{
+    display: inline-block;
+    width: 600px;
+    height: 300px;
+}
+
+.hmi-plot-data-menu{
+    position: absolute;
+    max-width: 300px;
+}
+
+.hmi-plot-menu-button{
+    
+}
+
+.horizontalimageList {
+	white-space: nowrap;
+	overflow-x: scroll;
+	overflow-y: nowrap;
+}
+
+.horizontalimageList ul li {
+	display: inline-block;
+}
+
+.hmi-movableregion {
+	width: 18px;
+	height: 18px;
+	position: absolute !important;
+	cursor: crosshair;
+	margin: 1px;
+}

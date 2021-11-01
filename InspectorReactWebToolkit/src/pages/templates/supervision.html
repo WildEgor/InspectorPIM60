@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html><head>
+<title>PIM 60 Web HMI Toolkit - Supervision</title>
+<link rel="stylesheet" href="jquery-ui-1.9.2.custom.min.css">
+<link rel="stylesheet" type="text/css" href="inspector-ui.css">
+<link rel="stylesheet" type="text/css" href="template.css">
+
+<script src="jquery-1.8.3.min.js"></script>  
+<script src="jquery-ui-1.9.2.custom.min.js"></script>
+<script src="inspector.js"></script>
+<script src="inspector-ui.js"></script>
+
+<style type="text/css">
+	#leftbox, #centerbox, #rightbox
+	{
+		float: left;
+		width: 344px;
+		min-height: 280px;
+		height: 280px;
+	}
+
+	#leftbox img, #centerbox img
+	{
+		width: 100%;
+		margin-top: 3px;
+	}
+
+	#rightbox
+	{
+		width: 200px;
+		margin-right: 0px;
+		float: right;
+		overflow: auto;
+	}
+
+	#bottombox
+	{
+		padding: 1px;
+		width: 942px; /* Set to: pageWidth.width - 2 * box.margin - 2 */
+		clear: both;
+	}
+
+	#results {
+		text-align: left;
+	}
+
+	#updateButton
+	{
+		float: right;
+		height: 18px;
+		width: 18px;
+		margin: 1px;
+	}
+
+	#logImageBox
+	{
+		clear: both;
+	}
+
+	.hmi-logimagelist ul {
+		width: 942px;
+	}
+
+	/* IE7 Hack */
+	* .hmi-logimagelist ul li {
+    	display: inline;
+	}
+</style>
+
+<script type="text/javascript">
+	InspectorUI.AddDevicesIP(["192.168.99.9"]);
+		// Update the log images when update button is clicked
+		function updateLogImages() {
+			$( "#updateButton" ).button("option", "disabled", true);
+			InspectorUI.RefreshLogImageList(function(){
+				$( "#updateButton" ).button("option", "disabled", false);
+			});
+		};
+
+		// This will run when page has loaded
+		$(function() {
+			// Create the update log images button
+			$( "#updateButton" ).button({
+				icons: { primary: "ui-icon-refresh" },
+				text: false
+			}).click(function(){updateLogImages();});
+		});
+
+		$(function() {
+            $( document ).tooltip();
+            $(".button").button();
+        });
+
+		$(".hmi-liveimage").liveimage("option", "scale", 2);
+		</script>
+	</head>
+	<body>
+		<div class="pageWidth" id="main">
+			<a href="logger.html" id="supervision" class="button" title="Check the status of the camera">Logger Page</a>
+			<a href="liveviewer.html" id="maintenance" class="button" title="Device control for field exchange">Liveviewer Page</a>
+			<a href="batchchange.html" id="batchchange" class="button" title="Switch reference object and fine-tune parameters">Maintenance Page</a>
+			<a href="supervision.html" id="batchchange" class="button" title="Switch reference object and fine-tune parameters">Supervision Page</a>
+		</div>
+
+		<div id="container" class="pageWidth">
+			<div id="leftbox" class="box borderColor shadow" >
+				<h1>Live</h1>
+				<img id="liveImg" class="hmi-liveimage" data-cameraip="192.168.99.9" data-overlay="show" width="200" data-interval="150"/>
+			</div>
+			<div id="centerbox" class="box borderColor shadow">
+				<h1>Reference</h1>
+				<img id="refImg" class="hmi-refimage" width="200" data-cameraip="192.168.99.9" />
+			</div>
+			<div id="rightbox" class="box borderColor shadow">
+				<h1>Result</h1>
+				<div id="results" class="hmi-resultstring" data-cameraip="192.168.99.9"></div>
+			</div>
+			<div id="bottombox" class="box borderColor shadow">
+				<button id="updateButton" class="hmi-control" data-cameraip="192.168.99.9"></button>
+				<h1>Log</h1>
+				<div id="logImageBox" class="hmi-logimagelist" data-orientation="horizontal" data-cameraip="192.168.99.9" data-index="0-9"></div>
+			</div>
+		</div> 
+		<!-- End of div container -->	
+
+
+	</body></html>
