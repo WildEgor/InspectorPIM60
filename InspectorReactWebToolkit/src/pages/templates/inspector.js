@@ -15,7 +15,7 @@ function Inspector(ip) {
     var obj = this;
     obj.async = true;
     obj.cameraip = typeof ip !== 'undefined' ? ip : "";
-    obj.enableLogging = true;
+    obj.enableLogging = false;
     
     // Handle that console might not exist
     if ( ! window.console ) console = { log: function(){} };

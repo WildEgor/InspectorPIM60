@@ -1,15 +1,24 @@
 import ipRegex from "ip-regex";
 import Bottleneck from "bottleneck";
-import HttpClient from '../http';
-import { handlePromise, delayPromise } from '../../utils/http-utils'
-import { TWidget, TCommandResponse, EImageSize, EOverlay, TCamMode, EgetString, EActions, ECommands, } from "./inspector.interface";
+import HttpClient from 'Src/core/services/http';
+import { handlePromise, delayPromise } from 'Src/core/utils/http-utils'
+import { TWidget, 
+  TCommandResponse, 
+  EImageSize, 
+  EOverlay, 
+  TCamMode, 
+  EgetString, 
+  EActions, 
+  ECommands, 
+} from "./inspector.interface";
 
 /**
  * Main class with request/response ability and feature as api-wrapper i guess
  */
+
 class InspectorService extends HttpClient {
   private _limiter?: Bottleneck;
-  private static _classInstance?: InspectorService;
+  // private static _classInstance?: InspectorService;
   private static _devices?: Set<InspectorService> = new Set(); // Array of cameras
   private _deviceMode?: number;
   public defaultSettings: Array<TWidget> = []; // Array of default widgets
@@ -148,7 +157,6 @@ class InspectorService extends HttpClient {
   public static getDevice(ip: string): InspectorService {
     try {
       if (ipRegex({ exact: true }).test(ip)) {
-        console.log('DEV', this._devices);
         const camera = Array.from(this._devices).find((device) => device.cameraIP === ip)
         return camera;
       }
@@ -192,6 +200,7 @@ class InspectorService extends HttpClient {
       method: 'GET',
       url: `CmdChannel?${command}`,
       parseCmd: true,
+      iAmRetry: true,
       timeout: 3000,
     })));
 
@@ -367,6 +376,13 @@ class InspectorService extends HttpClient {
 
   // ***************************************** VIEWER *****************************************
 
+  /**
+   * @info Return set [image, statistic]
+   * @param id 
+   * @param s 
+   * @param type 
+   * @returns 
+   */
   public getLiveImageWithStatistic = async (id: string, s: EImageSize = EImageSize.SMALL, type: EOverlay = EOverlay.HIDE): Promise<{
     image: string,
     statistic: any
@@ -399,6 +415,7 @@ class InspectorService extends HttpClient {
       () => handlePromise(this.request<string>({
       method: 'GET',
       responseType: 'blob',
+      iAmRetry: false,
       url: `/LiveImage.jpg${type? `?${type}` : ''}`,
       timeout: 3000,
       params: { id, s },
@@ -408,7 +425,6 @@ class InspectorService extends HttpClient {
     if(!error) return response.data
   }
 
-  // FIXME:interface statistic WTF IT IS
   /**
    * @info Return marked image statistic
    * @param id Unique image id 
@@ -420,6 +436,7 @@ class InspectorService extends HttpClient {
       method: 'GET',
       responseType: 'json',
       url: '/ImageResult',
+      iAmRetry: false,
       parseJson: 'statistic',
       timeout: 3000,
       params: { id },
@@ -460,7 +477,7 @@ class InspectorService extends HttpClient {
   // ***************************************** REFERENCE IMAGE ********************************
 
   /**
-   * Get active recipe image
+   * @info Get active recipe image
    * @returns image URL
    */
   public getActiveRecipe = async (): Promise<string> => {
@@ -479,7 +496,7 @@ class InspectorService extends HttpClient {
   }
 
   /**
-   * Get recipe image 
+   * @info Get recipe image 
    * @param id reference (recipe) id
    * @returns image URL
    */
@@ -498,12 +515,22 @@ class InspectorService extends HttpClient {
     return null
   }
 
+  /**
+   * @info Give recipe name by id
+   * @param id 
+   * @returns 
+   */
   public getRecipeName = async (id: number): Promise<string> => {
     const [error, response] = await handlePromise(this.getString(EgetString.GET_NAME_REF_OBJ, id))
     if (!error) return response
     return null
   }
 
+  /**
+   * @info Get recipe names
+   * @param count 
+   * @returns 
+   */
   public getRecipeNames = async (count: number): Promise<string[]> => {
     const recipeNames = Promise.all<string>(Array.from({ length: count }, (_v , k)=> {
       return this.getRecipeName(k);
@@ -511,18 +538,31 @@ class InspectorService extends HttpClient {
     return recipeNames;
   }
 
+  /**
+   * @info All recipes
+   * @returns 
+   */
   public getRecipeCount = async (): Promise<number> => {
     const count = await this.getInt(ECommands.REF_GETNOREFOBJ)
     if (count) return Number(count[0])
     return null;
   }
 
+  /**
+   * @info Give me index of active recipe
+   * @returns 
+   */
   public getActiveReferenceIndex = async (): Promise<number> => {
     const id = await this.getInt(ECommands.REF_OBJ)
     if (id) return Number(id[0])
     return null
   }
 
+  /**
+   * @info Update recipe image
+   * @param id 
+   * @returns 
+   */
   public updateRecipe = async(id: number): Promise<boolean>   => {
     return await this.setInt(ECommands.REF_OBJ, [id])
   }
@@ -555,7 +595,7 @@ class InspectorService extends HttpClient {
    * @param type 'ShowOverlay'| 'SimplifiedOverlay' | ''
    * @returns logimage URL
    */
-  public getLogImage = async (id: number, s?: EImageSize,  type?: EOverlay): Promise<string> => {
+  public getLogImage = async (id: number, s?: EImageSize,  type: EOverlay = EOverlay.SHOW): Promise<string> => {
     const [error, response] = await handlePromise(this.request<string>({
       method: 'GET',
       url: `/LogImage.jpg?${id < 10 ? "0" + id : id}${type? `&${type}` : ''}`,

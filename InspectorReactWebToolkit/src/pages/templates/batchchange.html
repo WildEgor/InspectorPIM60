@@ -13,6 +13,10 @@
 
 <style type="text/css">
 
+	#calibrateMM {
+        width: 30px;
+    }
+
 	/* Make tabs full height*/
 	.ui-tabs {
 		height: 100%;
@@ -91,29 +95,66 @@
 	}
 </style>
 
-<!--[if lt IE 9]>
-	<style type="text/css">
-		/* Fix for Internet Explorer */
-		#refImageBanks ul li div{
-				margin-left: 3px;
-				float: left;
-			}
-	</style>
-<![endif]-->
-
 <script type="text/javascript">
 	InspectorUI.AddDevicesIP(["192.168.99.9"]);
 
+	function clickedTab1() {
+        $(".helpSection").hide();
+        $("#settings").show();
+    }
+
+	function clickedTab2() {
+        $(".helpSection").hide();
+        $("#help-1").show();
+    }
+
+	function clickedTab3() {
+        $(".helpSection").hide();
+        $("#help-2").show();
+    }
+
+	function clickedTab4() {
+        $(".helpSection").hide();
+        $("#help-3").show();
+    }
+
 	/*Update the log images */
 	function updateLogImages() {
-		$( "#updateButton" ).button("option", "disabled", true);
+		// $( "#updateButton" ).button("option", "disabled", true);
 		InspectorUI.RefreshLogImageList(function(){
 			$( "#updateButton" ).button("option", "disabled", false);
 		});
 	};
 
+	function clickedBackup() {
+        window.location = "/backup_config?config1";
+    }
+
+    function clickedUpload() {
+        // To upload the a configuration it is required to login first
+        // Replace <...> with username and password
+        // NOTE! username and password is sent in plaintext
+        $.post("/HandleConfig", "sopas_" + "username=Maintenance&" + "sopas_" + "password=Inspector").done(function(){
+            $.get("/SelectRestore?prepare_on").done(function(){
+                $("#restoreform").submit();
+            });
+            alert("Please wait for the Inspector to restart...");
+        }); 
+        
+        return true;
+    }
+
 	/* This will run when page has loaded */
 	$(function() {
+		// Set up the spinner used to select square side of calibration
+        $("#calibrateMM").spinner({
+            min: 0,
+            max:100
+        }).on( "spinchange", function( event, ui ) {
+            var value = $( "#calibrateMM" ).spinner( "value" );
+            $("#calibrateBtn").actionbutton("option", "squareside", value);
+        });
+
 		// Show or hide controls based on camera mode
 		$(InspectorUI).on("modeChange", function(e, newMode){
 			if (newMode == 0)
@@ -151,6 +192,21 @@
         });
 
 		$(".hmi-liveimage").liveimage("option", "interval", 100);
+
+		// Set up eventhandlers     
+        $("#ReferenceImageBtn").click(clickedTab1);
+        $("#LiveImageBtn").click(clickedTab2);
+        $("#LoggedImageBtn").click(clickedTab3);
+        $("#CalibrateBtn").click(clickedTab4);
+
+		$("#backupBtn").button().click(clickedBackup);
+        $("#uploadBtn").button().click(clickedUpload);
+
+		$('#reloadPage').button().click(function() {
+    		location.reload();
+		});
+
+		clickedTab1()
 	});
 </script>
 </head>
@@ -161,71 +217,114 @@
 			<div class="deviceInfo">Inspector PIM60</div>
 		</div>
 	</div> -->
-	<div class="pageWidth" id="main">
+	<!-- <div class="pageWidth" id="main">
 		<a href="logger.html" id="supervision" class="button" title="Check the status of the camera">Logger Page</a>
 		<a href="liveviewer.html" id="maintenance" class="button" title="Device control for field exchange">Liveviewer Page</a>
 		<a href="batchchange.html" id="batchchange" class="button" title="Switch reference object and fine-tune parameters">Maintenance Page</a>
 		<a href="supervision.html" id="batchchange" class="button" title="Switch reference object and fine-tune parameters">Supervision Page</a>
-	</div>
+	</div> -->
 
 	<div id="container">
 		<div id="main" class="pageWidth">
 			<div class="leftbox">
-					<button id="runBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="0">Run</button>
-					<button id="editBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="1">Edit</button>
-					<div id="refImageBanks" class="hmi-refimagelist borderColor selected-image" data-cameraip="192.168.99.9" data-orientation="vertical" data-selectable="true"></div>
-					<button id="reTeach" class="hmi-action large" data-cameraip="192.168.99.9" data-id="2">Re-Teach</button>
+				<button id="runBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="0">Run</button>
+				<button id="editBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="1">Edit</button>
+				<div id="refImageBanks" class="hmi-refimagelist borderColor selected-image" data-cameraip="192.168.99.9" data-orientation="vertical" data-selectable="true"></div>
+				<button id="reloadPage" class="large">Reload Page</button>
 			</div>
 			<div class="centerbox">
 				<div class="tabBtns">
 					<ul>
-						<li><a href="#tabs-1" id="LiveImageBtn">Live image</a></li>
-						<li><a href="#tabs-2" id="ReferenceImageBtn" >Reference image</a></li>
-						<li><a href="#tabs-3" id="LoggedImageBtn">Logged images</a></li>
+						<li><a href="#tabs-1" id="ReferenceImageBtn">Reference</a></li>
+						<li><a href="#tabs-2" id="LiveImageBtn" >Live</a></li>
+						<li><a href="#tabs-3" id="LoggedImageBtn">Logger</a></li>
+						<li><a href="#tabs-4" id="CalibrateBtn">Calibrate</a></li>
+						<li><a href="#tabs-5" id="ConfigurationTab">Configuration</a></li>
 					</ul>
 					<div id="tabs-1">
-						<img class="hmi-liveimage" data-cameraip="192.168.99.9" data-overlay="show" data-scale="2"/>
+						<div>
+							<img class="hmi-refimage" data-cameraip="192.168.99.9" data-toolregion="38, 0:86" data-moveble="true"/>
+						</div>
 					</div>
 					<div id="tabs-2">
-						<div>
-							<img class="hmi-refimage" data-cameraip="192.168.99.9" data-toolregion="38, 0:86"/>
-						</div>
+						<img class="hmi-liveimage" data-cameraip="192.168.99.9" data-overlay="show" data-scale="2"/>
 					</div>
 					<div id="tabs-3">
 						<div>
 							<button id="updateButton"></button>
-							<div class="hmi-logimagelist" data-cameraip="192.168.99.9" data-index="0-3" data-orientation="horizontal"></div>
+							<div class="hmi-logimagelist" data-cameraip="192.168.99.9" data-index="0-9" data-orientation="horizontal"></div>
+						</div>
+					</div>
+					<div id="tabs-4">
+						<img class="hmi-liveimage" data-overlay="true" data-cameraip="192.168.99.9"/>
+						<div>
+							<span>Square side:</span>
+							<input id="calibrateMM" value="6" data-cameraip="192.168.99.9"></input>
+							<span>mm</span>
+							<button class="hmi-action" data-id="3" id="calibrateBtn" data-cameraip="192.168.99.9">Calibrate</button>
+							<button class="hmi-action" data-id="4" id="removeCalibrationBtn" data-cameraip="192.168.99.9">Remove Calibration</button>
+						</div>
+					</div>
+					<div id="tabs-5">
+						<div class="box borderColor">
+							<span id="backupBtn" class="button" data-cameraip="192.168.99.9">Download Configuration</span>
+						</div>
+						<div class="box borderColor">
+							<form action="/RestoreConfig" method="post" enctype="multipart/form-data" target="upload_target" name="restoreform" id="restoreform" data-cameraip="192.168.99.9">
+								<input type="file" name="datafile"/>
+								<span id="uploadBtn" class="button" data-cameraip="192.168.99.9">Upload Configuration</span>
+							</form>
+	
+							<!-- Hidden frame to do the file upload -->
+							<iframe id="upload_target" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="box borderColor rightbox" id="controller">
-				<h1>Settings</h1>
-				<h2>Settings are commited live</h2>
+				<div class="helpSection" id="help-1">
+					<h2>Live viewer</h2>
+					<p>
+						Live status of camera
+					</p>
+				</div>
+				<div class="helpSection" id="help-2">
+					<h2>Logged images</h2>
+					<p>
+						Last logged images
+					</p>
+				</div>
+				<div class="helpSection" id="help-3">
+					<h2>Calibrate</h2>
+					<p>
+						Put the calibration chess pattern in view and press calibrate.
+					</p>
+				</div>
+				<div class="helpSection" id="settings">
+					<h1>Settings</h1>
+					<h2>Settings are commited live</h2>
 
-				<button id="saveBtn" class="hmi-action large" data-id="1" data-cameraip="192.168.99.9">Save to flash</button>
+					<button id="reTeach" class="hmi-action large" data-cameraip="192.168.99.9" data-id="2">Re-Teach</button>
+					<button id="saveBtn" class="hmi-action large" data-id="1" data-cameraip="192.168.99.9">Save to flash</button>
 
-				<label>Exposure:</label>
-				<div class="hmi-parameter" data-id="14" data-cameraip="192.168.99.9"></div>
+					<label>Exposure:</label>
+					<div class="hmi-parameter" data-id="14" data-cameraip="192.168.99.9"></div>
 
-				<label>Gain:</label>
-				<div class="hmi-parameter" data-id="15" data-cameraip="192.168.99.9"></div>
+					<label>Gain:</label>
+					<div class="hmi-parameter" data-id="15" data-cameraip="192.168.99.9"></div>
 
-				<label>Change pixel counter intensity treshold in range:</label>
-				<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="80"></div>
+					<label>Pixel counter intensity treshold in range:</label>
+					<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="80"></div>
 
-				<label>Pixels in range:</label>
-				<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="81"></div>
+					<label>Pixels in range:</label>
+					<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="81"></div>
 
-				<label>Change object locator match treshold:</label>
-				<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="32"></div>
+					<label>Object locator match treshold:</label>
+					<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="32"></div>
 
-				<label>Change pattern score treshold in range:</label>
-				<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="85"></div>
-
-				<!-- <label>Move and rotate objlocator:</label>
-				<div class="hmi-refimage" data-cameraip="192.168.99.9" data-tool="0" data-id="38"></div> -->
-
+					<label>Pattern score treshold in range:</label>
+					<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="85"></div>
+				</div>
 			</div> 
 		</div>
 		<!-- End of div main -->

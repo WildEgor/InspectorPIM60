@@ -18,15 +18,15 @@ const common = {
     },
 },
 typography: {
-  h1: { fontSize: '3rem', },
-  h2: { fontSize: '2.5rem', },
-  h3: { fontSize: '2rem', },
-  h4: { fontSize: '1.5rem', },
-  h5: { fontSize: '1rem', },
-  h6: { fontSize: '0.5rem', },
-  subtitle1: { fontSize: '0.40rem', },
+  h1: { fontSize: '2.8rem', fontWeight: 700 },
+  h2: { fontSize: '2.2rem', fontWeight: 700 },
+  h3: { fontSize: '1.8rem', fontWeight: 500 },
+  h4: { fontSize: '1.2rem', fontWeight: 500 },
+  h5: { fontSize: '0.8rem', fontWeight: 300 },
+  h6: { fontSize: '0.6rem', fontWeight: 300 },
+  subtitle1: { fontSize: '0.40rem', fontWeight: 300 },
   body1: {
-    fontWeight: 600,
+    fontWeight: 500,
   },
   button: {
     //fontStyle: '',
@@ -38,20 +38,29 @@ typography: {
 export const lightTheme: Theme = createTheme(adaptV4Theme({
   palette: {
       mode: "light",
+      common: {
+        white: '#FFFFFF',
+        black: '#3C3B3B'
+      },
+      primary: { main: '#68889F' },
+      secondary: { main: '#88A9B3' },
+      success: {
+        main : "#bac778",
+      },
   },
-  ...common
+  ...common,
 }));
 
 // define dark theme colors
 export const darkTheme: Theme = createTheme(adaptV4Theme({
   palette: {
-      mode: "light",
+      mode: "dark",
       common: {
         white: '#FFFFFF',
         black: '#000000'
       },
       primary: { main: '#354653' },
-      secondary: {main: '#557179'},
+      secondary: { main: '#3B4F55' },
       success: {
         main : "#bac778",
       },

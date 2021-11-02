@@ -227,7 +227,10 @@ img.hmi-refimage {
 .hmi-movableregion {
 	width: 18px;
 	height: 18px;
+	background-color: white;
 	position: absolute !important;
+	border-radius: 50%;
+  	display: inline-block;
 	cursor: crosshair;
 	margin: 1px;
 }

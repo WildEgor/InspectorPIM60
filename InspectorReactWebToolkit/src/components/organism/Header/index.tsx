@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { AppBar, Box, FormControlLabel, FormGroup, Grid, Link, SvgIcon, Toolbar, Typography } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import StyledButton from "Src/components/atoms/StyledButton";
@@ -14,7 +14,7 @@ import StyledSwitch from "Src/components/atoms/StyledSwitch";
 
 const Header = (props: HeaderProps) => {
   const { isChecked } = props
-  const [auth, setAuth] = React.useState(false);
+  const [auth, setAuth] = useState(false);
   
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuth(event.target.checked);
@@ -47,7 +47,7 @@ const Header = (props: HeaderProps) => {
             color='secondary' 
             variant="contained"
           >
-            <Typography>LOGGER</Typography>
+            <Typography variant='h6'>LOGGER</Typography>
           </StyledButton>
         </Link>
         <Link href='liveviewer.html' underline="hover">
@@ -55,7 +55,7 @@ const Header = (props: HeaderProps) => {
             color='secondary' 
             variant="contained"
           >
-            <Typography>LIVE</Typography>
+            <Typography variant='h6'>LIVE</Typography>
           </StyledButton>
         </Link>
         <Link href='batchchange.html' underline="hover">
@@ -63,7 +63,15 @@ const Header = (props: HeaderProps) => {
             color='secondary' 
             variant="contained"
           >
-            <Typography>MAINTENANCE</Typography>
+            <Typography variant='h6'>MAINTENANCE</Typography>
+          </StyledButton>
+        </Link>
+        <Link href='supervision.html' underline="hover">
+          <StyledButton
+            color='secondary' 
+            variant="contained"
+          >
+            <Typography variant='h6'>SUPERVISION</Typography>
           </StyledButton>
         </Link>
         </Grid>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import UpdateIcon from '@mui/icons-material/Update';
 import Carousel from 'react-gallery-carousel';
 import 'react-gallery-carousel/dist/index.css';
 
@@ -32,12 +33,30 @@ const LogImageList = (props: Props) => {
   const [needUpdateLogger, setNeedUpdateLogger] = useState<boolean>(false);
   const [errorWhenUpdate, setErrorWhenUpdate] = useState<boolean>(true);
 
+  useEffect(() => {
+    getImages();
+  }, [])
+
   const errorHandler = (message: string) => {
     if (isError) {
       isError(message);
-      throw new Error(message)
+      // throw new Error(message)
     } else {
       console.error(message);
+    }
+  }
+
+  async function doAllSequentually(fnPromiseArr: any) {
+    for (let i=0; i < fnPromiseArr.length; i++) {
+      const image = await fnPromiseArr[i];
+    
+      console.log(image)
+
+      setLogImages( oldArray => [...oldArray, {
+        src: image,
+        thumbnail: image,
+        sizes: `(max-width: 640px) ${width}px`
+      }]);
     }
   }
 
@@ -46,9 +65,16 @@ const LogImageList = (props: Props) => {
         const isLock = await lockLogger(true)
   
         if (isLock) {
-          const logImages = await Promise.all<string>(Array.from({ length: (range[1] - range[0])}, (_v , k)=> {
-            return getImage(k + range[0]);
-          }))
+
+          setLogImages([]); 
+          
+          const promisifiedImages = (Array.from({ length: (range[1] - range[0])}, (_v , k)=> getImage(k + range[0])));
+          
+          await doAllSequentually(promisifiedImages);
+
+          // const logImages = await Promise.all<string>(Array.from({ length: (range[1] - range[0])}, (_v , k)=> {
+          //   return getImage(k + range[0]);
+          // }))
     
           const isUnlock = await lockLogger(false)
   
@@ -57,20 +83,20 @@ const LogImageList = (props: Props) => {
             errorHandler('Error when update unlock logger');
           }
     
-          if(logImages) {
-            const images: CarouselImage[] = logImages.map((item: string) => {
-              return {
-                src: item,
-                thumbnail: item,
-                sizes: `(max-width: 640px) ${width}px`
-              }
-            })
+          // if(logImages) {
+          //   const images: CarouselImage[] = logImages.map((item: string) => {
+          //     return {
+          //       src: item,
+          //       thumbnail: item,
+          //       sizes: `(max-width: 640px) ${width}px`
+          //     }
+          //   })
             
-            setLogImages(images);
-          } else {
-            setErrorWhenUpdate(true);
-            errorHandler('Error when empty log images');
-          }
+          //   setLogImages(images);
+          // } else {
+          //   setErrorWhenUpdate(true);
+          //   errorHandler('Error when empty log images');
+          // }
         } else {
           await lockLogger(false)
           setErrorWhenUpdate(true);
@@ -85,22 +111,23 @@ const LogImageList = (props: Props) => {
   return(
     <PaperContainer width={640}>
       {errorWhenUpdate && <Typography variant='h5'>Logger</Typography>}
-      <LoaderContainer updateData={getImages} needUpdate={needUpdateLogger} isError={setErrorWhenUpdate}>
-        <Carousel images={logImages} style={{ height: height - 10, width: width - 10 }} />
+      {/* <LoaderContainer updateData={getImages} needUpdate={needUpdateLogger} isError={setErrorWhenUpdate}> */}
+        <Carousel shouldLazyLoad={true} images={logImages} style={{ height: height - 10, width: width - 10 }} />
         <StyledButton 
           size='small'
           value={0} 
           onClick={() => {
               setNeedUpdateLogger(!needUpdateLogger)
-              // getImages()
+              getImages()
             }
           } 
+          startIcon={<UpdateIcon/>}
           color='primary' 
-          variant="outlined"
+          variant="contained"
         >
           <Typography>UPDATE LOGS</Typography>
         </StyledButton>
-      </LoaderContainer>
+      {/* </LoaderContainer> */}
     </PaperContainer>
   )
 }

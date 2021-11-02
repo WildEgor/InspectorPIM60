@@ -3,7 +3,7 @@ import { toast, ToastPosition } from "react-toastify";
 const toastOptions = {
     ERROR: {
         position: 'top-left' as ToastPosition,
-        autoClose: 10000,
+        autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -11,7 +11,7 @@ const toastOptions = {
     },
     SUCCESS: {
         position: 'top-left' as ToastPosition,
-        autoClose: 10000,
+        autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,

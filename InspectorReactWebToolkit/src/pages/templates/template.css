@@ -121,7 +121,7 @@ div.deviceInfo{
 }
 
 /* Boxes */
-.leftbox, .centerbox, .rightbox
+.leftbox, .centerbox, .rightbox, .halfbox
 {
 	min-height: 513px;
 	height: 513px;
@@ -142,6 +142,12 @@ div.deviceInfo{
 .centerbox
 {
 	width: 554px;
+	padding-top: 5px;
+}
+
+.halfbox
+{
+	width: 720px;
 	padding-top: 5px;
 }
 

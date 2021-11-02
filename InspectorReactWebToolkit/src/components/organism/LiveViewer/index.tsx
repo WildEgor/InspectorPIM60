@@ -1,7 +1,9 @@
 
 import { Card, Grid, InputLabel, MenuItem, SelectChangeEvent, Typography } from '@mui/material';
-import React, { ChangeEvent, useState } from 'react';
+import React, {useState } from 'react';
 import FormControl from '@mui/material/FormControl';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
 import StyledButton from 'Src/components/atoms/StyledButton';
 import ImageBox from 'Src/components/molecules/ImageBox';
 import PaperContainer from 'Src/components/molecules/PaperContainer';
@@ -55,12 +57,13 @@ const LiveViewer = (props: Props) => {
         ]
     const progressColors = {
         ERROR: '#FF0000',
-        SUCCESS: '#A0D231'
+        SUCCESS: '#A0D231',
+        COMMON: '#fffB'
     }
 
     const { showProgress = true, showSettings = true, getImageStatistic, width = 630, height = 480, getImage } = props;
 
-    const [imgProgressColor, setImgProgressColor] = useState({ clr: '#FF0000' });
+    const [imgProgressColor, setImgProgressColor] = useState({ clr: progressColors.COMMON });
     const [selectorValue, setSelectorValue] = useState<number>(100);
     const [imageSizeSelectorValue, setImageSizeSelectorValue] = useState<number>(0)
     const [overlaySizeSelectorValue, setOverlaySizeSelectorValue] = useState<number>(1)
@@ -86,10 +89,10 @@ const LiveViewer = (props: Props) => {
 
         if (getImageStatistic) {
             statistic =  await getImageStatistic(id)
-            const SCORE = parseInt(statistic?.['MESSAGE.OBJECT_LOC.SCORE']);
-            const DECISION = parseInt(statistic?.['MESSAGE.OBJECT_LOC.DECISION']);
-            setImgProgressColor({ clr: DECISION === 2? progressColors.SUCCESS : progressColors.ERROR })
-            setImagePercentage(SCORE);
+            setImgProgressColor({ clr: (statistic?.['MESSAGE.OBJECT_LOC.DECISION']?.includes('2')? progressColors.SUCCESS : progressColors.ERROR) })
+            setImagePercentage(parseInt(statistic?.['MESSAGE.OBJECT_LOC.SCORE']));
+        } else {
+            setImgProgressColor({ clr: progressColors.COMMON })
         }
 
         return [image, statistic];
@@ -104,6 +107,16 @@ const LiveViewer = (props: Props) => {
                 justifyContent="center" 
                 style={{ minHeight: '30vh' }}
             >
+                {
+                showProgress && 
+                <Grid item xs={12}>
+                    <StyledProgressBar
+                        {...imgProgressColor}
+                        variant="determinate" 
+                        value={30} 
+                    />
+                </Grid>
+                }
                 <Grid item xs={12}>
                     <Card sx={{ maxWidth: width, maxHeight: height }}>
                         <ImageBox
@@ -118,33 +131,26 @@ const LiveViewer = (props: Props) => {
                         />
                     </Card>
                 </Grid>
-                {
-                showProgress && 
-                <Grid item xs={12}>
-                    <StyledProgressBar
-                        variant="determinate" 
-                        value={imagePercentage} 
-                    />
-                </Grid>
-                }
                 { 
                 showSettings && <>
                 <Grid item xs={2}>
                     <StyledButton 
+                        startIcon={!isPaused? <PlayArrowIcon/> : <PauseIcon/>}
                         size='small'
                         value={0} 
                         onClick={() => {setIsPaused(!isPaused)}
                         } 
                         color='primary' 
-                        variant="outlined"
+                        variant="contained"
                     >
                         {!isPaused? <Typography>PAUSE</Typography> : <Typography>START</Typography>}
                     </StyledButton>
                 </Grid>
                 <Grid item xs={3}>
                     <FormControl>
-                        <InputLabel id="demo-customized-select-label"><Typography variant={'h4'}>REQUEST RATE: </Typography></InputLabel>
+                        <InputLabel id="demo-customized-select-label"><Typography variant={'h4'}>RATE: </Typography></InputLabel>
                         <StyledSelector
+                            color='primary'
                             style={{
                                 width: '100px',
                             }}
@@ -176,7 +182,7 @@ const LiveViewer = (props: Props) => {
                         <InputLabel id="asdsad"><Typography variant={'h4'}>OVERLAY: </Typography></InputLabel>
                         <StyledSelector
                             style={{
-                                width: '180px',
+                                width: '120px',
                             }}
                             value={overlaySizeSelectorValue}
                             onChange={handleOverlayChange}

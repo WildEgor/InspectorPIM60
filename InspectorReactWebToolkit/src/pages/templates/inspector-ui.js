@@ -414,7 +414,7 @@
             this._groupname = this.element.attr("id");
 
             // Create error box
-            this._errormsg = $("<p>").addClass("errormsg");
+            this._errormsg = $("<p style='font-size: 11px;'>").addClass("errormsg");
             this.element.append(this._errormsg);
 
             this._super();
@@ -555,7 +555,7 @@
             this.options.step = (this.options.multiplier > 10 ? 0.1 : 1);
 
             // Create error box
-            this._errormsg = $("<p>").addClass("errormsg");
+            this._errormsg = $("<p style='font-size: 11px;'>").addClass("errormsg");
 
             // Create textboxes
             this._textinputLow = $("<input/>").addClass("ui-slider-input ui-input-text ui-corner-all ui-shadow-inset ui-rangeslider-first");
@@ -692,7 +692,8 @@
     $.widget("hmi.refimage", {
         options: {
             toolregion: [],
-            cameraip: ""
+            cameraip: "",
+            moveble: true,
         },
 
         crossOffset: 9,
@@ -706,6 +707,7 @@
             var that = this;
             this._super();
             var o = this.options;
+            o.moveble = this.element.data("moveble");
             
             // Add 'http://' to cameraip address if missing
             if (o.cameraip != "" && !(o.cameraip.startsWith("http://")) ){
@@ -754,14 +756,14 @@
 
                     var r = that._regions[i];
                     r.ready = false;
-                    r.div = $("<div>").addClass("hmi-movableregion").hide().draggable();
+                    r.div = o.moveble? $("<span>").addClass("hmi-movableregion").hide().draggable() : $("<span>").addClass("hmi-movableregion").css("display", "none");
                     r.div.addClass("ui-icon").addClass("ui-icon-plus");
                     $("div.hmi-refimageWrapper").append(that._regions[i].div);
 
                     (function(r){
                         r.div.on( "dragstop", function(event, ui)
                         {
-                            if (r.ready)
+                            if (r.ready && o.moveble)
                             {
                                 var dx = that._scale * (ui.position.left - ui.originalPosition.left);
                                 var dy = that._scale * (ui.position.top - ui.originalPosition.top);
@@ -814,7 +816,6 @@
             }
         }
     });
-    
     
     $.widget("hmi.liveimage", {
         options: {
@@ -1200,7 +1201,6 @@
         }
     });
 
-
     $.widget("hmi.mode", {
 
         options: {
@@ -1237,7 +1237,6 @@
         }
 
     });
-
 
     $.widget("hmi.monitor",{
         options: {
@@ -1813,7 +1812,6 @@
         $(element).refimage(opt);
     }
 
-    
     function hmiCreateLiveImage(element, callback){
         var opt = {
             interval : defaultFor($(element).data("interval"), WebConstants.DEFAULT_REFRESH),

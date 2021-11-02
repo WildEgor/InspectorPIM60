@@ -108,9 +108,9 @@
         });
 
         // Get IP adresses
-        InspectorUI.GetIP($("#IP1"), $("#IP2"),$("#IP3"),$("#IP4"));
-        InspectorUI.GetNetmask($("#NM1"), $("#NM2"),$("#NM3"),$("#NM4"));
-        InspectorUI.GetGateway($("#GW1"), $("#GW2"),$("#GW3"),$("#GW4"));
+        InspectorUI.GetIP($("#IP1"), $("#IP2"), $("#IP3"), $("#IP4"));
+        InspectorUI.GetNetmask($("#NM1"), $("#NM2"), $("#NM3"), $("#NM4"));
+        InspectorUI.GetGateway($("#GW1"), $("#GW2"), $("#GW3"), $("#GW4"));
 
         // Create tabs
         $( ".tabBtns" ).tabs(); 
@@ -133,12 +133,12 @@
 </head>
 <body>
 
-<div class="gradient backgroundColor" id="header">
+<!-- <div class="gradient backgroundColor" id="header">
     <div class="pageWidth">
         <a href="index.html"><div class="logo"></div></a>
         <div class="deviceInfo">Inspector PIM60</div>
     </div>
-</div>
+</div> -->
 
 <div id="container">
     <div id="main" class="pageWidth">
@@ -154,7 +154,7 @@
                     <li><a href="#tabs-1" id="FocusTab">Focus</a></li>
                     <li><a href="#tabs-2" id="CalibrateTab">Calibrate</a></li>
                     <li><a href="#tabs-3" id="ConfigurationTab">Configuration</a></li>
-                    <li><a href="#tabs-4" id="NetworkTab">Network</a></li>
+                    <!-- <li><a href="#tabs-4" id="NetworkTab">Network</a></li> -->
                 </ul>
                 <div id="tabs-1">
                     <img class="hmi-liveimage" data-cameraip="192.168.99.9"/>
@@ -171,19 +171,19 @@
                 </div>
                 <div id="tabs-3">
                     <div class="box borderColor">
-                    <span id="backupBtn" class="button" data-cameraip="192.168.99.9">Download Configuration</span>
-                </div>
-                <div class="box borderColor">
-                    <form action="/RestoreConfig" method="post" enctype="multipart/form-data" target="upload_target" name="restoreform" id="restoreform" data-cameraip="192.168.99.9">
-                        <input type="file" name="datafile"/>
-                        <span id="uploadBtn" class="button" data-cameraip="192.168.99.9">Upload Configuration</span>
-                    </form>
+                        <span id="backupBtn" class="button" data-cameraip="192.168.99.9">Download Configuration</span>
+                    </div>
+                    <div class="box borderColor">
+                        <form action="/RestoreConfig" method="post" enctype="multipart/form-data" target="upload_target" name="restoreform" id="restoreform" data-cameraip="192.168.99.9">
+                            <input type="file" name="datafile"/>
+                            <span id="uploadBtn" class="button" data-cameraip="192.168.99.9">Upload Configuration</span>
+                        </form>
 
-                    <!-- Hidden frame to do the file upload -->
-                    <iframe id="upload_target" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>
+                        <!-- Hidden frame to do the file upload -->
+                        <iframe id="upload_target" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>
                     </div>
                 </div>
-                <div id="tabs-4">
+                <!-- <div id="tabs-4">
                     <div class="box borderColor">
                         <label>Set IP-address:</label>
                         <input type="text" class="textIP" id="IP1" data-cameraip="192.168.99.9"/> . 
@@ -206,7 +206,7 @@
                         <input type="text" class="textIP" id="GW4" data-cameraip="192.168.99.9"/>
                     </div>
                     <input type="submit" id="setIP" class="button" value="Apply" data-cameraip="192.168.99.9"/>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="box borderColor rightbox">
