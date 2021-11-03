@@ -20,11 +20,11 @@ const common = {
 typography: {
   h1: { fontSize: '2.8rem', fontWeight: 700 },
   h2: { fontSize: '2.2rem', fontWeight: 700 },
-  h3: { fontSize: '1.8rem', fontWeight: 500 },
-  h4: { fontSize: '1.2rem', fontWeight: 500 },
-  h5: { fontSize: '0.8rem', fontWeight: 300 },
-  h6: { fontSize: '0.6rem', fontWeight: 300 },
-  subtitle1: { fontSize: '0.40rem', fontWeight: 300 },
+  h3: { fontSize: '1.8rem', fontWeight: 600 },
+  h4: { fontSize: '1.2rem', fontWeight: 600 },
+  h5: { fontSize: '0.8rem', fontWeight: 500 },
+  h6: { fontSize: '0.6rem', fontWeight: 500 },
+  subtitle1: { fontSize: '0.50rem', fontWeight: 400 },
   body1: {
     fontWeight: 500,
   },

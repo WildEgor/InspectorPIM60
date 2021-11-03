@@ -114,25 +114,23 @@
             $(".button").button();
         });
 
+		$('#reloadPage').button().click(function() {
+    		location.reload();
+		});
+
 		$(".hmi-liveimage").liveimage("option", "interval", 100);
 	});
 </script>
 </head>
 <body>
-	<!-- <div class="pageWidth" id="main">
-		<a href="logger.html" id="supervision" class="button" title="Check the status of the camera">Logger Page</a>
-		<a href="liveviewer.html" id="maintenance" class="button" title="Device control for field exchange">Liveviewer Page</a>
-		<a href="batchchange.html" id="batchchange" class="button" title="Switch reference object and fine-tune parameters">Maintenance Page</a>
-		<a href="supervision.html" id="batchchange" class="button" title="Switch reference object and fine-tune parameters">Supervision Page</a>
-	</div> -->
-
 	<div id="container">
 		<div id="main" class="pageWidth">
 			<div class="leftbox">
-					<button id="runBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="0">Run</button>
-					<button id="editBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="1">Edit</button>
-					<div id="refImageBanks" class="hmi-refimagelist borderColor selected-image" data-cameraip="192.168.99.9" data-orientation="vertical" data-selectable="true"></div>
-					<button id="saveBtn" class="hmi-action large" data-id="1" data-cameraip="192.168.99.9">Save to flash</button>
+				<button id="reloadPage" class="large">Reload Page</button>
+				<button id="runBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="0">Run</button>
+				<button id="editBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="1">Edit</button>
+				<div id="refImageBanks" class="hmi-refimagelist borderColor selected-image" data-cameraip="192.168.99.9" data-orientation="vertical" data-selectable="true"></div>
+				<button id="saveBtn" class="hmi-action large" data-id="1" data-cameraip="192.168.99.9">Save to flash</button>
 			</div>
 			<div class="halfbox">
 				<div class="tabBtns">

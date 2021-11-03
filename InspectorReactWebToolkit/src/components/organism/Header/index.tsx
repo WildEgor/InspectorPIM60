@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { AppBar, Box, FormControlLabel, FormGroup, Grid, Link, SvgIcon, Toolbar, Typography } from "@mui/material";
+import { AppBar, Grid, Link, SvgIcon, Toolbar, Typography } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import StyledButton from "Src/components/atoms/StyledButton";
-// import StyledSwitch from "Src/components/atoms/StyledSwitch";
-// import { observer } from "mobx-react-lite";
-
 interface HeaderProps {
   isChecked?: (check: boolean) => void;
 }
 
-import Icon from "Src/logo-site.svg"
 import StyledSwitch from "Src/components/atoms/StyledSwitch";
 
 const Header = (props: HeaderProps) => {
@@ -27,69 +23,57 @@ const Header = (props: HeaderProps) => {
   return (
     <AppBar position="static">
       <Toolbar>
-      <Grid container>
-      <Grid item xs={2}>
-        <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <SvgIcon component="object">
-              <embed type="image/svg+xml" src={Icon} style={{ height: "100%" }} />
-            </SvgIcon>
-          </IconButton>
-        </Grid>
-      <Grid item xs={8}>
-        <Link href='logger.html' underline="hover">
-          <StyledButton
-            color='secondary' 
-            variant="contained"
-          >
-            <Typography variant='h6'>LOGGER</Typography>
-          </StyledButton>
-        </Link>
-        <Link href='liveviewer.html' underline="hover">
-          <StyledButton
-            color='secondary' 
-            variant="contained"
-          >
-            <Typography variant='h6'>LIVE</Typography>
-          </StyledButton>
-        </Link>
-        <Link href='batchchange.html' underline="hover">
-          <StyledButton
-            color='secondary' 
-            variant="contained"
-          >
-            <Typography variant='h6'>MAINTENANCE</Typography>
-          </StyledButton>
-        </Link>
-        <Link href='supervision.html' underline="hover">
-          <StyledButton
-            color='secondary' 
-            variant="contained"
-          >
-            <Typography variant='h6'>SUPERVISION</Typography>
-          </StyledButton>
-        </Link>
-        </Grid>
-        <Grid item xs={2}>
-      <FormGroup>
-        <FormControlLabel
-          control={
+        <Grid container>
+          <Grid item xs={10} alignSelf='center'>
+            <Link href='log.html' underline="hover">
+              <StyledButton
+                color='secondary' 
+                variant="contained"
+              >
+                <Typography variant='subtitle1'>LOGGER</Typography>
+              </StyledButton>
+            </Link>
+            <Link href='live.html' underline="hover">
+              <StyledButton
+                color='secondary' 
+                variant="contained"
+              >
+                <Typography variant='subtitle1'>LIVE</Typography>
+              </StyledButton>
+            </Link>
+            <Link href='settings.html' underline="hover">
+              <StyledButton
+                color='secondary' 
+                variant="contained"
+              >
+                <Typography variant='subtitle1'>SETTINGS</Typography>
+              </StyledButton>
+            </Link>
+            <Link href='recipe.html' underline="hover">
+              <StyledButton
+                color='secondary' 
+                variant="contained"
+              >
+                <Typography variant='subtitle1'>CHANGE RECIPE</Typography>
+              </StyledButton>
+            </Link>
+            <Link href='supervision.html' underline="hover">
+              <StyledButton
+                color='secondary' 
+                variant="contained"
+              >
+                <Typography variant='subtitle1'>SUPERVISION</Typography>
+              </StyledButton>
+            </Link>
+          </Grid>
+          <Grid item xs={2} alignSelf='center'>
             <StyledSwitch
               checked={auth}
               onChange={handleChange}
               aria-label="login switch"
             />
-          }
-          label={''}
-        />
-      </FormGroup>
-      </Grid>
           </Grid>
+        </Grid>
       </Toolbar>
     </AppBar>
   );

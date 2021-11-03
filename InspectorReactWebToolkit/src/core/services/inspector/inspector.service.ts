@@ -1,5 +1,5 @@
 import ipRegex from "ip-regex";
-import Bottleneck from "bottleneck";
+// import Bottleneck from "bottleneck";
 import HttpClient from 'Src/core/services/http';
 import { handlePromise, delayPromise } from 'Src/core/utils/http-utils'
 import { TWidget, 
@@ -17,7 +17,7 @@ import { TWidget,
  */
 
 class InspectorService extends HttpClient {
-  private _limiter?: Bottleneck;
+  // private _limiter?: Bottleneck;
   // private static _classInstance?: InspectorService;
   private static _devices?: Set<InspectorService> = new Set(); // Array of cameras
   private _deviceMode?: number;
@@ -30,10 +30,10 @@ class InspectorService extends HttpClient {
   private constructor(ip: string) {
     super(ip);
 
-    this._limiter = new Bottleneck({
-      maxConcurrent: 1,
-      minTime: 333
-    });
+    // this._limiter = new Bottleneck({
+    //   maxConcurrent: 1,
+    //   minTime: 333
+    // });
 
     // Image settings
     this.defaultSettings[ECommands.MAIN_EXPOSURE] = { type: 'slider', toolName: 'Change exposure', defaultValue: 0.1, min: 0.01, max: 10, multiplier: 100 };
@@ -410,7 +410,7 @@ class InspectorService extends HttpClient {
    */
   public getLiveImage = async (id: string, s: EImageSize = EImageSize.SMALL, type: EOverlay = EOverlay.HIDE): Promise<string> => {
     const wrapped = 
-    this._limiter.wrap
+    // this._limiter.wrap
     (
       () => handlePromise(this.request<string>({
       method: 'GET',

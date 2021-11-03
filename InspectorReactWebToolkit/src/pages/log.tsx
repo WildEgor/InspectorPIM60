@@ -8,15 +8,16 @@ import {
   responsiveFontSizes,
   adaptV4Theme,
 } from '@mui/material/styles';
+import { ToastContainer } from 'react-toastify';
 import { lightTheme, darkTheme } from 'Src/style/muiTheme';
 import { RootStoreProvider } from "Src/core/store/rootStore";
 
-import App from 'Src/components/pages/LiveViewer'
-// import Notifier from "Src/components/organism/Notifier/Notifier";
+import App from 'Src/components/pages/Logger'
+// import Notifier from "../components/organism/Notifier/Notifier";
 import Layout  from "Src/components/templates/Layout/Layout";
-import { Flip, ToastContainer } from "react-toastify";
+import { Flip } from 'react-toastify';
+import { Box } from "@mui/material";
 import Header from "Src/components/organism/Header";
-import { Box } from "@mui/system";
 
 
 declare module '@mui/styles/defaultTheme' {
@@ -25,10 +26,8 @@ declare module '@mui/styles/defaultTheme' {
 }
 
 
-// import Header from "Src/components/pages/Header";
-
-function LivePage () {
-  const [useDefaultTheme, toggle] = useReducer((theme) => !theme, true);
+function Main() {
+  const [useDefaultTheme, toggle] = useReducer((theme) => !theme, false);
   // define custom theme
   let theme: Theme = createTheme(adaptV4Theme(useDefaultTheme ? lightTheme : darkTheme));
   theme = responsiveFontSizes(theme);
@@ -43,7 +42,7 @@ function LivePage () {
               <ToastContainer
                 limit={3}
                 transition={Flip}
-                position="top-left"
+                position="bottom-center"
                 autoClose={5000}
                 hideProgressBar={false}
                 newestOnTop
@@ -54,8 +53,8 @@ function LivePage () {
                 pauseOnHover
               />
               <Box width={660}>
-                <Header isChecked={() => toggle()}/>
                 <App/>
+                <Header isChecked={() => toggle()}/>
               </Box> 
             </Layout>
           </RootStoreProvider>
@@ -66,6 +65,6 @@ function LivePage () {
 }
 
 render(
-  <LivePage/>,
-  document.getElementById("live")
+  <Main/>,
+  document.getElementById("logger")
 );

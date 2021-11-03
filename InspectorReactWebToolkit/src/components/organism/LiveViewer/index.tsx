@@ -1,5 +1,5 @@
 
-import { Card, Grid, InputLabel, MenuItem, SelectChangeEvent, Typography } from '@mui/material';
+import { Card, FormHelperText, Grid, InputLabel, MenuItem, SelectChangeEvent, Typography } from '@mui/material';
 import React, {useState } from 'react';
 import FormControl from '@mui/material/FormControl';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -61,7 +61,7 @@ const LiveViewer = (props: Props) => {
         COMMON: '#fffB'
     }
 
-    const { showProgress = true, showSettings = true, getImageStatistic, width = 630, height = 480, getImage } = props;
+    const { showProgress = true, showSettings = true, getImageStatistic, width = 660, height = 480, getImage } = props;
 
     const [imgProgressColor, setImgProgressColor] = useState({ clr: progressColors.COMMON });
     const [selectorValue, setSelectorValue] = useState<number>(100);
@@ -89,8 +89,11 @@ const LiveViewer = (props: Props) => {
 
         if (getImageStatistic) {
             statistic =  await getImageStatistic(id)
-            setImgProgressColor({ clr: (statistic?.['MESSAGE.OBJECT_LOC.DECISION']?.includes('2')? progressColors.SUCCESS : progressColors.ERROR) })
-            setImagePercentage(parseInt(statistic?.['MESSAGE.OBJECT_LOC.SCORE']));
+            const score = parseInt(statistic?.['MESSAGE.OBJECT_LOC.SCORE']);
+            const des = statistic?.['MESSAGE.OBJECT_LOC.DECISION'];
+            console.log(score, des)
+            setImgProgressColor({ clr: (des === '1'? progressColors.SUCCESS : progressColors.ERROR) })
+            setImagePercentage(score);
         } else {
             setImgProgressColor({ clr: progressColors.COMMON })
         }
@@ -113,7 +116,7 @@ const LiveViewer = (props: Props) => {
                     <StyledProgressBar
                         {...imgProgressColor}
                         variant="determinate" 
-                        value={30} 
+                        value={imagePercentage} 
                     />
                 </Grid>
                 }
@@ -143,12 +146,12 @@ const LiveViewer = (props: Props) => {
                         color='primary' 
                         variant="contained"
                     >
-                        {!isPaused? <Typography>PAUSE</Typography> : <Typography>START</Typography>}
+                        {isPaused? <Typography variant='h5'>START</Typography> : <Typography variant='h5'>PAUSE</Typography>}
                     </StyledButton>
                 </Grid>
                 <Grid item xs={3}>
                     <FormControl>
-                        <InputLabel id="demo-customized-select-label"><Typography variant={'h4'}>RATE: </Typography></InputLabel>
+                        <FormHelperText>Request rate</FormHelperText>
                         <StyledSelector
                             color='primary'
                             style={{
@@ -164,7 +167,7 @@ const LiveViewer = (props: Props) => {
                 </Grid>
                 <Grid item xs={3}>
                     <FormControl>
-                        <InputLabel id="sdaadl"><Typography variant={'h4'}>IMAGE SIZE: </Typography></InputLabel>
+                        <FormHelperText>Image size</FormHelperText>
                         <StyledSelector
                             style={{
                                 width: '120px',
@@ -179,7 +182,7 @@ const LiveViewer = (props: Props) => {
                 </Grid>
                 <Grid item xs={3}>
                     <FormControl>
-                        <InputLabel id="asdsad"><Typography variant={'h4'}>OVERLAY: </Typography></InputLabel>
+                        <FormHelperText>Overlay type</FormHelperText>
                         <StyledSelector
                             style={{
                                 width: '120px',
