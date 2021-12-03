@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "webpack serve --config src/webpack/webpack.dev.config.ts",
     "build": "webpack --config src/webpack/webpack.prod.config.ts",
-    "start": "npm run build && node src/express.js"
+    "start": "npm run build && nodemon src/express.js"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
@@ -24,6 +24,7 @@
     "axios-mock-adapter": "^1.19.0",
     "copy-webpack-plugin": "^9.0.1",
     "flat": "^5.0.2",
+    "hammer-touchemulator": "0.0.2",
     "ip-regex": "^4.3.0",
     "material-ui-image": "^3.3.2",
     "mini-css-extract-plugin": "^1.6.0",
@@ -32,6 +33,7 @@
     "mobx-react-lite": "^3.2.0",
     "mui-layout": "^1.2.9",
     "node-sass": "^6.0.1",
+    "nodemon": "^2.0.15",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-image-gallery": "^1.2.7",

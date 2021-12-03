@@ -82,7 +82,7 @@
         }
         return keys;
     }
-    
+
     function inEditMode(device) {
         return device.runMode == 1;
     };
@@ -303,6 +303,23 @@
     /**************************/
 
 
+    function touchHandler(event) {
+        var touch = event.changedTouches[0];
+    
+        var simulatedEvent = document.createEvent("MouseEvent");
+            simulatedEvent.initMouseEvent({
+            touchstart: "mousedown",
+            touchmove: "mousemove",
+            touchend: "mouseup"
+        }[event.type], true, true, window, 1,
+            touch.screenX, touch.screenY,
+            touch.clientX, touch.clientY, false,
+            false, false, false, 0, null);
+    
+        touch.target.dispatchEvent(simulatedEvent);
+        event.preventDefault();
+    }
+    
 
 
     // Default Inspector communication framework with default settings
@@ -741,6 +758,8 @@
 
                 this._scale = tmp_width / this.element.width();
 
+                // $("div.hmi-refimageWrapper").append("<div id='#dragNdrop'><span></span></div>")
+
                 this._regions = new Array();
                 for (var i = 0; i < o.toolregion.length; i++){
                     var t = o.toolregion[i];
@@ -756,17 +775,39 @@
 
                     var r = that._regions[i];
                     r.ready = false;
-                    r.div = o.moveble? $("<span>").addClass("hmi-movableregion").hide().draggable() : $("<span>").addClass("hmi-movableregion").css("display", "none");
+                    r.div = o.moveble? $("<span>").addClass("hmi-movableregion").hide() : $("<span>").addClass("hmi-movableregion").css("display", "none");
                     r.div.addClass("ui-icon").addClass("ui-icon-plus");
                     $("div.hmi-refimageWrapper").append(that._regions[i].div);
 
                     (function(r){
-                        r.div.on( "dragstop", function(event, ui)
+                        var ui = {
+                            originalPosition: {
+                                left: 0,
+                                top: 0,
+                            },
+                            position: {
+                                left: 0,
+                                top: 0,
+                            }
+                        };
+
+                        r.div.on( "touchstart", function(event) {
+                            const pos = event.originalEvent.changedTouches[0];
+                            ui.originalPosition.left = pos.clientX;
+                            ui.originalPosition.top = pos.clientY;
+                        } )
+
+                        r.div.on( "touchend", function(event)
                         {
+                            const pos = event.originalEvent.changedTouches[0];
+                            ui.position.left =  pos.clientX;
+                            ui.position.top = pos.clientY;
+                            
                             if (r.ready && o.moveble)
                             {
                                 var dx = that._scale * (ui.position.left - ui.originalPosition.left);
                                 var dy = that._scale * (ui.position.top - ui.originalPosition.top);
+                                console.log(dx, dy)
                                 r.ready = false;
                                 getDevice(that.options.cameraip).setInt(r.sUrl, dx.toFixed(0), dy.toFixed(0), 0, function(result){
                                     that.element.attr("src",  that._cameraip + that.imagepath + Date.now());
@@ -810,6 +851,7 @@
                             r.ready = true;
                             r.div.css({'top': result.values[1] / that._scale - that.crossOffset + that.element.position().top, 'left' : result.values[0] / that._scale - that.crossOffset + that.element.position().left});
                             r.div.show();
+                            $('#dragNdrop span').text(that.element.position().top);
                         }
                     });
                 })(that._regions[i]);

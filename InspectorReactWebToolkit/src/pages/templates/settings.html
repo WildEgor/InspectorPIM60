@@ -9,6 +9,10 @@
 <script src="jquery-1.8.3.min.js"></script>  
 <script src="jquery-ui-1.9.2.custom.min.js"></script>
 <script src="inspector.js"></script>
+
+<script src="touch-emulator.js"></script>
+<script> TouchEmulator(); </script>
+
 <script src="inspector-ui.js"></script>
 
 <style type="text/css">
@@ -97,7 +101,7 @@
 </style>
 
 <script type="text/javascript">
-	InspectorUI.AddDevicesIP(["192.168.99.9"]);
+	InspectorUI.AddDevicesIP(["192.168.99.10"]);
 
 	function clickedTab1() {
         $(".helpSection").hide();
@@ -216,9 +220,9 @@
 	<div id="container">
 		<div id="main" class="pageWidth">
 			<div class="leftbox">
-				<button id="runBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="0">Run</button>
-				<button id="editBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="1">Edit</button>
-				<div id="refImageBanks" class="hmi-refimagelist borderColor selected-image" data-cameraip="192.168.99.9" data-orientation="vertical" data-selectable="true"></div>
+				<button id="runBtn" class="hmi-mode large" data-cameraip="192.168.99.10" data-mode="0">Run</button>
+				<button id="editBtn" class="hmi-mode large" data-cameraip="192.168.99.10" data-mode="1">Edit</button>
+				<div id="refImageBanks" class="hmi-refimagelist borderColor selected-image" data-cameraip="192.168.99.10" data-orientation="vertical" data-selectable="true"></div>
 				<button id="reloadPage" class="large">Reload Page</button>
 			</div>
 			<div class="centerbox">
@@ -231,33 +235,33 @@
 					</ul>
 					<div id="tabs-1">
 						<div>
-							<img class="hmi-refimage" data-cameraip="192.168.99.9" data-toolregion="0:86, 1:86, 2:86, 38" data-moveble="true"/>
+							<img class="hmi-refimage" data-cameraip="192.168.99.10" data-toolregion="0:86, 1:86, 2:86, 38" data-moveble="true"/>
 						</div>
 					</div>
 					<div id="tabs-2">
-						<img class="hmi-liveimage" data-overlay="true" data-cameraip="192.168.99.9"/>
+						<img class="hmi-liveimage" data-overlay="true" data-cameraip="192.168.99.10"/>
 						<div>
 							<span>Square side:</span>
-							<input id="calibrateMM" value="6" data-cameraip="192.168.99.9"></input>
+							<input id="calibrateMM" value="6" data-cameraip="192.168.99.10"></input>
 							<span>mm</span>
-							<button class="hmi-action" data-id="3" id="calibrateBtn" data-cameraip="192.168.99.9">Calibrate</button>
-							<button class="hmi-action" data-id="4" id="removeCalibrationBtn" data-cameraip="192.168.99.9">Remove Calibration</button>
+							<button class="hmi-action" data-id="3" id="calibrateBtn" data-cameraip="192.168.99.10">Calibrate</button>
+							<button class="hmi-action" data-id="4" id="removeCalibrationBtn" data-cameraip="192.168.99.10">Remove Calibration</button>
 						</div>
 					</div>
 					<div id="tabs-3">
 						<div>
 							<button id="updateButton"></button>
-							<div class="hmi-logimagelist" data-cameraip="192.168.99.9" data-index="0-9" data-orientation="horizontal"></div>
+							<div class="hmi-logimagelist" data-cameraip="192.168.99.10" data-index="0-9" data-orientation="horizontal"></div>
 						</div>
 					</div>
 					<div id="tabs-4">
 						<div class="box borderColor">
-							<span id="backupBtn" class="button" data-cameraip="192.168.99.9">Download Configuration</span>
+							<span id="backupBtn" class="button" data-cameraip="192.168.99.10">Download Configuration</span>
 						</div>
 						<div class="box borderColor">
-							<form action="/RestoreConfig" method="post" enctype="multipart/form-data" target="upload_target" name="restoreform" id="restoreform" data-cameraip="192.168.99.9">
+							<form action="/RestoreConfig" method="post" enctype="multipart/form-data" target="upload_target" name="restoreform" id="restoreform" data-cameraip="192.168.99.10">
 								<input type="file" name="datafile"/>
-								<span id="uploadBtn" class="button" data-cameraip="192.168.99.9">Upload Configuration</span>
+								<span id="uploadBtn" class="button" data-cameraip="192.168.99.10">Upload Configuration</span>
 							</form>
 	
 							<!-- Hidden frame to do the file upload -->
@@ -291,29 +295,29 @@
 					<h1>Settings</h1>
 					<h2>Settings are commited live</h2>
 
-					<button id="reTeach" class="hmi-action large" data-cameraip="192.168.99.9" data-id="2">Re-Teach</button>
-					<button id="saveBtn" class="hmi-action large" data-id="1" data-cameraip="192.168.99.9">Save to flash</button>
+					<button id="reTeach" class="hmi-action large" data-cameraip="192.168.99.10" data-id="2">Re-Teach</button>
+					<button id="saveBtn" class="hmi-action large" data-id="1" data-cameraip="192.168.99.10">Save to flash</button>
 
 					<label>Exposure:</label>
-					<div class="hmi-parameter" data-id="14" data-cameraip="192.168.99.9"></div>
+					<div class="hmi-parameter" data-id="14" data-cameraip="192.168.99.10"></div>
 
 					<label>Gain:</label>
-					<div class="hmi-parameter" data-id="15" data-cameraip="192.168.99.9"></div>
+					<div class="hmi-parameter" data-id="15" data-cameraip="192.168.99.10"></div>
 
 					<label>Pixel counter intensity treshold in range:</label>
-					<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="80"></div>
+					<div class="hmi-parameter" data-cameraip="192.168.99.10" data-tool="0" data-id="80"></div>
 
 					<label>Pixels in range:</label>
-					<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="81"></div>
+					<div class="hmi-parameter" data-cameraip="192.168.99.10" data-tool="0" data-id="81"></div>
 
 					<label>Object locator match treshold:</label>
-					<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="32"></div>
+					<div class="hmi-parameter" data-cameraip="192.168.99.10" data-tool="0" data-id="32"></div>
 
 					<label>Object locator:</label>
-					<div class="hmi-parameter" data-cameraip="192.168.99.9" data-id="33">Allow Rotation</div>
+					<div class="hmi-parameter" data-cameraip="192.168.99.10" data-id="33">Allow Rotation</div>
 
 					<label>Pattern score treshold in range:</label>
-					<div class="hmi-parameter" data-cameraip="192.168.99.9" data-tool="0" data-id="85"></div>
+					<div class="hmi-parameter" data-cameraip="192.168.99.10" data-tool="0" data-id="85"></div>
 				</div>
 			</div> 
 		</div>

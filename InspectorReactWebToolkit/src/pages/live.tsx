@@ -28,7 +28,7 @@ declare module '@mui/styles/defaultTheme' {
 // import Header from "Src/components/pages/Header";
 
 function LivePage () {
-  const [useDefaultTheme, toggle] = useReducer((theme) => !theme, false);
+  const [useDefaultTheme, toggle] = useReducer((theme) => !theme, true);
   // define custom theme
   let theme: Theme = createTheme(adaptV4Theme(useDefaultTheme ? lightTheme : darkTheme));
   theme = responsiveFontSizes(theme);
@@ -53,9 +53,9 @@ function LivePage () {
                 draggable
                 pauseOnHover
               />
-              <Box width={680}>
+              <Box width={580}>
                 <App/>
-                <Header isChecked={() => toggle()}/>
+                {/* <Header isChecked={() => toggle()}/> */}
               </Box> 
             </Layout>
           </RootStoreProvider>

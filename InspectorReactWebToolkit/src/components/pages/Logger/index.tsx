@@ -32,6 +32,8 @@ const App = observer(() => {
         //   message: error,
         //   variant: ENotification.ALERT, 
         // })}
+        width={640}
+        height={370}
         isError={(error: string) => Toaster.error(error)}
         range={[0, 30]}
         getImage={(id) => InspectorOne.getLogImage(id)}

@@ -71,10 +71,22 @@
 	.selected-image ul li img.selected {
 		border: 5px solid #0084c2;
 	}
+
+	img.hmi-refimage {
+		width: 480px;
+	}
+
+	img.hmi-liveimage {
+		width: 480px;
+	}
+	
+	.halfbox {
+		width: 500px;
+	}
 </style>
 
 <script type="text/javascript">
-	InspectorUI.AddDevicesIP(["192.168.99.9"]);
+	InspectorUI.AddDevicesIP(["192.168.99.10"]);
 
 	/* This will run when page has loaded */
 	$(function() {
@@ -127,10 +139,10 @@
 		<div id="main" class="pageWidth">
 			<div class="leftbox">
 				<button id="reloadPage" class="large">Reload Page</button>
-				<button id="runBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="0">Run</button>
-				<button id="editBtn" class="hmi-mode large" data-cameraip="192.168.99.9" data-mode="1">Edit</button>
-				<div id="refImageBanks" class="hmi-refimagelist borderColor selected-image" data-cameraip="192.168.99.9" data-orientation="vertical" data-selectable="true"></div>
-				<button id="saveBtn" class="hmi-action large" data-id="1" data-cameraip="192.168.99.9">Save to flash</button>
+				<button id="runBtn" class="hmi-mode large" data-cameraip="192.168.99.10" data-mode="0">Run</button>
+				<button id="editBtn" class="hmi-mode large" data-cameraip="192.168.99.10" data-mode="1">Edit</button>
+				<div id="refImageBanks" class="hmi-refimagelist borderColor selected-image" data-cameraip="192.168.99.10" data-orientation="vertical" data-selectable="true"></div>
+				<button id="saveBtn" class="hmi-action large" data-id="1" data-cameraip="192.168.99.10">Save to flash</button>
 			</div>
 			<div class="halfbox">
 				<div class="tabBtns">
@@ -140,11 +152,11 @@
 					</ul>
 					<div id="tabs-1">
 						<div>
-							<img class="hmi-refimage" data-cameraip="192.168.99.9" data-toolregion="38, 0:86" data-moveble="false"/>
+							<img class="hmi-refimage" data-cameraip="192.168.99.10" data-toolregion="38, 0:86" data-moveble="false"/>
 						</div>
 					</div>
 					<div id="tabs-2">
-						<img class="hmi-liveimage" data-cameraip="192.168.99.9" data-overlay="show" data-scale="2"/>
+						<img class="hmi-liveimage" data-cameraip="192.168.99.10" data-overlay="show" data-scale="2"/>
 					</div>
 				</div>
 			</div>

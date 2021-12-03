@@ -16,6 +16,8 @@ const App = observer(() => {
   return (
     <>
       <LiveViewer
+        width={640}
+        height={370}
         getImageStatistic={InspectorOne.getLiveStatistic}
         getImage={InspectorOne.getLiveImage}
       />
