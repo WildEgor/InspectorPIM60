@@ -2,8 +2,8 @@
   "name": "my-app",
   "version": "0.0.1",
   "scripts": {
-    "dev": "webpack serve --config src/webpack/webpack.dev.config.ts",
-    "build": "webpack --config src/webpack/webpack.prod.config.ts",
+    "dev": "webpack serve --env development --config src/webpack/webpack.dev.config.ts",
+    "build": "webpack --env production --config src/webpack/webpack.prod.config.ts",
     "start": "npm run build && nodemon src/express.js"
   },
   "dependencies": {

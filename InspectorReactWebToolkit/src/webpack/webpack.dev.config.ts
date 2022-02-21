@@ -49,7 +49,7 @@ const config: webpack.Configuration = merge(common, {
   devServer: {
     contentBase: Path.join(__dirname, "../build"),
     historyApiFallback: true,
-    host: '192.168.99.102',
+    host: '127.0.0.1',
     port: 5000,
     open: true,
     hot: true,

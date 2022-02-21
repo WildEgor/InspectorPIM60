@@ -1,17 +1,10 @@
 
-
-const serverURI = process.env.NODE_ENV === 'production' ? '192.168.99.10' : '192.168.99.10';
-
 const inspectorDevices = [
   {
-    ip: '192.168.99.10',
+    ip: process.env.NODE_ENV === 'production' ? window.location.hostname : '192.168.99.9',
   },
-  {
-    ip: '192.168.99.9',
-  }
 ]
 
 export { 
-  serverURI,
   inspectorDevices
 };
