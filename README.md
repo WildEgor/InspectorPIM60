@@ -7,6 +7,7 @@ Folders:
 - InspectorReactWebToolkit: just own attempt to transfer SICK Web Framework to React platform.
 
 Folder structure:
+```
 /src - main source folder;
     /core - common used things;
         /config - api.config.ts - ip addresses;
@@ -21,6 +22,7 @@ Folder structure:
             /pages - PWA (also contains jquery pages from old project);
 /style - global style;
 /webpack - webpack dev/prod configs;
+```
 
 TODO:
 - [x] Show current live image (interval);
