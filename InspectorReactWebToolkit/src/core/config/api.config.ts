@@ -5,6 +5,4 @@ const inspectorDevices = [
   },
 ]
 
-export { 
-  inspectorDevices
-};
+export { inspectorDevices };
